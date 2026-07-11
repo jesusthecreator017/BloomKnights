@@ -96,7 +96,7 @@ function QuizPlayPage() {
 
 	if (isLoading) {
 		return (
-			<p className="mx-auto max-w-2xl px-4 py-16 text-muted-foreground">
+			<p className="mx-auto max-w-2xl px-4 py-10 sm:py-16 text-muted-foreground">
 				Loading quiz…
 			</p>
 		);
@@ -104,7 +104,7 @@ function QuizPlayPage() {
 
 	if (error || !quiz) {
 		return (
-			<div className="mx-auto max-w-2xl px-4 py-16">
+			<div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
 				<p className="text-red-400">
 					{error instanceof ApiClientError && error.status === 404
 						? "That quiz doesn't exist."
@@ -122,7 +122,7 @@ function QuizPlayPage() {
 
 	if (alreadyDone) {
 		return (
-			<div className="mx-auto max-w-2xl px-4 py-16 text-center">
+			<div className="mx-auto max-w-2xl px-4 py-10 sm:py-16 text-center">
 				<Trophy className="mx-auto h-10 w-10 text-forest-400" />
 				<h1 className="mt-4 text-2xl font-bold">
 					You've already completed this quiz
@@ -157,7 +157,7 @@ function QuizPlayPage() {
 	}
 
 	return (
-		<div className="mx-auto max-w-2xl px-4 py-16">
+		<div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
 			<h1 className="text-3xl font-bold">{quiz.title}</h1>
 			<p className="mt-1 text-sm text-muted-foreground">
 				{formatCategory(quiz.category)}
@@ -304,7 +304,7 @@ function ResultsView({
 	result: QuizSubmitResult;
 }) {
 	return (
-		<div className="mx-auto max-w-2xl px-4 py-16">
+		<div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
 			<div className="text-center">
 				<Trophy className="mx-auto h-10 w-10 text-forest-400" />
 				<h1 className="mt-4 text-3xl font-bold">

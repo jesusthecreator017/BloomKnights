@@ -1,12 +1,18 @@
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import { Search } from "lucide-react";
+import { LocateFixed, Search } from "lucide-react";
 import { useRef, useState } from "react";
+import { LayerPanel, PLACE_COLOR } from "#/components/layer-panel";
 import { LocationDetailPanel } from "#/components/location-detail-panel";
 import { GlassInput } from "#/components/ui/glass-input";
-import { fetchJson } from "#/lib/api-client";
+import {
+	type EnvironmentLayer,
+	useEnvironmentLayers,
+} from "#/hooks/use-environment-layers";
+import { ApiClientError, fetchJson } from "#/lib/api-client";
 import type {
 	PlaceAutocompleteResponse,
 	PlaceDetailsResponse,
+	PlaceKind,
 	PlaceSuggestion,
 } from "#/lib/api-types";
 
@@ -74,11 +80,33 @@ export default function ExplorerMap() {
 	const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
 	const [showSuggestions, setShowSuggestions] = useState(false);
 	const [searchError, setSearchError] = useState<string | null>(null);
+	const [layer, setLayer] = useState<EnvironmentLayer>("air-quality");
+	const [placeKind, setPlaceKind] = useState<PlaceKind>("recycling");
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	const { isLoaded, loadError } = useJsApiLoader({
 		googleMapsApiKey: GOOGLE_MAPS_API_KEY,
 	});
+
+	const layerData = useEnvironmentLayers(center, layer, placeKind);
+
+	function handleLocateMe() {
+		if (!("geolocation" in navigator)) {
+			setSearchError("Geolocation isn't available in this browser.");
+			return;
+		}
+		navigator.geolocation.getCurrentPosition(
+			(pos) => {
+				const point = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+				setCenter(point);
+				setMarker(point);
+				setAddress(undefined);
+				setShowSuggestions(false);
+			},
+			() => setSearchError("Couldn't get your location — check permissions."),
+			{ enableHighAccuracy: true, timeout: 10_000 },
+		);
+	}
 
 	function handleQueryChange(value: string) {
 		setQuery(value);
@@ -98,9 +126,13 @@ export default function ExplorerMap() {
 				);
 				setSuggestions(res.suggestions);
 				setSearchError(null);
-			} catch {
+			} catch (err) {
 				setSuggestions([]);
-				setSearchError("Search isn't available right now.");
+				setSearchError(
+					err instanceof ApiClientError && err.status === 500
+						? "Address search isn't configured yet — click the map instead."
+						: "Search isn't available right now.",
+				);
 			}
 		}, 300);
 	}
@@ -160,10 +192,38 @@ export default function ExplorerMap() {
 				}}
 			>
 				{marker && <Marker position={marker} />}
+
+				{layer === "places" &&
+					layerData.places?.places.map((place) => (
+						<Marker
+							key={place.id}
+							position={{ lat: place.lat, lng: place.lng }}
+							icon={{
+								path: google.maps.SymbolPath.CIRCLE,
+								scale: 7,
+								fillColor: PLACE_COLOR[placeKind],
+								fillOpacity: 1,
+								strokeColor: "#050b16",
+								strokeWeight: 1.5,
+							}}
+						/>
+					))}
 			</GoogleMap>
 
-			<div className="-translate-x-1/2 absolute top-4 left-1/2 z-10 w-[min(26rem,calc(100%-2rem))]">
-				<div className="relative">
+			<LayerPanel
+				layer={layer}
+				onLayerChange={setLayer}
+				placeKind={placeKind}
+				onPlaceKindChange={setPlaceKind}
+				air={layerData.air}
+				uvSolar={layerData.uvSolar}
+				ocean={layerData.ocean}
+				coral={layerData.coral}
+				places={layerData.places}
+			/>
+
+			<div className="-translate-x-1/2 absolute top-4 left-1/2 z-10 flex w-[min(26rem,calc(100%-2rem))] items-start gap-2">
+				<div className="relative flex-1">
 					<Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-white/50" />
 					<GlassInput
 						value={query}
@@ -173,26 +233,37 @@ export default function ExplorerMap() {
 						placeholder="Search an address or click the map…"
 						className="pl-9"
 					/>
-				</div>
 
-				{showSuggestions && (suggestions.length > 0 || searchError) && (
-					<div className="mt-2 overflow-hidden rounded-xl border border-white/20 bg-slate-900/90 shadow-lg backdrop-blur-xl">
-						{searchError ? (
-							<p className="px-4 py-3 text-sm text-red-300">{searchError}</p>
-						) : (
-							suggestions.map((s) => (
-								<button
-									key={s.placeId}
-									type="button"
-									onMouseDown={() => handleSelectSuggestion(s.placeId, s.text)}
-									className="block w-full px-4 py-2.5 text-left text-sm text-white/80 transition hover:bg-white/10"
-								>
-									{s.text}
-								</button>
-							))
-						)}
-					</div>
-				)}
+					{showSuggestions && (suggestions.length > 0 || searchError) && (
+						<div className="absolute top-full right-0 left-0 z-10 mt-2 overflow-hidden rounded-xl border border-white/20 bg-slate-900/90 shadow-lg backdrop-blur-xl">
+							{searchError ? (
+								<p className="px-4 py-3 text-sm text-red-300">{searchError}</p>
+							) : (
+								suggestions.map((s) => (
+									<button
+										key={s.placeId}
+										type="button"
+										onMouseDown={() =>
+											handleSelectSuggestion(s.placeId, s.text)
+										}
+										className="block w-full px-4 py-2.5 text-left text-sm text-white/80 transition hover:bg-white/10"
+									>
+										{s.text}
+									</button>
+								))
+							)}
+						</div>
+					)}
+				</div>
+				<button
+					type="button"
+					onClick={handleLocateMe}
+					title="Use my location"
+					aria-label="Use my location"
+					className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-white/70 shadow-lg backdrop-blur-xl transition hover:bg-white/15 hover:text-white"
+				>
+					<LocateFixed className="h-4 w-4" />
+				</button>
 			</div>
 
 			{marker && (

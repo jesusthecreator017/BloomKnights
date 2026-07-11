@@ -31,7 +31,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "BloomKnights — Grow the Change",
+				title: "Ecoverse — Grow the Change",
 			},
 			{
 				name: "description",
@@ -112,7 +112,7 @@ function RootLayout() {
 				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
 					<Link to="/" className="flex shrink-0 items-center gap-2 font-bold">
 						<Leaf className="h-5 w-5 text-forest-400" />
-						<span className="text-lg tracking-tight">BloomKnights</span>
+						<span className="text-lg tracking-tight">Ecoverse</span>
 					</Link>
 					<nav className="[-ms-overflow-style:none] [scrollbar-width:none] flex flex-1 items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
 						{navLinks.map((link) => (
@@ -142,7 +142,7 @@ function RootLayout() {
 			</main>
 
 			<footer className="relative z-10 border-t border-border py-6 text-center text-sm text-muted-foreground">
-				© 2026 BloomKnights
+				© 2026 Ecoverse
 			</footer>
 		</div>
 	);

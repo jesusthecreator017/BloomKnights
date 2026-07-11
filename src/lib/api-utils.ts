@@ -1,7 +1,7 @@
 import { cached } from "./cache";
 
 // several public APIs (NOAA ERDDAP, OSM Overpass) reject the default fetch UA
-export const USER_AGENT = "BloomKnights/1.0 (hackathon environmental map)";
+export const USER_AGENT = "Ecoverse/1.0 (hackathon environmental map)";
 
 export function jsonError(message: string, status: number): Response {
 	return Response.json({ error: message }, { status });

@@ -1,10 +1,10 @@
-# BloomKnights — Frontend Handoff Prompt
+# Ecoverse — Frontend Handoff Prompt
 
 > Paste everything below to the Claude working on the frontend. It documents the whole app and every API the backend has built so far.
 
 ---
 
-You are the frontend developer on **BloomKnights**, a 12-hour hackathon project for the **"Best Clean Energy Solution"** track. The app raises environmental awareness: it shows the damage of everyday human activity and the clean-energy actions people can take. Your job is to build the React UI that consumes the backend APIs that already exist. **The entire backend is done and running — do not rebuild it. Consume it.**
+You are the frontend developer on **Ecoverse**, a 12-hour hackathon project for the **"Best Clean Energy Solution"** track. The app raises environmental awareness: it shows the damage of everyday human activity and the clean-energy actions people can take. Your job is to build the React UI that consumes the backend APIs that already exist. **The entire backend is done and running — do not rebuild it. Consume it.**
 
 ## Tech stack (already set up — use it, don't swap it)
 

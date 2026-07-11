@@ -1,35 +1,193 @@
+import { eq } from "drizzle-orm";
 import { db } from "./index";
-import { cities, questions, quizzes } from "./schema";
+import {
+	cities,
+	questions,
+	quizAttempts,
+	quizzes,
+	user,
+	userCities,
+} from "./schema";
 
 const seedCities = [
 	// US
-	{ slug: "nyc", name: "New York City", country: "USA" },
-	{ slug: "los-angeles", name: "Los Angeles", country: "USA" },
-	{ slug: "chicago", name: "Chicago", country: "USA" },
-	{ slug: "orlando", name: "Orlando", country: "USA" },
-	{ slug: "san-francisco", name: "San Francisco", country: "USA" },
-	{ slug: "seattle", name: "Seattle", country: "USA" },
-	{ slug: "austin", name: "Austin", country: "USA" },
-	{ slug: "denver", name: "Denver", country: "USA" },
-	{ slug: "miami", name: "Miami", country: "USA" },
-	{ slug: "boston", name: "Boston", country: "USA" },
-	{ slug: "houston", name: "Houston", country: "USA" },
-	{ slug: "atlanta", name: "Atlanta", country: "USA" },
-	{ slug: "portland", name: "Portland", country: "USA" },
-	{ slug: "washington-dc", name: "Washington D.C.", country: "USA" },
+	{
+		slug: "nyc",
+		name: "New York City",
+		country: "USA",
+		lat: 40.7128,
+		lng: -74.006,
+	},
+	{
+		slug: "los-angeles",
+		name: "Los Angeles",
+		country: "USA",
+		lat: 34.0522,
+		lng: -118.2437,
+	},
+	{
+		slug: "chicago",
+		name: "Chicago",
+		country: "USA",
+		lat: 41.8781,
+		lng: -87.6298,
+	},
+	{
+		slug: "orlando",
+		name: "Orlando",
+		country: "USA",
+		lat: 28.5383,
+		lng: -81.3792,
+	},
+	{
+		slug: "san-francisco",
+		name: "San Francisco",
+		country: "USA",
+		lat: 37.7749,
+		lng: -122.4194,
+	},
+	{
+		slug: "seattle",
+		name: "Seattle",
+		country: "USA",
+		lat: 47.6062,
+		lng: -122.3321,
+	},
+	{
+		slug: "austin",
+		name: "Austin",
+		country: "USA",
+		lat: 30.2672,
+		lng: -97.7431,
+	},
+	{
+		slug: "denver",
+		name: "Denver",
+		country: "USA",
+		lat: 39.7392,
+		lng: -104.9903,
+	},
+	{ slug: "miami", name: "Miami", country: "USA", lat: 25.7617, lng: -80.1918 },
+	{
+		slug: "boston",
+		name: "Boston",
+		country: "USA",
+		lat: 42.3601,
+		lng: -71.0589,
+	},
+	{
+		slug: "houston",
+		name: "Houston",
+		country: "USA",
+		lat: 29.7604,
+		lng: -95.3698,
+	},
+	{
+		slug: "atlanta",
+		name: "Atlanta",
+		country: "USA",
+		lat: 33.749,
+		lng: -84.388,
+	},
+	{
+		slug: "portland",
+		name: "Portland",
+		country: "USA",
+		lat: 45.5152,
+		lng: -122.6784,
+	},
+	{
+		slug: "washington-dc",
+		name: "Washington D.C.",
+		country: "USA",
+		lat: 38.9072,
+		lng: -77.0369,
+	},
 	// global
-	{ slug: "london", name: "London", country: "United Kingdom" },
-	{ slug: "tokyo", name: "Tokyo", country: "Japan" },
-	{ slug: "paris", name: "Paris", country: "France" },
-	{ slug: "berlin", name: "Berlin", country: "Germany" },
-	{ slug: "toronto", name: "Toronto", country: "Canada" },
-	{ slug: "sydney", name: "Sydney", country: "Australia" },
-	{ slug: "singapore", name: "Singapore", country: "Singapore" },
-	{ slug: "amsterdam", name: "Amsterdam", country: "Netherlands" },
-	{ slug: "stockholm", name: "Stockholm", country: "Sweden" },
-	{ slug: "dubai", name: "Dubai", country: "United Arab Emirates" },
-	{ slug: "mexico-city", name: "Mexico City", country: "Mexico" },
-	{ slug: "sao-paulo", name: "São Paulo", country: "Brazil" },
+	{
+		slug: "london",
+		name: "London",
+		country: "United Kingdom",
+		lat: 51.5074,
+		lng: -0.1278,
+	},
+	{
+		slug: "tokyo",
+		name: "Tokyo",
+		country: "Japan",
+		lat: 35.6762,
+		lng: 139.6503,
+	},
+	{
+		slug: "paris",
+		name: "Paris",
+		country: "France",
+		lat: 48.8566,
+		lng: 2.3522,
+	},
+	{
+		slug: "berlin",
+		name: "Berlin",
+		country: "Germany",
+		lat: 52.52,
+		lng: 13.405,
+	},
+	{
+		slug: "toronto",
+		name: "Toronto",
+		country: "Canada",
+		lat: 43.6532,
+		lng: -79.3832,
+	},
+	{
+		slug: "sydney",
+		name: "Sydney",
+		country: "Australia",
+		lat: -33.8688,
+		lng: 151.2093,
+	},
+	{
+		slug: "singapore",
+		name: "Singapore",
+		country: "Singapore",
+		lat: 1.3521,
+		lng: 103.8198,
+	},
+	{
+		slug: "amsterdam",
+		name: "Amsterdam",
+		country: "Netherlands",
+		lat: 52.3676,
+		lng: 4.9041,
+	},
+	{
+		slug: "stockholm",
+		name: "Stockholm",
+		country: "Sweden",
+		lat: 59.3293,
+		lng: 18.0686,
+	},
+	{
+		slug: "dubai",
+		name: "Dubai",
+		country: "United Arab Emirates",
+		lat: 25.2048,
+		lng: 55.2708,
+	},
+	{
+		slug: "mexico-city",
+		name: "Mexico City",
+		country: "Mexico",
+		lat: 19.4326,
+		lng: -99.1332,
+	},
+	{
+		slug: "sao-paulo",
+		name: "São Paulo",
+		country: "Brazil",
+		lat: -23.5505,
+		lng: -46.6333,
+	},
 ] as const;
 
 const seedQuizzes = [
@@ -503,11 +661,17 @@ async function seed() {
 			.values(city)
 			.onConflictDoUpdate({
 				target: cities.slug,
-				set: { name: city.name, country: city.country },
+				set: {
+					name: city.name,
+					country: city.country,
+					lat: city.lat,
+					lng: city.lng,
+				},
 			});
 	}
 	console.log(`seeded ${seedCities.length} cities`);
 
+	const quizIdBySlug = new Map<string, number>();
 	for (const quiz of seedQuizzes) {
 		const [inserted] = await db
 			.insert(quizzes)
@@ -517,9 +681,9 @@ async function seed() {
 				set: { title: quiz.title, category: quiz.category },
 			})
 			.returning();
+		quizIdBySlug.set(quiz.slug, inserted.id);
 
 		// re-seed questions idempotently: wipe and reinsert for this quiz
-		const { eq } = await import("drizzle-orm");
 		await db.delete(questions).where(eq(questions.quizId, inserted.id));
 		await db.insert(questions).values(
 			quiz.questions.map((q) => ({
@@ -534,7 +698,109 @@ async function seed() {
 			`seeded quiz: ${quiz.slug} (${quiz.questions.length} questions)`,
 		);
 	}
+
+	await seedDemoActivity(quizIdBySlug);
 	process.exit(0);
+}
+
+const demoUsers = [
+	{
+		id: "demo-ava-chen",
+		name: "Ava Chen (demo)",
+		email: "demo-ava-chen@ecoverse.demo",
+		citySlug: "nyc",
+		attempts: [
+			{ quizSlug: "clean-energy-basics", score: 40 },
+			{ quizSlug: "daily-footprint", score: 30 },
+		],
+	},
+	{
+		id: "demo-marcus-lee",
+		name: "Marcus Lee (demo)",
+		email: "demo-marcus-lee@ecoverse.demo",
+		citySlug: "los-angeles",
+		attempts: [
+			{ quizSlug: "oceans-and-air", score: 50 },
+			{ quizSlug: "us-footprint-deep-dive", score: 20 },
+		],
+	},
+	{
+		id: "demo-priya-patel",
+		name: "Priya Patel (demo)",
+		email: "demo-priya-patel@ecoverse.demo",
+		citySlug: "orlando",
+		attempts: [
+			{ quizSlug: "clean-energy-basics", score: 50 },
+			{ quizSlug: "greenhouse-gas-sources", score: 40 },
+			{ quizSlug: "climate-effects", score: 30 },
+		],
+	},
+	{
+		id: "demo-noah-kim",
+		name: "Noah Kim (demo)",
+		email: "demo-noah-kim@ecoverse.demo",
+		citySlug: "chicago",
+		attempts: [{ quizSlug: "daily-footprint", score: 40 }],
+	},
+	{
+		id: "demo-sofia-rossi",
+		name: "Sofia Rossi (demo)",
+		email: "demo-sofia-rossi@ecoverse.demo",
+		citySlug: "london",
+		attempts: [
+			{ quizSlug: "climate-causes-global", score: 50 },
+			{ quizSlug: "resource-consumption", score: 30 },
+		],
+	},
+	{
+		id: "demo-jamal-carter",
+		name: "Jamal Carter (demo)",
+		email: "demo-jamal-carter@ecoverse.demo",
+		citySlug: "orlando",
+		attempts: [
+			{ quizSlug: "oceans-and-air", score: 30 },
+			{ quizSlug: "daily-footprint", score: 20 },
+		],
+	},
+] as const;
+
+/** Placeholder accounts (name suffixed "(demo)", no login capability) so the leaderboard has activity to show. */
+async function seedDemoActivity(quizIdBySlug: Map<string, number>) {
+	for (const demo of demoUsers) {
+		await db
+			.insert(user)
+			.values({ id: demo.id, name: demo.name, email: demo.email })
+			.onConflictDoNothing({ target: user.id });
+
+		const city = seedCities.find((c) => c.slug === demo.citySlug);
+		if (city) {
+			const [row] = await db
+				.select({ id: cities.id })
+				.from(cities)
+				.where(eq(cities.slug, city.slug));
+			if (row) {
+				await db
+					.insert(userCities)
+					.values({ userId: demo.id, cityId: row.id })
+					.onConflictDoUpdate({
+						target: userCities.userId,
+						set: { cityId: row.id },
+					});
+			}
+		}
+
+		for (const attempt of demo.attempts) {
+			const quizId = quizIdBySlug.get(attempt.quizSlug);
+			if (!quizId) continue;
+			await db
+				.insert(quizAttempts)
+				.values({ userId: demo.id, quizId, score: attempt.score })
+				.onConflictDoNothing({
+					target: [quizAttempts.userId, quizAttempts.quizId],
+				});
+		}
+	}
+	console.log(`seeded ${demoUsers.length} demo users with quiz activity`);
 }
 
 seed().catch((err) => {

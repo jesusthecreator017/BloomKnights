@@ -122,6 +122,33 @@ export interface EcoEvent {
 	lng: number;
 	city: string;
 	url: string;
+	volunteerUrl?: string;
+}
+
+export interface EcoInitiative {
+	id: string;
+	name: string;
+	description: string;
+	category: string;
+	lat: number;
+	lng: number;
+	city: string;
+	website: string;
+	volunteerUrl?: string;
+}
+
+export interface WeatherAlert {
+	id: string;
+	event: string;
+	headline: string;
+	severity: string;
+	areaDesc: string;
+	lat: number;
+	lng: number;
+	effective: string;
+	expires: string;
+	description: string;
+	link: string;
 }
 
 export interface QuizSummary {
@@ -210,4 +237,33 @@ export interface CityDetailResponse {
 
 export interface UserCityResponse {
 	city: City | null;
+}
+
+export interface CityScore {
+	cityId: number;
+	slug: string;
+	name: string;
+	country: string;
+	aqi: number;
+	fetchedAt: string;
+}
+
+export interface CityScoresResponse {
+	scores: CityScore[];
+}
+
+export interface AskGeminiRequest {
+	question: string;
+	context: {
+		kind: "event" | "initiative" | "location";
+		name?: string;
+		description?: string;
+		lat: number;
+		lng: number;
+		liveData?: string;
+	};
+}
+
+export interface AskGeminiResponse {
+	answer: string;
 }

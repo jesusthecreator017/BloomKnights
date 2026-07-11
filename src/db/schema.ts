@@ -1,5 +1,6 @@
 import {
 	boolean,
+	doublePrecision,
 	index,
 	integer,
 	jsonb,
@@ -121,6 +122,8 @@ export const cities = pgTable("cities", {
 	slug: text("slug").notNull().unique(),
 	name: text("name").notNull(),
 	country: text("country").notNull(),
+	lat: doublePrecision("lat"),
+	lng: doublePrecision("lng"),
 });
 
 export const userCities = pgTable(
@@ -144,5 +147,14 @@ export const userCities = pgTable(
 export const emissionsCache = pgTable("emissions_cache", {
 	country: text("country").primaryKey(),
 	data: jsonb("data").notNull(),
+	fetchedAt: timestamp("fetched_at").notNull().defaultNow(),
+});
+
+// live AQI per city, refreshed once/day — backs the leaderboard's "Environmental Score" view
+export const cityEnvironmentScores = pgTable("city_environment_scores", {
+	cityId: integer("city_id")
+		.primaryKey()
+		.references(() => cities.id, { onDelete: "cascade" }),
+	aqi: integer("aqi").notNull(),
 	fetchedAt: timestamp("fetched_at").notNull().defaultNow(),
 });

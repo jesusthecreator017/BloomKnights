@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchJson } from "#/lib/api-client";
-import type { CitiesResponse, UserCityResponse } from "#/lib/api-types";
+import type {
+	CitiesResponse,
+	CityScoresResponse,
+	UserCityResponse,
+} from "#/lib/api-types";
 import { useSession } from "#/lib/auth-client";
 
 /** Shared query key so joining a city can invalidate it. */
@@ -12,6 +16,15 @@ export function useCities() {
 		queryKey: citiesQueryKey(),
 		queryFn: () => fetchJson<CitiesResponse>("/api/cities"),
 		staleTime: 15_000,
+		retry: (count) => count < 2,
+	});
+}
+
+export function useCityScores() {
+	return useQuery({
+		queryKey: ["city-scores"],
+		queryFn: () => fetchJson<CityScoresResponse>("/api/cities/scores"),
+		staleTime: 5 * 60_000,
 		retry: (count) => count < 2,
 	});
 }

@@ -10,6 +10,7 @@ export interface EcoEvent {
 	lng: number;
 	city: string;
 	url: string;
+	volunteerUrl?: string;
 }
 
 export const events: Array<EcoEvent> = rawEvents;

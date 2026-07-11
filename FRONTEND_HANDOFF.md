@@ -166,3 +166,54 @@ Raw endpoints exist under `/api/auth/*` (e.g. `POST /api/auth/sign-up/email`) bu
 - Work on a feature branch off `main` and open a PR (the `api` branch's PR #2 is already green and will be merged).
 
 Ask if any response shape is unclear — but everything above is copied from live responses, so it's accurate as of handoff.
+
+---
+
+# UPDATE — API hardening (2026-07-11)
+
+The backend added caching, rate limiting, and a JSON-only policy. **No response shapes changed** — everything above is still accurate. But there are three behavioral rules your fetch code must follow now.
+
+## 1. The API is JSON-exclusive (new: 406 / 415)
+
+A global middleware guards every `/api/*` route (except `/api/auth/*`, which better-auth owns):
+
+- **Don't send an `Accept` header that excludes JSON.** A normal `fetch()` sends `Accept: */*` which is fine. Just never set `Accept: application/xml` or `text/html` on API calls → you'd get **406**.
+- **Every write (POST/PUT/PATCH) must send `content-type: application/json`.** This means the quiz submit call **must** include that header, or it returns **415** (before it even checks auth):
+
+```ts
+await fetch(`/api/quizzes/${slug}/submit`, {
+  method: "POST",
+  headers: { "content-type": "application/json" }, // REQUIRED now
+  body: JSON.stringify({ answers }),
+});
+```
+If you use a shared fetch/mutation helper, set `content-type: application/json` there once. The better-auth client already does this for auth calls, so sign-in/sign-up are unaffected.
+
+## 2. Rate limiting (new: 429)
+
+Per-IP fixed window:
+- Data + quiz endpoints: **100 requests / minute**
+- Auth endpoints: **20 requests / minute**
+
+Over the limit → **429** with a `Retry-After` header (seconds). What to do:
+- **Debounce map-driven fetches** and keep rounding the map center before using it as a TanStack Query key (the existing `live-map.tsx` already does this) — panning must not fire a request per pixel.
+- **Handle 429 softly**: don't crash the UI. Show a subtle "loading / slow down" state and let TanStack Query retry after the `Retry-After` delay rather than hammering.
+
+```ts
+useQuery({
+  queryKey: ["air-quality", roundedCoords],
+  queryFn: fetchAqi,
+  retry: (count, err) => count < 2,       // don't spam retries
+  staleTime: 5 * 60_000,                    // reuse results, fewer calls
+});
+```
+
+## 3. Server-side caching (transparent — just context)
+
+Identical requests (same rounded coordinates) are cached server-side for a while (weather ~30 min, coral ~6 h, marine-life/places ~24 h) and deduped, so a repeat call returns in ~5ms and costs zero third-party quota. You don't need to do anything — it just means reusing the same rounded coords across components is essentially free. The leaderboard is also cached ~15s and refreshes right after any quiz submit.
+
+## TL;DR for your code
+- Add `content-type: application/json` to the quiz-submit fetch (and any other POST).
+- Never set a non-JSON `Accept` header on `/api/*`.
+- Round map coords for query keys + debounce; handle 429 with a soft retry.
+- Everything else in this doc is unchanged.

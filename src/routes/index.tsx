@@ -77,10 +77,10 @@ const features = [
 	},
 	{
 		icon: ListChecks,
-		title: "Act on it",
+		title: "Resources",
 		description:
 			"Concrete clean-energy actions — community solar, heat pumps, repair over replace — next to live US emissions data for context.",
-		to: "/act" as const,
+		to: "/resources" as const,
 	},
 ] as const;
 
@@ -120,12 +120,8 @@ function Home() {
 							Explore the live map <ArrowRight className="ml-2 h-4 w-4" />
 						</GlassButton>
 					</Link>
-					<Link to="/act">
-						<GlassButton
-							variant="outline"
-							size="lg"
-							className="border-foreground/40 text-foreground hover:border-foreground/60 hover:bg-foreground/10"
-						>
+					<Link to="/resources">
+						<GlassButton variant="outline" size="lg">
 							Start acting today
 						</GlassButton>
 					</Link>

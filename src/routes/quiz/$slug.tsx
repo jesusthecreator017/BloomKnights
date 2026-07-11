@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Trophy, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Trophy, X } from "lucide-react";
 import { useState } from "react";
 import { GlassButton } from "#/components/ui/glass-button";
 import {
@@ -20,7 +20,12 @@ import {
 import { GlassProgress } from "#/components/ui/glass-progress";
 import { leaderboardQueryKey } from "#/hooks/use-leaderboard";
 import { ApiClientError, fetchJson } from "#/lib/api-client";
-import type { QuizDetail, QuizSubmitResult } from "#/lib/api-types";
+import type {
+	CheckAnswerResponse,
+	QuizDetail,
+	QuizQuestion,
+	QuizSubmitResult,
+} from "#/lib/api-types";
 import { formatCategory } from "#/lib/format";
 import { cn } from "#/lib/utils";
 
@@ -32,7 +37,11 @@ function QuizPlayPage() {
 	const { slug } = Route.useParams();
 	const queryClient = useQueryClient();
 
+	const [currentIndex, setCurrentIndex] = useState(0);
 	const [answers, setAnswers] = useState<Record<number, number>>({});
+	const [feedback, setFeedback] = useState<Record<number, CheckAnswerResponse>>(
+		{},
+	);
 	const [result, setResult] = useState<QuizSubmitResult | null>(null);
 	const [alreadyDone, setAlreadyDone] = useState(false);
 	const [showSignInDialog, setShowSignInDialog] = useState(false);
@@ -44,6 +53,18 @@ function QuizPlayPage() {
 	} = useQuery({
 		queryKey: ["quiz", slug],
 		queryFn: () => fetchJson<QuizDetail>(`/api/quizzes/${slug}`),
+	});
+
+	const check = useMutation({
+		mutationFn: (vars: { questionId: number; answer: number }) =>
+			fetchJson<CheckAnswerResponse>(`/api/quizzes/${slug}/check`, {
+				method: "POST",
+				headers: { "content-type": "application/json" },
+				body: JSON.stringify(vars),
+			}),
+		onSuccess: (data, vars) => {
+			setFeedback((prev) => ({ ...prev, [vars.questionId]: data }));
+		},
 	});
 
 	const submit = useMutation({
@@ -122,9 +143,18 @@ function QuizPlayPage() {
 		return <ResultsView quiz={quiz} result={result} />;
 	}
 
-	const answeredCount = Object.keys(answers).length;
+	const answeredCount = Object.keys(feedback).length;
 	const progress = (answeredCount / quiz.questions.length) * 100;
-	const allAnswered = answeredCount === quiz.questions.length;
+	const question = quiz.questions[currentIndex];
+	const questionFeedback = feedback[question.id];
+	const selected = answers[question.id];
+	const isLast = currentIndex === quiz.questions.length - 1;
+
+	function selectChoice(q: QuizQuestion, choiceIndex: number) {
+		if (feedback[q.id]) return; // locked in once checked
+		setAnswers((prev) => ({ ...prev, [q.id]: choiceIndex }));
+		check.mutate({ questionId: q.id, answer: choiceIndex });
+	}
 
 	return (
 		<div className="mx-auto max-w-2xl px-4 py-16">
@@ -136,55 +166,109 @@ function QuizPlayPage() {
 			<div className="mt-6">
 				<GlassProgress value={progress} />
 				<p className="mt-2 text-xs text-muted-foreground">
-					{answeredCount} / {quiz.questions.length} answered
+					Question {currentIndex + 1} of {quiz.questions.length} ·{" "}
+					{answeredCount} answered
 				</p>
 			</div>
 
-			<div className="mt-6 flex flex-col gap-4">
-				{quiz.questions.map((q, i) => (
-					<GlassCard key={q.id} glowEffect={false}>
-						<GlassCardHeader>
-							<GlassCardTitle className="text-base">
-								{i + 1}. {q.prompt}
-							</GlassCardTitle>
-						</GlassCardHeader>
-						<GlassCardContent className="flex flex-col gap-2">
-							{q.choices.map((choice, choiceIndex) => (
-								<label
-									key={choice}
-									className={cn(
-										"flex cursor-pointer items-center gap-3 rounded-xl border border-white/15 px-4 py-2.5 text-sm transition",
-										answers[q.id] === choiceIndex
-											? "border-forest-400/60 bg-forest-500/15"
-											: "hover:bg-white/5",
-									)}
-								>
-									<input
-										type="radio"
-										name={`question-${q.id}`}
-										className="accent-forest-500"
-										checked={answers[q.id] === choiceIndex}
-										onChange={() =>
-											setAnswers((prev) => ({ ...prev, [q.id]: choiceIndex }))
-										}
-									/>
-									{choice}
-								</label>
-							))}
-						</GlassCardContent>
-					</GlassCard>
-				))}
-			</div>
+			<GlassCard key={question.id} glowEffect={false} className="mt-6">
+				<GlassCardHeader>
+					<GlassCardTitle className="text-base">
+						{currentIndex + 1}. {question.prompt}
+					</GlassCardTitle>
+				</GlassCardHeader>
+				<GlassCardContent className="flex flex-col gap-2">
+					{question.choices.map((choice, choiceIndex) => {
+						const isSelected = selected === choiceIndex;
+						const isCorrectChoice =
+							questionFeedback && choiceIndex === questionFeedback.correctIndex;
+						const isWrongSelected =
+							questionFeedback && isSelected && !questionFeedback.correct;
 
-			<GlassButton
-				variant="primary"
-				size="lg"
-				className="mt-6 w-full"
-				disabled={!allAnswered || submit.isPending}
-				onClick={() => submit.mutate()}
-			>
-				{submit.isPending ? "Submitting…" : "Submit answers"}
-			</GlassButton>
+						return (
+							<label
+								key={choice}
+								className={cn(
+									"flex cursor-pointer items-center gap-3 rounded-xl border border-white/15 px-4 py-2.5 text-sm transition",
+									!questionFeedback &&
+										isSelected &&
+										"border-forest-400/60 bg-forest-500/15",
+									!questionFeedback && "hover:bg-white/5",
+									questionFeedback && isCorrectChoice
+										? "border-forest-400/60 bg-forest-500/15"
+										: "",
+									isWrongSelected && "border-red-400/60 bg-red-500/15",
+									questionFeedback && "cursor-default",
+								)}
+							>
+								<input
+									type="radio"
+									name={`question-${question.id}`}
+									className="accent-forest-500"
+									checked={isSelected}
+									disabled={!!questionFeedback}
+									onChange={() => selectChoice(question, choiceIndex)}
+								/>
+								{choice}
+								{questionFeedback && isCorrectChoice && (
+									<Check className="ml-auto h-4 w-4 shrink-0 text-forest-400" />
+								)}
+								{isWrongSelected && (
+									<X className="ml-auto h-4 w-4 shrink-0 text-red-400" />
+								)}
+							</label>
+						);
+					})}
+
+					{questionFeedback && (
+						<div
+							className={cn(
+								"mt-2 rounded-xl border px-4 py-3 text-sm",
+								questionFeedback.correct
+									? "border-forest-400/30 bg-forest-500/10 text-forest-200"
+									: "border-red-400/30 bg-red-500/10 text-red-200",
+							)}
+						>
+							<p className="font-medium">
+								{questionFeedback.correct ? "Correct!" : "Not quite."}
+							</p>
+							<p className="mt-1 text-white/70">
+								{questionFeedback.explanation}
+							</p>
+						</div>
+					)}
+				</GlassCardContent>
+			</GlassCard>
+
+			<div className="mt-6 flex items-center justify-between gap-3">
+				<GlassButton
+					variant="outline"
+					disabled={currentIndex === 0}
+					onClick={() => setCurrentIndex((i) => Math.max(0, i - 1))}
+				>
+					<ChevronLeft className="h-4 w-4" /> Back
+				</GlassButton>
+
+				{isLast ? (
+					<GlassButton
+						variant="primary"
+						disabled={!questionFeedback || submit.isPending}
+						onClick={() => submit.mutate()}
+					>
+						{submit.isPending ? "Submitting…" : "Finish quiz"}
+					</GlassButton>
+				) : (
+					<GlassButton
+						variant="primary"
+						disabled={!questionFeedback}
+						onClick={() =>
+							setCurrentIndex((i) => Math.min(quiz.questions.length - 1, i + 1))
+						}
+					>
+						Next <ChevronRight className="h-4 w-4" />
+					</GlassButton>
+				)}
+			</div>
 
 			<GlassDialog open={showSignInDialog} onOpenChange={setShowSignInDialog}>
 				<GlassDialogContent>

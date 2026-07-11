@@ -56,11 +56,11 @@ export function LayerPanel({
 	const PlaceIcon = PLACE_ICON[placeKind];
 
 	return (
-		<div className="absolute top-4 left-4 z-10 max-w-[calc(100%-2rem)]">
+		<div className="absolute bottom-4 left-4 z-10 flex max-w-[calc(100%-2rem)] flex-col-reverse">
 			<GlassTabs
 				value={layer}
 				onValueChange={(v) => onLayerChange(v as EnvironmentLayer)}
-				className="mb-3"
+				className="mt-3"
 			>
 				<GlassTabsList className="flex-wrap">
 					{ENVIRONMENT_LAYERS.map((l) => (

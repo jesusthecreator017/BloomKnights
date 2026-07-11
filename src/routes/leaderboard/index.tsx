@@ -39,6 +39,7 @@ import type {
 	UserCityResponse,
 } from "#/lib/api-types";
 import { useSession } from "#/lib/auth-client";
+import { aqiColor } from "#/lib/environment-format";
 import { cn } from "#/lib/utils";
 
 export const Route = createFileRoute("/leaderboard/")({
@@ -213,7 +214,15 @@ function ScoreRow({ score, rank }: { score: CityScore; rank: number }) {
 					<p className="font-medium">{score.name}</p>
 					<p className="text-white/50 text-xs">{score.country}</p>
 				</div>
-				<GlassBadge variant="success">AQI {score.aqi}</GlassBadge>
+				<GlassBadge
+					style={{
+						backgroundColor: `${aqiColor(score.aqi)}33`,
+						borderColor: `${aqiColor(score.aqi)}66`,
+						color: aqiColor(score.aqi),
+					}}
+				>
+					AQI {score.aqi}
+				</GlassBadge>
 			</div>
 		</Link>
 	);

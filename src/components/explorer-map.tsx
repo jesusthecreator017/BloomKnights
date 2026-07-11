@@ -1,5 +1,5 @@
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import { LocateFixed, Search } from "lucide-react";
+import { Crosshair, LocateFixed, Search } from "lucide-react";
 import { useRef, useState } from "react";
 import { LayerPanel, PLACE_COLOR } from "#/components/layer-panel";
 import { LocationDetailPanel } from "#/components/location-detail-panel";
@@ -15,6 +15,7 @@ import type {
 	PlaceKind,
 	PlaceSuggestion,
 } from "#/lib/api-types";
+import { cn } from "#/lib/utils";
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
 const DEFAULT_CENTER = { lat: 39.5, lng: -98.35 };
@@ -80,9 +81,11 @@ export default function ExplorerMap() {
 	const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
 	const [showSuggestions, setShowSuggestions] = useState(false);
 	const [searchError, setSearchError] = useState<string | null>(null);
+	const [locating, setLocating] = useState(false);
 	const [layer, setLayer] = useState<EnvironmentLayer>("air-quality");
 	const [placeKind, setPlaceKind] = useState<PlaceKind>("recycling");
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const mapRef = useRef<google.maps.Map | null>(null);
 
 	const { isLoaded, loadError } = useJsApiLoader({
 		googleMapsApiKey: GOOGLE_MAPS_API_KEY,
@@ -90,11 +93,19 @@ export default function ExplorerMap() {
 
 	const layerData = useEnvironmentLayers(center, layer, placeKind);
 
+	function handleSearchHere() {
+		const mapCenter = mapRef.current?.getCenter();
+		if (!mapCenter) return;
+		setCenter({ lat: mapCenter.lat(), lng: mapCenter.lng() });
+	}
+
 	function handleLocateMe() {
 		if (!("geolocation" in navigator)) {
 			setSearchError("Geolocation isn't available in this browser.");
 			return;
 		}
+		setLocating(true);
+		setSearchError(null);
 		navigator.geolocation.getCurrentPosition(
 			(pos) => {
 				const point = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -102,8 +113,12 @@ export default function ExplorerMap() {
 				setMarker(point);
 				setAddress(undefined);
 				setShowSuggestions(false);
+				setLocating(false);
 			},
-			() => setSearchError("Couldn't get your location — check permissions."),
+			() => {
+				setSearchError("Couldn't get your location — check permissions.");
+				setLocating(false);
+			},
 			{ enableHighAccuracy: true, timeout: 10_000 },
 		);
 	}
@@ -180,8 +195,11 @@ export default function ExplorerMap() {
 			<GoogleMap
 				mapContainerStyle={{ width: "100%", height: "100%" }}
 				center={center}
-				zoom={marker ? 16 : 4}
+				zoom={marker ? 13 : 4}
 				onClick={handleMapClick}
+				onLoad={(map) => {
+					mapRef.current = map;
+				}}
 				options={{
 					styles: MAP_STYLE,
 					mapTypeControl: true,
@@ -222,47 +240,68 @@ export default function ExplorerMap() {
 				places={layerData.places}
 			/>
 
-			<div className="-translate-x-1/2 absolute top-4 left-1/2 z-10 flex w-[min(26rem,calc(100%-2rem))] items-start gap-2">
-				<div className="relative flex-1">
-					<Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-white/50" />
-					<GlassInput
-						value={query}
-						onChange={(e) => handleQueryChange(e.target.value)}
-						onFocus={() => setShowSuggestions(true)}
-						onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-						placeholder="Search an address or click the map…"
-						className="pl-9"
-					/>
+			<div className="-translate-x-1/2 absolute top-4 left-1/2 z-10 flex w-[min(26rem,calc(100%-2rem))] flex-col gap-2">
+				<div className="flex items-start gap-2">
+					<div className="relative flex-1">
+						<Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-white/50" />
+						<GlassInput
+							value={query}
+							onChange={(e) => handleQueryChange(e.target.value)}
+							onFocus={() => setShowSuggestions(true)}
+							onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+							placeholder="Search an address or click the map…"
+							className="pl-9"
+						/>
 
-					{showSuggestions && (suggestions.length > 0 || searchError) && (
-						<div className="absolute top-full right-0 left-0 z-10 mt-2 overflow-hidden rounded-xl border border-white/20 bg-slate-900/90 shadow-lg backdrop-blur-xl">
-							{searchError ? (
-								<p className="px-4 py-3 text-sm text-red-300">{searchError}</p>
-							) : (
-								suggestions.map((s) => (
-									<button
-										key={s.placeId}
-										type="button"
-										onMouseDown={() =>
-											handleSelectSuggestion(s.placeId, s.text)
-										}
-										className="block w-full px-4 py-2.5 text-left text-sm text-white/80 transition hover:bg-white/10"
-									>
-										{s.text}
-									</button>
-								))
-							)}
-						</div>
-					)}
+						{showSuggestions && (suggestions.length > 0 || searchError) && (
+							<div className="absolute top-full right-0 left-0 z-10 mt-2 overflow-hidden rounded-xl border border-white/20 bg-slate-900/90 shadow-lg backdrop-blur-xl">
+								{searchError ? (
+									<p className="px-4 py-3 text-sm text-red-300">
+										{searchError}
+									</p>
+								) : (
+									suggestions.map((s) => (
+										<button
+											key={s.placeId}
+											type="button"
+											onMouseDown={() =>
+												handleSelectSuggestion(s.placeId, s.text)
+											}
+											className="block w-full px-4 py-2.5 text-left text-sm text-white/80 transition hover:bg-white/10"
+										>
+											{s.text}
+										</button>
+									))
+								)}
+							</div>
+						)}
+					</div>
+					<button
+						type="button"
+						onClick={handleLocateMe}
+						disabled={locating}
+						title="Use my location"
+						aria-label="Use my location"
+						className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-white/70 shadow-lg backdrop-blur-xl transition hover:bg-white/15 hover:text-white disabled:opacity-60"
+					>
+						<LocateFixed
+							className={cn("h-4 w-4", locating && "animate-pulse")}
+						/>
+					</button>
 				</div>
+
+				{searchError && !showSuggestions && (
+					<p className="self-center rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-red-200 text-xs shadow-lg backdrop-blur-xl">
+						{searchError}
+					</p>
+				)}
+
 				<button
 					type="button"
-					onClick={handleLocateMe}
-					title="Use my location"
-					aria-label="Use my location"
-					className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-white/10 text-white/70 shadow-lg backdrop-blur-xl transition hover:bg-white/15 hover:text-white"
+					onClick={handleSearchHere}
+					className="flex items-center justify-center gap-1.5 self-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-white/80 text-xs shadow-lg backdrop-blur-xl transition hover:bg-white/15 hover:text-white"
 				>
-					<LocateFixed className="h-4 w-4" />
+					<Crosshair className="h-3.5 w-3.5" /> Search here
 				</button>
 			</div>
 

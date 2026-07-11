@@ -54,6 +54,29 @@ export async function getQuizForPlay(db: DB, slug: string) {
 	};
 }
 
+/** Grades a single question without persisting an attempt — powers immediate per-question feedback. */
+export async function checkAnswer(
+	db: DB,
+	slug: string,
+	questionId: number,
+	answerIndex: number,
+) {
+	const [quiz] = await db.select().from(quizzes).where(eq(quizzes.slug, slug));
+	if (!quiz) return null;
+
+	const [question] = await db
+		.select()
+		.from(questions)
+		.where(eq(questions.id, questionId));
+	if (!question || question.quizId !== quiz.id) return null;
+
+	return {
+		correct: answerIndex === question.correctIndex,
+		correctIndex: question.correctIndex,
+		explanation: question.explanation,
+	};
+}
+
 export type SubmitResult =
 	| { status: "not_found" }
 	| { status: "already_attempted" }

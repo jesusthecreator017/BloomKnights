@@ -18,19 +18,21 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
 				<div
 					ref={ref}
 					className={cn(
-						"relative rounded-2xl border border-white/20",
+						"relative overflow-hidden rounded-2xl border border-white/20",
 						// intrinsically dark so the card reads as frosted glass on
 						// both the light and dark app shell, not just a dark one
-						"bg-slate-900/75 backdrop-blur-xl",
+						"bg-slate-900/70 backdrop-blur-2xl transition-shadow duration-300",
 						"shadow-[0_8px_32px_rgba(0,0,0,0.37)]",
 						"before:absolute before:inset-0 before:rounded-2xl",
 						"before:bg-linear-to-b before:from-white/20 before:to-transparent before:pointer-events-none",
 						"after:absolute after:inset-px after:rounded-[calc(1rem-1px)]",
-						"after:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] after:pointer-events-none",
+						"after:shadow-[inset_0_1px_1px_rgba(255,255,255,0.12)] after:pointer-events-none",
 						className,
 					)}
 					{...props}
 				>
+					{/* soft top-left specular highlight for a glassier feel */}
+					<div className="pointer-events-none absolute -top-16 -left-16 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
 					<div className="relative z-10">{children}</div>
 				</div>
 			</div>

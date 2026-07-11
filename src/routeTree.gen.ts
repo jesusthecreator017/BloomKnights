@@ -9,10 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExplorerRouteImport } from './routes/explorer'
-import { Route as ActRouteImport } from './routes/act'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuizIndexRouteImport } from './routes/quiz/index'
 import { Route as LeaderboardIndexRouteImport } from './routes/leaderboard/index'
@@ -41,7 +41,13 @@ import { Route as ApiCitiesScoresRouteImport } from './routes/api/cities/scores'
 import { Route as ApiCitiesSlugRouteImport } from './routes/api/cities/$slug'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiQuizzesSlugSubmitRouteImport } from './routes/api/quizzes/$slug.submit'
+import { Route as ApiQuizzesSlugCheckRouteImport } from './routes/api/quizzes/$slug.check'
 
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapRoute = MapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -55,11 +61,6 @@ const LoginRoute = LoginRouteImport.update({
 const ExplorerRoute = ExplorerRouteImport.update({
   id: '/explorer',
   path: '/explorer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActRoute = ActRouteImport.update({
-  id: '/act',
-  path: '/act',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -202,13 +203,18 @@ const ApiQuizzesSlugSubmitRoute = ApiQuizzesSlugSubmitRouteImport.update({
   path: '/submit',
   getParentRoute: () => ApiQuizzesSlugRoute,
 } as any)
+const ApiQuizzesSlugCheckRoute = ApiQuizzesSlugCheckRouteImport.update({
+  id: '/check',
+  path: '/check',
+  getParentRoute: () => ApiQuizzesSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/act': typeof ActRoute
   '/explorer': typeof ExplorerRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/resources': typeof ResourcesRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
@@ -235,14 +241,15 @@ export interface FileRoutesByFullPath {
   '/api/user/city': typeof ApiUserCityRoute
   '/api/cities/': typeof ApiCitiesIndexRoute
   '/api/quizzes/': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/check': typeof ApiQuizzesSlugCheckRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/act': typeof ActRoute
   '/explorer': typeof ExplorerRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/resources': typeof ResourcesRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
@@ -269,15 +276,16 @@ export interface FileRoutesByTo {
   '/api/user/city': typeof ApiUserCityRoute
   '/api/cities': typeof ApiCitiesIndexRoute
   '/api/quizzes': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/check': typeof ApiQuizzesSlugCheckRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/act': typeof ActRoute
   '/explorer': typeof ExplorerRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/resources': typeof ResourcesRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
@@ -304,16 +312,17 @@ export interface FileRoutesById {
   '/api/user/city': typeof ApiUserCityRoute
   '/api/cities/': typeof ApiCitiesIndexRoute
   '/api/quizzes/': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/check': typeof ApiQuizzesSlugCheckRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/act'
     | '/explorer'
     | '/login'
     | '/map'
+    | '/resources'
     | '/api/air-quality'
     | '/api/coral'
     | '/api/emissions'
@@ -340,14 +349,15 @@ export interface FileRouteTypes {
     | '/api/user/city'
     | '/api/cities/'
     | '/api/quizzes/'
+    | '/api/quizzes/$slug/check'
     | '/api/quizzes/$slug/submit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/act'
     | '/explorer'
     | '/login'
     | '/map'
+    | '/resources'
     | '/api/air-quality'
     | '/api/coral'
     | '/api/emissions'
@@ -374,14 +384,15 @@ export interface FileRouteTypes {
     | '/api/user/city'
     | '/api/cities'
     | '/api/quizzes'
+    | '/api/quizzes/$slug/check'
     | '/api/quizzes/$slug/submit'
   id:
     | '__root__'
     | '/'
-    | '/act'
     | '/explorer'
     | '/login'
     | '/map'
+    | '/resources'
     | '/api/air-quality'
     | '/api/coral'
     | '/api/emissions'
@@ -408,15 +419,16 @@ export interface FileRouteTypes {
     | '/api/user/city'
     | '/api/cities/'
     | '/api/quizzes/'
+    | '/api/quizzes/$slug/check'
     | '/api/quizzes/$slug/submit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ActRoute: typeof ActRoute
   ExplorerRoute: typeof ExplorerRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
+  ResourcesRoute: typeof ResourcesRoute
   ApiAirQualityRoute: typeof ApiAirQualityRoute
   ApiCoralRoute: typeof ApiCoralRoute
   ApiEmissionsRoute: typeof ApiEmissionsRoute
@@ -447,6 +459,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/map': {
       id: '/map'
       path: '/map'
@@ -466,13 +485,6 @@ declare module '@tanstack/react-router' {
       path: '/explorer'
       fullPath: '/explorer'
       preLoaderRoute: typeof ExplorerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/act': {
-      id: '/act'
-      path: '/act'
-      fullPath: '/act'
-      preLoaderRoute: typeof ActRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -671,14 +683,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiQuizzesSlugSubmitRouteImport
       parentRoute: typeof ApiQuizzesSlugRoute
     }
+    '/api/quizzes/$slug/check': {
+      id: '/api/quizzes/$slug/check'
+      path: '/check'
+      fullPath: '/api/quizzes/$slug/check'
+      preLoaderRoute: typeof ApiQuizzesSlugCheckRouteImport
+      parentRoute: typeof ApiQuizzesSlugRoute
+    }
   }
 }
 
 interface ApiQuizzesSlugRouteChildren {
+  ApiQuizzesSlugCheckRoute: typeof ApiQuizzesSlugCheckRoute
   ApiQuizzesSlugSubmitRoute: typeof ApiQuizzesSlugSubmitRoute
 }
 
 const ApiQuizzesSlugRouteChildren: ApiQuizzesSlugRouteChildren = {
+  ApiQuizzesSlugCheckRoute: ApiQuizzesSlugCheckRoute,
   ApiQuizzesSlugSubmitRoute: ApiQuizzesSlugSubmitRoute,
 }
 
@@ -688,10 +709,10 @@ const ApiQuizzesSlugRouteWithChildren = ApiQuizzesSlugRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ActRoute: ActRoute,
   ExplorerRoute: ExplorerRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
+  ResourcesRoute: ResourcesRoute,
   ApiAirQualityRoute: ApiAirQualityRoute,
   ApiCoralRoute: ApiCoralRoute,
   ApiEmissionsRoute: ApiEmissionsRoute,

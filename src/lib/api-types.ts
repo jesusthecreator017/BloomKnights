@@ -193,6 +193,17 @@ export interface QuizSubmitResult {
 	results: QuizResultItem[];
 }
 
+export interface CheckAnswerRequest {
+	questionId: number;
+	answer: number;
+}
+
+export interface CheckAnswerResponse {
+	correct: boolean;
+	correctIndex: number;
+	explanation: string;
+}
+
 export interface ApiErrorBody {
 	error: string;
 }

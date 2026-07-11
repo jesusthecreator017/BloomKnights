@@ -27,6 +27,8 @@ jobs:
           BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
           BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}
           TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}
+          VITE_GOOGLE_MAPS_API_KEY=${{ secrets.VITE_GOOGLE_MAPS_API_KEY }}
+          GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
           EOF
 
       - name: Build and (re)start the stack

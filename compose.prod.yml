@@ -25,6 +25,8 @@ services:
     build:
       context: .
       target: builder
+      args:
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
     env_file: .env
     depends_on:
       db:
@@ -36,6 +38,8 @@ services:
     build:
       context: .
       target: runtime
+      args:
+        VITE_GOOGLE_MAPS_API_KEY: ${VITE_GOOGLE_MAPS_API_KEY}
     env_file: .env
     environment:
       PORT: 3000

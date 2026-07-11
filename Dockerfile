@@ -3,6 +3,8 @@
 # ---- builder: install deps, build the Nitro output, hold source for migrations ----
 FROM oven/bun:1 AS builder
 WORKDIR /app
+ARG VITE_GOOGLE_MAPS_API_KEY
+ENV VITE_GOOGLE_MAPS_API_KEY=$VITE_GOOGLE_MAPS_API_KEY
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 COPY . .

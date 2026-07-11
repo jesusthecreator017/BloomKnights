@@ -14,8 +14,19 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExplorerRouteImport } from './routes/explorer'
 import { Route as ActRouteImport } from './routes/act'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiUvSolarRouteImport } from './routes/api/uv-solar'
+import { Route as ApiPlacesRouteImport } from './routes/api/places'
+import { Route as ApiOceanRouteImport } from './routes/api/ocean'
+import { Route as ApiMarineLifeRouteImport } from './routes/api/marine-life'
+import { Route as ApiLeaderboardRouteImport } from './routes/api/leaderboard'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
+import { Route as ApiEmissionsRouteImport } from './routes/api/emissions'
+import { Route as ApiCoralRouteImport } from './routes/api/coral'
 import { Route as ApiAirQualityRouteImport } from './routes/api/air-quality'
+import { Route as ApiQuizzesIndexRouteImport } from './routes/api/quizzes/index'
+import { Route as ApiQuizzesSlugRouteImport } from './routes/api/quizzes/$slug'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiQuizzesSlugSubmitRouteImport } from './routes/api/quizzes/$slug.submit'
 
 const MapRoute = MapRouteImport.update({
   id: '/map',
@@ -42,15 +53,70 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiUvSolarRoute = ApiUvSolarRouteImport.update({
+  id: '/api/uv-solar',
+  path: '/api/uv-solar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPlacesRoute = ApiPlacesRouteImport.update({
+  id: '/api/places',
+  path: '/api/places',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOceanRoute = ApiOceanRouteImport.update({
+  id: '/api/ocean',
+  path: '/api/ocean',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMarineLifeRoute = ApiMarineLifeRouteImport.update({
+  id: '/api/marine-life',
+  path: '/api/marine-life',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiLeaderboardRoute = ApiLeaderboardRouteImport.update({
+  id: '/api/leaderboard',
+  path: '/api/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiEventsRoute = ApiEventsRouteImport.update({
   id: '/api/events',
   path: '/api/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiEmissionsRoute = ApiEmissionsRouteImport.update({
+  id: '/api/emissions',
+  path: '/api/emissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoralRoute = ApiCoralRouteImport.update({
+  id: '/api/coral',
+  path: '/api/coral',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAirQualityRoute = ApiAirQualityRouteImport.update({
   id: '/api/air-quality',
   path: '/api/air-quality',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuizzesIndexRoute = ApiQuizzesIndexRouteImport.update({
+  id: '/api/quizzes/',
+  path: '/api/quizzes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuizzesSlugRoute = ApiQuizzesSlugRouteImport.update({
+  id: '/api/quizzes/$slug',
+  path: '/api/quizzes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuizzesSlugSubmitRoute = ApiQuizzesSlugSubmitRouteImport.update({
+  id: '/submit',
+  path: '/submit',
+  getParentRoute: () => ApiQuizzesSlugRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -60,7 +126,18 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
+  '/api/coral': typeof ApiCoralRoute
+  '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/leaderboard': typeof ApiLeaderboardRoute
+  '/api/marine-life': typeof ApiMarineLifeRoute
+  '/api/ocean': typeof ApiOceanRoute
+  '/api/places': typeof ApiPlacesRoute
+  '/api/uv-solar': typeof ApiUvSolarRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
+  '/api/quizzes/': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,7 +146,18 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
+  '/api/coral': typeof ApiCoralRoute
+  '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/leaderboard': typeof ApiLeaderboardRoute
+  '/api/marine-life': typeof ApiMarineLifeRoute
+  '/api/ocean': typeof ApiOceanRoute
+  '/api/places': typeof ApiPlacesRoute
+  '/api/uv-solar': typeof ApiUvSolarRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
+  '/api/quizzes': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +167,18 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
+  '/api/coral': typeof ApiCoralRoute
+  '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/leaderboard': typeof ApiLeaderboardRoute
+  '/api/marine-life': typeof ApiMarineLifeRoute
+  '/api/ocean': typeof ApiOceanRoute
+  '/api/places': typeof ApiPlacesRoute
+  '/api/uv-solar': typeof ApiUvSolarRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
+  '/api/quizzes/': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,7 +189,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/api/air-quality'
+    | '/api/coral'
+    | '/api/emissions'
     | '/api/events'
+    | '/api/leaderboard'
+    | '/api/marine-life'
+    | '/api/ocean'
+    | '/api/places'
+    | '/api/uv-solar'
+    | '/api/auth/$'
+    | '/api/quizzes/$slug'
+    | '/api/quizzes/'
+    | '/api/quizzes/$slug/submit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,7 +209,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/api/air-quality'
+    | '/api/coral'
+    | '/api/emissions'
     | '/api/events'
+    | '/api/leaderboard'
+    | '/api/marine-life'
+    | '/api/ocean'
+    | '/api/places'
+    | '/api/uv-solar'
+    | '/api/auth/$'
+    | '/api/quizzes/$slug'
+    | '/api/quizzes'
+    | '/api/quizzes/$slug/submit'
   id:
     | '__root__'
     | '/'
@@ -108,7 +229,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/map'
     | '/api/air-quality'
+    | '/api/coral'
+    | '/api/emissions'
     | '/api/events'
+    | '/api/leaderboard'
+    | '/api/marine-life'
+    | '/api/ocean'
+    | '/api/places'
+    | '/api/uv-solar'
+    | '/api/auth/$'
+    | '/api/quizzes/$slug'
+    | '/api/quizzes/'
+    | '/api/quizzes/$slug/submit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,7 +250,17 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   ApiAirQualityRoute: typeof ApiAirQualityRoute
+  ApiCoralRoute: typeof ApiCoralRoute
+  ApiEmissionsRoute: typeof ApiEmissionsRoute
   ApiEventsRoute: typeof ApiEventsRoute
+  ApiLeaderboardRoute: typeof ApiLeaderboardRoute
+  ApiMarineLifeRoute: typeof ApiMarineLifeRoute
+  ApiOceanRoute: typeof ApiOceanRoute
+  ApiPlacesRoute: typeof ApiPlacesRoute
+  ApiUvSolarRoute: typeof ApiUvSolarRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiQuizzesSlugRoute: typeof ApiQuizzesSlugRouteWithChildren
+  ApiQuizzesIndexRoute: typeof ApiQuizzesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,11 +300,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/uv-solar': {
+      id: '/api/uv-solar'
+      path: '/api/uv-solar'
+      fullPath: '/api/uv-solar'
+      preLoaderRoute: typeof ApiUvSolarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/places': {
+      id: '/api/places'
+      path: '/api/places'
+      fullPath: '/api/places'
+      preLoaderRoute: typeof ApiPlacesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ocean': {
+      id: '/api/ocean'
+      path: '/api/ocean'
+      fullPath: '/api/ocean'
+      preLoaderRoute: typeof ApiOceanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/marine-life': {
+      id: '/api/marine-life'
+      path: '/api/marine-life'
+      fullPath: '/api/marine-life'
+      preLoaderRoute: typeof ApiMarineLifeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/leaderboard': {
+      id: '/api/leaderboard'
+      path: '/api/leaderboard'
+      fullPath: '/api/leaderboard'
+      preLoaderRoute: typeof ApiLeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/events': {
       id: '/api/events'
       path: '/api/events'
       fullPath: '/api/events'
       preLoaderRoute: typeof ApiEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/emissions': {
+      id: '/api/emissions'
+      path: '/api/emissions'
+      fullPath: '/api/emissions'
+      preLoaderRoute: typeof ApiEmissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/coral': {
+      id: '/api/coral'
+      path: '/api/coral'
+      fullPath: '/api/coral'
+      preLoaderRoute: typeof ApiCoralRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/air-quality': {
@@ -172,8 +363,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAirQualityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/quizzes/': {
+      id: '/api/quizzes/'
+      path: '/api/quizzes'
+      fullPath: '/api/quizzes/'
+      preLoaderRoute: typeof ApiQuizzesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quizzes/$slug': {
+      id: '/api/quizzes/$slug'
+      path: '/api/quizzes/$slug'
+      fullPath: '/api/quizzes/$slug'
+      preLoaderRoute: typeof ApiQuizzesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quizzes/$slug/submit': {
+      id: '/api/quizzes/$slug/submit'
+      path: '/submit'
+      fullPath: '/api/quizzes/$slug/submit'
+      preLoaderRoute: typeof ApiQuizzesSlugSubmitRouteImport
+      parentRoute: typeof ApiQuizzesSlugRoute
+    }
   }
 }
+
+interface ApiQuizzesSlugRouteChildren {
+  ApiQuizzesSlugSubmitRoute: typeof ApiQuizzesSlugSubmitRoute
+}
+
+const ApiQuizzesSlugRouteChildren: ApiQuizzesSlugRouteChildren = {
+  ApiQuizzesSlugSubmitRoute: ApiQuizzesSlugSubmitRoute,
+}
+
+const ApiQuizzesSlugRouteWithChildren = ApiQuizzesSlugRoute._addFileChildren(
+  ApiQuizzesSlugRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -182,7 +413,17 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   ApiAirQualityRoute: ApiAirQualityRoute,
+  ApiCoralRoute: ApiCoralRoute,
+  ApiEmissionsRoute: ApiEmissionsRoute,
   ApiEventsRoute: ApiEventsRoute,
+  ApiLeaderboardRoute: ApiLeaderboardRoute,
+  ApiMarineLifeRoute: ApiMarineLifeRoute,
+  ApiOceanRoute: ApiOceanRoute,
+  ApiPlacesRoute: ApiPlacesRoute,
+  ApiUvSolarRoute: ApiUvSolarRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiQuizzesSlugRoute: ApiQuizzesSlugRouteWithChildren,
+  ApiQuizzesIndexRoute: ApiQuizzesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

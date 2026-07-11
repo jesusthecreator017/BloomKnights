@@ -1,3 +1,5 @@
+import { cached } from "./cache";
+
 // several public APIs (NOAA ERDDAP, OSM Overpass) reject the default fetch UA
 export const USER_AGENT = "BloomKnights/1.0 (hackathon environmental map)";
 
@@ -16,25 +18,58 @@ export function parseLatLng(url: URL): { lat: number; lng: number } | null {
 	return { lat, lng };
 }
 
-/** Fetch an upstream API with a timeout; returns the parsed JSON or a Response error to pass through. */
+/** Cache key that groups nearby coordinates (2dp ≈ 1km) into one upstream call. */
+export function geoCacheKey(prefix: string, lat: number, lng: number): string {
+	return `${prefix}:${lat.toFixed(2)},${lng.toFixed(2)}`;
+}
+
+/** Common TTLs in ms. */
+export const TTL = {
+	weather: 30 * 60_000,
+	daily: 6 * 60 * 60_000,
+	rare: 24 * 60 * 60_000,
+} as const;
+
+/** Fetch + parse JSON, throwing on transport error or non-2xx. */
+async function fetchJson(
+	url: string | URL,
+	timeoutMs: number,
+	name: string,
+): Promise<unknown> {
+	const res = await fetch(url, {
+		signal: AbortSignal.timeout(timeoutMs),
+		headers: { "user-agent": USER_AGENT },
+	});
+	if (!res.ok) throw new Error(`${name} responded ${res.status}`);
+	return res.json();
+}
+
+interface FetchOpts {
+	timeoutMs?: number;
+	name?: string;
+	/** When set with ttlMs, identical calls share one cached upstream response. */
+	cacheKey?: string;
+	ttlMs?: number;
+}
+
+/**
+ * Fetch an upstream API; returns the parsed JSON or a Response error to pass
+ * through. With `cacheKey` + `ttlMs`, successful responses are cached in-process
+ * so repeated (and concurrent) requests don't re-hit the third-party API.
+ */
 export async function fetchUpstream(
 	url: string | URL,
-	{ timeoutMs = 10_000, name = "upstream" } = {},
+	{ timeoutMs = 10_000, name = "upstream", cacheKey, ttlMs }: FetchOpts = {},
 ): Promise<{ ok: true; data: unknown } | { ok: false; response: Response }> {
-	let res: Response;
 	try {
-		res = await fetch(url, {
-			signal: AbortSignal.timeout(timeoutMs),
-			headers: { "user-agent": USER_AGENT },
-		});
-	} catch {
-		return { ok: false, response: jsonError(`${name} request failed`, 502) };
+		const data =
+			cacheKey && ttlMs
+				? await cached(cacheKey, ttlMs, () => fetchJson(url, timeoutMs, name))
+				: await fetchJson(url, timeoutMs, name);
+		return { ok: true, data };
+	} catch (err) {
+		const message =
+			err instanceof Error ? err.message : `${name} request failed`;
+		return { ok: false, response: jsonError(message, 502) };
 	}
-	if (!res.ok) {
-		return {
-			ok: false,
-			response: jsonError(`${name} responded ${res.status}`, 502),
-		};
-	}
-	return { ok: true, data: await res.json() };
 }

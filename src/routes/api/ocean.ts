@@ -1,7 +1,13 @@
 // side-effect import: registers the `server` route option types from TanStack Start
 import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
-import { fetchUpstream, jsonError, parseLatLng } from "../../lib/api-utils";
+import {
+	fetchUpstream,
+	geoCacheKey,
+	jsonError,
+	parseLatLng,
+	TTL,
+} from "../../lib/api-utils";
 
 export const Route = createFileRoute("/api/ocean")({
 	server: {
@@ -21,6 +27,8 @@ export const Route = createFileRoute("/api/ocean")({
 
 				const result = await fetchUpstream(upstream, {
 					name: "Open-Meteo Marine",
+					cacheKey: geoCacheKey("ocean", coords.lat, coords.lng),
+					ttlMs: TTL.weather,
 				});
 				if (!result.ok) return result.response;
 				return Response.json(result.data, {

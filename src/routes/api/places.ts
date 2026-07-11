@@ -1,7 +1,14 @@
 // side-effect import: registers the `server` route option types from TanStack Start
 import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
-import { jsonError, parseLatLng, USER_AGENT } from "../../lib/api-utils";
+import {
+	geoCacheKey,
+	jsonError,
+	parseLatLng,
+	TTL,
+	USER_AGENT,
+} from "../../lib/api-utils";
+import { cached } from "../../lib/cache";
 
 // OSM tags per requested kind
 const KIND_QUERY: Record<string, string> = {
@@ -38,23 +45,34 @@ export const Route = createFileRoute("/api/places")({
 				const radius = 15000; // meters
 				const ql = `[out:json][timeout:25];${selector}(around:${radius},${coords.lat},${coords.lng});out body 60;`;
 
-				let res: Response;
+				let data: OverpassResponse;
 				try {
-					res = await fetch("https://overpass-api.de/api/interpreter", {
-						method: "POST",
-						body: `data=${encodeURIComponent(ql)}`,
-						headers: {
-							"content-type": "application/x-www-form-urlencoded",
-							"user-agent": USER_AGENT,
+					data = await cached(
+						`${geoCacheKey("places", coords.lat, coords.lng)}:${kind}`,
+						TTL.rare,
+						async () => {
+							const res = await fetch(
+								"https://overpass-api.de/api/interpreter",
+								{
+									method: "POST",
+									body: `data=${encodeURIComponent(ql)}`,
+									headers: {
+										"content-type": "application/x-www-form-urlencoded",
+										"user-agent": USER_AGENT,
+									},
+									signal: AbortSignal.timeout(30_000),
+								},
+							);
+							if (!res.ok) throw new Error(`Overpass responded ${res.status}`);
+							return res.json() as Promise<OverpassResponse>;
 						},
-						signal: AbortSignal.timeout(30_000),
-					});
-				} catch {
-					return jsonError("Overpass request failed", 502);
+					);
+				} catch (err) {
+					const message =
+						err instanceof Error ? err.message : "Overpass request failed";
+					return jsonError(message, 502);
 				}
-				if (!res.ok) return jsonError(`Overpass responded ${res.status}`, 502);
 
-				const data = (await res.json()) as OverpassResponse;
 				const places = (data.elements ?? []).map((el) => ({
 					id: el.id,
 					name: el.tags?.name ?? `${kind} point`,

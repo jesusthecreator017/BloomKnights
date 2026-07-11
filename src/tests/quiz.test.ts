@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { questions, quizzes, user } from "../db/schema";
+import { clearCache } from "../lib/cache";
 import { getLeaderboard, getQuizForPlay, submitQuiz } from "../lib/quiz";
 import { resetDb, testDb } from "./db";
 
@@ -35,6 +36,7 @@ async function makeQuiz(slug: string) {
 
 beforeEach(async () => {
 	await resetDb();
+	clearCache(); // the leaderboard is cached; isolate each test
 });
 
 describe("getQuizForPlay", () => {

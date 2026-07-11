@@ -102,13 +102,15 @@ Real facilities from OpenStreetMap within ~15km. `kind` defaults to `recycling`;
 
 ## Quiz + leaderboard (gamification)
 
-### `GET /api/quizzes`
+> 🔒 **All user/gamification endpoints now require a signed-in session.** A global middleware returns **401** `{ "error": "sign in required" }` on any `/api/quizzes*`, `/api/leaderboard*`, `/api/user*`, or `/api/cities*` request without a session cookie. Environmental data and `/api/geocode/*` stay public. On 401, prompt sign-in.
+
+### `GET /api/quizzes`  🔒 requires login
 List for a quiz-picker screen. There are 8 curated standard quizzes (`createdBy: null`) plus any Gemini-generated ones (`createdBy: "<userId>"`, `category: "ai-generated"`) — split them client-side on `createdBy`.
 ```json
 [ { "slug": "daily-footprint", "title": "Your Daily Footprint", "category": "awareness", "createdBy": null, "questionCount": 5, "totalPoints": 50 }, ... ]
 ```
 
-### `GET /api/quizzes/:slug`
+### `GET /api/quizzes/:slug`  🔒 requires login
 Questions to render — **no answer key is sent** (grading is server-side).
 ```json
 { "slug": "daily-footprint", "title": "...", "category": "awareness",
@@ -126,8 +128,8 @@ Body: `{ "answers": number[] }` — the chosen choice index per question, in que
 ```
 Status codes to handle: **401** not logged in → prompt sign-in; **409** already completed this quiz (one attempt per user per quiz — disable the button / show "already done"); **400** malformed body; **404** unknown quiz.
 
-### `GET /api/leaderboard?limit=20`
-Top users globally plus the current user's own rank (`me` is `null` if logged out or no attempts).
+### `GET /api/leaderboard?limit=20`  🔒 requires login
+Top users globally plus the current user's own rank (`me` is `null` if no attempts yet).
 ```json
 { "entries": [ { "rank": 1, "userId": "...", "name": "Demo", "points": 30, "quizzesTaken": 1 }, ... ],
   "me": { "rank": 1, "userId": "...", "name": "Demo", "points": 30, "quizzesTaken": 1 } }
@@ -157,13 +159,15 @@ Resolves a `placeId` (from the autocomplete response) to coordinates. Same error
 
 ## Cities (city-vs-city leaderboard)
 
-### `GET /api/cities`
+> 🔒 All `/api/cities*` endpoints require login (401 without a session), same as quizzes/leaderboard.
+
+### `GET /api/cities`  🔒 requires login
 All 26 seeded cities (14 US + 12 global), ranked by the combined quiz score of everyone who's joined them.
 ```json
 { "cities": [ { "rank": 1, "slug": "nyc", "name": "New York City", "country": "USA", "points": 120, "memberCount": 4 }, ... ] }
 ```
 
-### `GET /api/cities/:slug?limit=20`
+### `GET /api/cities/:slug?limit=20`  🔒 requires login
 One city's individual leaderboard (same shape as `/api/leaderboard`, scoped to that city's members) plus city info. 404 on an unknown slug.
 ```json
 { "city": { "slug": "nyc", "name": "New York City", "country": "USA" },

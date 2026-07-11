@@ -1,16 +1,26 @@
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, HandHeart, MapPin } from "lucide-react";
-import { useState } from "react";
+import { AlertTriangle, HandHeart, MapPin, Search } from "lucide-react";
+import type { LngLatBounds } from "maplibre-gl";
+import { useRef, useState } from "react";
+import type { MapRef } from "react-map-gl/maplibre";
 import { Map as MapGL, Marker } from "react-map-gl/maplibre";
 import type { MapSelection } from "#/components/map-detail-dialog";
 import { MapDetailDialog } from "#/components/map-detail-dialog";
-import { fetchJson } from "#/lib/api-client";
-import type { EcoInitiative, WeatherAlert } from "#/lib/api-types";
+import { GlassInput } from "#/components/ui/glass-input";
+import { ApiClientError, fetchJson, roundCoord } from "#/lib/api-client";
+import type {
+	EcoInitiative,
+	PlaceAutocompleteResponse,
+	PlaceDetailsResponse,
+	PlaceSuggestion,
+	WeatherAlert,
+} from "#/lib/api-types";
 import type { EcoEvent } from "#/lib/events";
 import { cn } from "#/lib/utils";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const MAP_STYLE = "https://tiles.openfreemap.org/styles/dark";
+const DEFAULT_CENTER = { lat: 39.5, lng: -98.35 };
 
 type MapLayer = "events" | "initiatives" | "alerts";
 
@@ -30,6 +40,8 @@ const categoryColors: Record<string, string> = {
 	advocacy: "#a78bfa",
 	government: "#38bdf8",
 	conservation: "#34d399",
+	nonprofit: "#a78bfa",
+	organization: "#38bdf8",
 };
 
 const SEVERITY_COLOR: Record<string, string> = {
@@ -39,21 +51,94 @@ const SEVERITY_COLOR: Record<string, string> = {
 	Minor: "#facc15",
 };
 
+/**
+ * Spreads out markers that land on (near-)identical coordinates into a small
+ * ring so co-located live results are readable instead of stacked into one pin.
+ * Purely a render-time transform — never mutates the fetched data.
+ */
+function declutter<T extends { lat: number; lng: number }>(items: T[]): T[] {
+	const groups = new Map<string, T[]>();
+	for (const item of items) {
+		const key = `${item.lat.toFixed(3)},${item.lng.toFixed(3)}`;
+		const group = groups.get(key);
+		if (group) group.push(item);
+		else groups.set(key, [item]);
+	}
+
+	const out: T[] = [];
+	for (const group of groups.values()) {
+		if (group.length === 1) {
+			out.push(group[0]);
+			continue;
+		}
+		const radiusDeg = 0.015; // ~1.5km spread at the equator
+		for (const [i, item] of group.entries()) {
+			const angle = (2 * Math.PI * i) / group.length;
+			const latOffset = radiusDeg * Math.sin(angle);
+			const lngOffset =
+				(radiusDeg * Math.cos(angle)) /
+				Math.cos((item.lat * Math.PI) / 180 || 1);
+			out.push({
+				...item,
+				lat: item.lat + latOffset,
+				lng: item.lng + lngOffset,
+			});
+		}
+	}
+	return out;
+}
+
 export default function LiveMap() {
 	const [selected, setSelected] = useState<MapSelection | null>(null);
 	const [visibleLayers, setVisibleLayers] = useState<Set<MapLayer>>(
 		new Set(["events", "initiatives", "alerts"]),
 	);
 	const [sidebarOpen, setSidebarOpen] = useState(true);
+	const mapRef = useRef<MapRef | null>(null);
+	const [bounds, setBounds] = useState<LngLatBounds | null>(null);
+	const [dataCenter, setDataCenter] = useState(DEFAULT_CENTER);
 
-	const { data: events } = useQuery({
-		queryKey: ["events"],
-		queryFn: () => fetchJson<EcoEvent[]>("/api/events"),
+	const [query, setQuery] = useState("");
+	const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
+	const [showSuggestions, setShowSuggestions] = useState(false);
+	const [searchError, setSearchError] = useState<string | null>(null);
+	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	function syncBounds() {
+		const map = mapRef.current?.getMap();
+		const b = map?.getBounds();
+		if (b) setBounds(b);
+		const center = map?.getCenter();
+		if (center) {
+			setDataCenter({
+				lat: roundCoord(center.lat),
+				lng: roundCoord(center.lng),
+			});
+		}
+	}
+
+	const {
+		data: events,
+		isLoading: eventsLoading,
+		isFetching: eventsFetching,
+	} = useQuery({
+		queryKey: ["events", dataCenter],
+		queryFn: () =>
+			fetchJson<EcoEvent[]>(
+				`/api/events?lat=${dataCenter.lat}&lng=${dataCenter.lng}`,
+			),
+		staleTime: 5 * 60_000,
+		retry: (count) => count < 2,
 	});
 
-	const { data: initiatives } = useQuery({
-		queryKey: ["initiatives"],
-		queryFn: () => fetchJson<EcoInitiative[]>("/api/initiatives"),
+	const { data: initiatives, isFetching: initiativesFetching } = useQuery({
+		queryKey: ["initiatives", dataCenter],
+		queryFn: () =>
+			fetchJson<EcoInitiative[]>(
+				`/api/initiatives?lat=${dataCenter.lat}&lng=${dataCenter.lng}`,
+			),
+		staleTime: 5 * 60_000,
+		retry: (count) => count < 2,
 	});
 
 	const { data: alerts } = useQuery({
@@ -71,15 +156,84 @@ export default function LiveMap() {
 		});
 	}
 
+	function handleQueryChange(value: string) {
+		setQuery(value);
+		setShowSuggestions(true);
+		if (debounceRef.current) clearTimeout(debounceRef.current);
+
+		if (value.trim().length < 3) {
+			setSuggestions([]);
+			setSearchError(null);
+			return;
+		}
+
+		debounceRef.current = setTimeout(async () => {
+			try {
+				const res = await fetchJson<PlaceAutocompleteResponse>(
+					`/api/geocode/autocomplete?input=${encodeURIComponent(value)}`,
+				);
+				setSuggestions(res.suggestions);
+				setSearchError(null);
+			} catch (err) {
+				setSuggestions([]);
+				setSearchError(
+					err instanceof ApiClientError && err.status === 500
+						? "Area search isn't configured yet."
+						: "Search isn't available right now.",
+				);
+			}
+		}, 300);
+	}
+
+	async function handleSelectSuggestion(placeId: string, text: string) {
+		setShowSuggestions(false);
+		setQuery(text);
+		try {
+			const place = await fetchJson<PlaceDetailsResponse>(
+				`/api/geocode/place?id=${encodeURIComponent(placeId)}`,
+			);
+			const point = { lat: roundCoord(place.lat), lng: roundCoord(place.lng) };
+			setDataCenter(point);
+			mapRef.current?.getMap().flyTo({
+				center: [place.lng, place.lat],
+				zoom: 9,
+				duration: 1200,
+			});
+		} catch {
+			setSearchError("Couldn't look up that place — try again.");
+		}
+	}
+
+	const scatteredEvents = declutter(events ?? []);
+	const scatteredInitiatives = declutter(initiatives ?? []);
+	const scatteredAlerts = declutter(alerts ?? []);
+
+	const visibleEvents = bounds
+		? scatteredEvents.filter((e) => bounds.contains([e.lng, e.lat]))
+		: scatteredEvents;
+	const visibleInitiatives = bounds
+		? scatteredInitiatives.filter((i) => bounds.contains([i.lng, i.lat]))
+		: scatteredInitiatives;
+	const visibleAlerts = bounds
+		? scatteredAlerts.filter((a) => bounds.contains([a.lng, a.lat]))
+		: scatteredAlerts;
+
 	return (
 		<div className="relative h-full w-full">
 			<MapGL
-				initialViewState={{ latitude: 39.5, longitude: -98.35, zoom: 3.5 }}
+				ref={mapRef}
+				initialViewState={{
+					latitude: DEFAULT_CENTER.lat,
+					longitude: DEFAULT_CENTER.lng,
+					zoom: 3.5,
+				}}
 				mapStyle={MAP_STYLE}
 				style={{ width: "100%", height: "100%" }}
+				onLoad={syncBounds}
+				onMoveEnd={syncBounds}
 			>
 				{visibleLayers.has("events") &&
-					events?.map((event) => (
+					scatteredEvents.map((event) => (
 						<Marker
 							key={event.id}
 							latitude={event.lat}
@@ -99,7 +253,7 @@ export default function LiveMap() {
 					))}
 
 				{visibleLayers.has("initiatives") &&
-					initiatives?.map((initiative) => (
+					scatteredInitiatives.map((initiative) => (
 						<Marker
 							key={initiative.id}
 							latitude={initiative.lat}
@@ -121,7 +275,7 @@ export default function LiveMap() {
 					))}
 
 				{visibleLayers.has("alerts") &&
-					alerts?.map((alert) => (
+					scatteredAlerts.map((alert) => (
 						<Marker
 							key={alert.id}
 							latitude={alert.lat}
@@ -154,8 +308,42 @@ export default function LiveMap() {
 				</button>
 
 				{sidebarOpen && (
-					<div className="w-64 max-w-full rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl">
-						<p className="text-sm text-white/70">Map layers</p>
+					<div className="w-72 max-w-full rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl">
+						<div className="relative">
+							<Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-white/50" />
+							<GlassInput
+								value={query}
+								onChange={(e) => handleQueryChange(e.target.value)}
+								onFocus={() => setShowSuggestions(true)}
+								onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+								placeholder="Search a city, state, or country…"
+								className="pl-9 text-sm"
+							/>
+							{showSuggestions && (suggestions.length > 0 || searchError) && (
+								<div className="absolute top-full right-0 left-0 z-10 mt-2 overflow-hidden rounded-xl border border-white/20 bg-slate-900/90 shadow-lg backdrop-blur-xl">
+									{searchError ? (
+										<p className="px-4 py-3 text-sm text-red-300">
+											{searchError}
+										</p>
+									) : (
+										suggestions.map((s) => (
+											<button
+												key={s.placeId}
+												type="button"
+												onMouseDown={() =>
+													handleSelectSuggestion(s.placeId, s.text)
+												}
+												className="block w-full px-4 py-2.5 text-left text-sm text-white/80 transition hover:bg-white/10"
+											>
+												{s.text}
+											</button>
+										))
+									)}
+								</div>
+							)}
+						</div>
+
+						<p className="mt-3 text-sm text-white/70">Map layers</p>
 						<div className="mt-3 flex flex-col gap-2">
 							{MAP_LAYERS.map((l) => (
 								<label
@@ -175,9 +363,17 @@ export default function LiveMap() {
 								</label>
 							))}
 						</div>
-						<p className="mt-3 text-[11px] text-white/40">
-							{events?.length ?? 0} events · {initiatives?.length ?? 0}{" "}
-							initiatives · {alerts?.length ?? 0} active alerts
+
+						{(eventsLoading || eventsFetching || initiativesFetching) && (
+							<p className="mt-3 text-[11px] text-forest-300">
+								Searching this area for live events & initiatives…
+							</p>
+						)}
+						<p className="mt-2 text-[11px] text-white/40">
+							In view: {visibleEvents.length} of {scatteredEvents.length} events
+							· {visibleInitiatives.length} of {scatteredInitiatives.length}{" "}
+							initiatives · {visibleAlerts.length} of {scatteredAlerts.length}{" "}
+							active alerts
 						</p>
 					</div>
 				)}

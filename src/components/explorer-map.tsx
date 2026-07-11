@@ -1,8 +1,8 @@
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { useQuery } from "@tanstack/react-query";
 import { Crosshair, LocateFixed, Search } from "lucide-react";
 import { useRef, useState } from "react";
 import { LayerPanel, PLACE_COLOR } from "#/components/layer-panel";
-import { LocationDetailPanel } from "#/components/location-detail-panel";
 import { GlassInput } from "#/components/ui/glass-input";
 import {
 	type EnvironmentLayer,
@@ -10,6 +10,7 @@ import {
 } from "#/hooks/use-environment-layers";
 import { ApiClientError, fetchJson } from "#/lib/api-client";
 import type {
+	MarineLifeResponse,
 	PlaceAutocompleteResponse,
 	PlaceDetailsResponse,
 	PlaceKind,
@@ -91,7 +92,16 @@ export default function ExplorerMap() {
 		googleMapsApiKey: GOOGLE_MAPS_API_KEY,
 	});
 
-	const layerData = useEnvironmentLayers(center, layer, placeKind);
+	const activePoint = marker ?? center;
+	const layerData = useEnvironmentLayers(activePoint, layer, placeKind);
+	const { data: marineLife } = useQuery({
+		queryKey: ["marine-life", activePoint],
+		queryFn: () =>
+			fetchJson<MarineLifeResponse>(
+				`/api/marine-life?lat=${activePoint.lat}&lng=${activePoint.lng}`,
+			),
+		enabled: layer === "ocean-coral",
+	});
 
 	function handleSearchHere() {
 		const mapCenter = mapRef.current?.getCenter();
@@ -172,8 +182,14 @@ export default function ExplorerMap() {
 		const lng = e.latLng?.lng();
 		if (lat == null || lng == null) return;
 		setMarker({ lat, lng });
+		setCenter({ lat, lng });
 		setAddress(undefined);
 		setShowSuggestions(false);
+	}
+
+	function clearSelection() {
+		setMarker(null);
+		setAddress(undefined);
 	}
 
 	if (!GOOGLE_MAPS_API_KEY) {
@@ -238,6 +254,19 @@ export default function ExplorerMap() {
 				ocean={layerData.ocean}
 				coral={layerData.coral}
 				places={layerData.places}
+				marineLife={marineLife}
+				title={marker ? (address ?? "Selected location") : undefined}
+				onClearSelection={marker ? clearSelection : undefined}
+				askContext={{
+					kind: "location",
+					name: address,
+					lat: activePoint.lat,
+					lng: activePoint.lng,
+					liveData:
+						layerData.air?.current?.us_aqi != null
+							? `AQI ${layerData.air.current.us_aqi}`
+							: undefined,
+				}}
 			/>
 
 			<div className="-translate-x-1/2 absolute top-4 left-1/2 z-10 flex w-[min(26rem,calc(100%-2rem))] flex-col gap-2">
@@ -304,15 +333,6 @@ export default function ExplorerMap() {
 					<Crosshair className="h-3.5 w-3.5" /> Search here
 				</button>
 			</div>
-
-			{marker && (
-				<LocationDetailPanel
-					lat={marker.lat}
-					lng={marker.lng}
-					address={address}
-					onClose={() => setMarker(null)}
-				/>
-			)}
 		</div>
 	);
 }

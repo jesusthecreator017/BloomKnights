@@ -41,5 +41,205 @@
 		"city": "Orlando, FL",
 		"website": "https://www.orangecountyfl.net/Environment/EnvironmentalVolunteerOpportunities.aspx",
 		"volunteerUrl": "https://www.orangecountyfl.net/Environment/EnvironmentalVolunteerOpportunities.aspx"
+	},
+	{
+		"id": "southface-institute-atlanta",
+		"name": "Southface Institute",
+		"description": "Atlanta-based nonprofit advancing sustainable homes and buildings through green building education, weatherization training, and energy-efficiency retrofits across the Southeast.",
+		"category": "clean-energy",
+		"lat": 33.755,
+		"lng": -84.3733,
+		"city": "Atlanta, GA",
+		"website": "https://southface.org"
+	},
+	{
+		"id": "fresh-energy-minneapolis",
+		"name": "Fresh Energy",
+		"description": "Minnesota clean-energy policy nonprofit working on community solar gardens, grid modernization, and the state's transition off coal.",
+		"category": "advocacy",
+		"lat": 44.9537,
+		"lng": -93.09,
+		"city": "Minneapolis, MN",
+		"website": "https://fresh-energy.org"
+	},
+	{
+		"id": "vote-solar-dc",
+		"name": "Vote Solar",
+		"description": "National advocacy nonprofit pushing state-level policy to expand rooftop and community solar access, with active campaigns nationwide including in Washington, D.C.",
+		"category": "advocacy",
+		"lat": 38.9072,
+		"lng": -77.0369,
+		"city": "Washington, DC",
+		"website": "https://votesolar.org"
+	},
+	{
+		"id": "solar-oregon-portland",
+		"name": "Solar Oregon",
+		"description": "Volunteer-powered nonprofit that has educated Oregonians about solar energy and connected homeowners to community solar co-ops since 1998.",
+		"category": "clean-energy",
+		"lat": 45.5152,
+		"lng": -122.6784,
+		"city": "Portland, OR",
+		"website": "https://www.solaroregon.org"
+	},
+	{
+		"id": "amdee-mexico",
+		"name": "AMDEE — Asociación Mexicana de Energía Eólica",
+		"description": "Mexico's wind-energy industry association, promoting wind project development and representing the sector before regulators and the public since 2005.",
+		"category": "clean-energy",
+		"lat": 19.4326,
+		"lng": -99.1332,
+		"city": "Mexico City, Mexico",
+		"website": "https://amdee.org/en/"
+	},
+	{
+		"id": "taf-toronto",
+		"name": "The Atmospheric Fund (TAF)",
+		"description": "Toronto-based climate agency funding community energy retrofits, low-carbon transportation, and building-efficiency projects across the Greater Toronto Area.",
+		"category": "clean-energy",
+		"lat": 43.6532,
+		"lng": -79.3832,
+		"city": "Toronto, Canada",
+		"website": "https://taf.ca"
+	},
+	{
+		"id": "1010-climate-action-london",
+		"name": "10:10 Climate Action",
+		"description": "UK climate charity that helped pioneer the community energy movement, backing local renewable projects and campaigning for a fair, fast transition to clean power.",
+		"category": "advocacy",
+		"lat": 51.5072,
+		"lng": -0.1276,
+		"city": "London, UK",
+		"website": "https://1010uk.org"
+	},
+	{
+		"id": "community-energy-england-london",
+		"name": "Community Energy England",
+		"description": "The voice of the UK's community energy sector, supporting hundreds of local groups running renewable generation and Community Energy Fortnight each year.",
+		"category": "advocacy",
+		"lat": 51.5155,
+		"lng": -0.0922,
+		"city": "London, UK",
+		"website": "https://communityenergyengland.org/"
+	},
+	{
+		"id": "wwf-brasil-sao-paulo",
+		"name": "WWF-Brasil",
+		"description": "Brazilian branch of WWF working on Amazon conservation, renewable energy policy, and reducing the country's carbon footprint.",
+		"category": "conservation",
+		"lat": -23.5505,
+		"lng": -46.6333,
+		"city": "São Paulo, Brazil",
+		"website": "https://www.wwf.org.br"
+	},
+	{
+		"id": "ekos-brasil-sao-paulo",
+		"name": "Instituto Ekos Brasil",
+		"description": "Reforestation and ecosystem-regeneration institute running native tree-planting projects and biodiversity programs across Brazil.",
+		"category": "restoration",
+		"lat": -23.5613,
+		"lng": -46.6565,
+		"city": "São Paulo, Brazil",
+		"website": "https://www.ekosbrasil.org/"
+	},
+	{
+		"id": "vida-silvestre-buenos-aires",
+		"name": "Fundación Vida Silvestre Argentina",
+		"description": "Argentina's WWF-affiliated conservation foundation, working on renewable energy policy, reforestation, and protecting native ecosystems.",
+		"category": "conservation",
+		"lat": -34.6037,
+		"lng": -58.3816,
+		"city": "Buenos Aires, Argentina",
+		"website": "https://www.vidasilvestre.org.ar"
+	},
+	{
+		"id": "cader-buenos-aires",
+		"name": "CADER — Cámara Argentina de Energías Renovables",
+		"description": "Argentina's renewable energy industry chamber, coordinating solar and wind project development between the public and private sectors.",
+		"category": "clean-energy",
+		"lat": -34.5997,
+		"lng": -58.3731,
+		"city": "Buenos Aires, Argentina",
+		"website": "https://www.cader.org.ar/?lang=en"
+	},
+	{
+		"id": "rean-lagos",
+		"name": "Renewable Energy Association of Nigeria (REAN)",
+		"description": "Nigeria's renewable energy industry association, working toward 40% renewables in the national energy mix by 2030.",
+		"category": "clean-energy",
+		"lat": 6.5244,
+		"lng": 3.3792,
+		"city": "Lagos, Nigeria",
+		"website": "https://rean.org.ng/"
+	},
+	{
+		"id": "all-on-lagos",
+		"name": "All On",
+		"description": "Shell Foundation-backed impact investor expanding off-grid solar and clean-cooking access across underserved communities in Nigeria.",
+		"category": "clean-energy",
+		"lat": 6.4531,
+		"lng": 3.3958,
+		"city": "Lagos, Nigeria",
+		"website": "https://www.all-on.com/"
+	},
+	{
+		"id": "fundacion-renovables-madrid",
+		"name": "Fundación Renovables",
+		"description": "Spanish foundation advocating for a 100% renewable energy model and energy efficiency in buildings and transport.",
+		"category": "advocacy",
+		"lat": 40.4168,
+		"lng": -3.7038,
+		"city": "Madrid, Spain",
+		"website": "https://fundacionrenovables.org"
+	},
+	{
+		"id": "ceew-new-delhi",
+		"name": "Council on Energy, Environment and Water (CEEW)",
+		"description": "One of Asia's leading policy research institutions, shaping India's renewable energy, climate, and clean-air policy.",
+		"category": "advocacy",
+		"lat": 28.6139,
+		"lng": 77.209,
+		"city": "New Delhi, India",
+		"website": "https://www.ceew.in"
+	},
+	{
+		"id": "selco-foundation-india",
+		"name": "SELCO Foundation",
+		"description": "Nonprofit deploying decentralized solar energy solutions to underserved communities across India, linking clean energy to healthcare and education access.",
+		"category": "clean-energy",
+		"lat": 28.5921,
+		"lng": 77.2192,
+		"city": "New Delhi, India",
+		"website": "https://selcofoundation.org/"
+	},
+	{
+		"id": "skolkovo-energy-moscow",
+		"name": "SKOLKOVO Energy Centre",
+		"description": "Independent research center studying Russia's energy sector and promoting energy-efficiency technologies for industry and housing.",
+		"category": "clean-energy",
+		"lat": 55.7558,
+		"lng": 37.6173,
+		"city": "Moscow, Russia",
+		"website": "https://energy.skolkovo.ru/en/senec/"
+	},
+	{
+		"id": "clean-energy-council-sydney",
+		"name": "Clean Energy Council",
+		"description": "Australia's peak clean-energy industry body, representing solar, wind, and battery-storage businesses and advocating for renewable jobs.",
+		"category": "clean-energy",
+		"lat": -33.8688,
+		"lng": 151.2093,
+		"city": "Sydney, Australia",
+		"website": "https://cleanenergycouncil.org.au"
+	},
+	{
+		"id": "icsc-manila",
+		"name": "Institute for Climate and Sustainable Cities (iCSC)",
+		"description": "Philippine think tank advancing renewable energy roadmaps and climate-resilient development for cities across the country.",
+		"category": "advocacy",
+		"lat": 14.5995,
+		"lng": 120.9842,
+		"city": "Manila, Philippines",
+		"website": "https://icsc.ngo/"
 	}
 ]

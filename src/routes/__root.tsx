@@ -6,7 +6,16 @@ import {
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
-import { Leaf, LogOut } from "lucide-react";
+import {
+	ClipboardList,
+	Compass,
+	Home,
+	Leaf,
+	ListChecks,
+	LogOut,
+	MapPinned,
+	Trophy,
+} from "lucide-react";
 import { ThemeToggle } from "#/components/theme-toggle";
 import { GlassButton } from "#/components/ui/glass-button";
 import { useLeaderboard } from "#/hooks/use-leaderboard";
@@ -48,12 +57,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 const navLinks = [
-	{ to: "/", label: "Home" },
-	{ to: "/map", label: "Map" },
-	{ to: "/explorer", label: "Explorer" },
-	{ to: "/resources", label: "Resources" },
-	{ to: "/quiz", label: "Quiz" },
-	{ to: "/leaderboard", label: "Leaderboard" },
+	{ to: "/", label: "Home", icon: Home },
+	{ to: "/map", label: "Map", icon: MapPinned },
+	{ to: "/explorer", label: "Explorer", icon: Compass },
+	{ to: "/resources", label: "Resources", icon: ListChecks },
+	{ to: "/quiz", label: "Quiz", icon: ClipboardList },
+	{ to: "/leaderboard", label: "Leaderboard", icon: Trophy },
 ] as const;
 
 function AuthNav() {
@@ -119,13 +128,14 @@ function RootLayout() {
 							<Link
 								key={link.to}
 								to={link.to}
-								className="shrink-0 rounded-full px-4 py-1.5 text-sm text-foreground/70 transition hover:bg-foreground/10 hover:text-foreground"
+								className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm text-foreground/70 transition hover:bg-foreground/10 hover:text-foreground"
 								activeProps={{
 									className:
-										"shrink-0 rounded-full px-4 py-1.5 text-sm bg-foreground/10 text-foreground",
+										"flex shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm bg-foreground/10 text-foreground",
 								}}
 								activeOptions={{ exact: link.to === "/" }}
 							>
+								<link.icon className="h-3.5 w-3.5" />
 								{link.label}
 							</Link>
 						))}

@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
-import { ENVIRONMENT_FACTS } from "./environment-facts";
+import { getEnvironmentFacts } from "./environment-facts";
+import { type EcoEvent, validateEcoEvents } from "./events";
 
 const MODEL = "gemini-3.5-flash";
 const QUESTIONS_PER_QUIZ = 5;
@@ -132,13 +133,11 @@ export function validateGeneratedQuiz(json: unknown): GeneratedQuiz | null {
 	return { title, category, questions: parsedQuestions };
 }
 
-function buildPrompt({
-	topic,
-	existingTitles,
-	emissionsContext,
-	actContext,
-}: GenerateQuizOptions): string {
-	const factSheet = ENVIRONMENT_FACTS.map((f) => `- ${f}`).join("\n");
+function buildPrompt(
+	{ topic, existingTitles, emissionsContext, actContext }: GenerateQuizOptions,
+	facts: readonly string[],
+): string {
+	const factSheet = facts.map((f) => `- ${f}`).join("\n");
 	const avoid =
 		existingTitles.length > 0
 			? `Avoid repeating the topic of these existing quizzes: ${existingTitles.join(", ")}.`
@@ -171,7 +170,7 @@ export async function generateQuiz(
 	const interaction = await genai.interactions
 		.create({
 			model: MODEL,
-			input: buildPrompt(options),
+			input: buildPrompt(options, await getEnvironmentFacts()),
 			response_format: {
 				type: "text",
 				mime_type: "application/json",
@@ -200,6 +199,59 @@ export async function generateQuiz(
 	return quiz;
 }
 
+/**
+ * Real upcoming eco events near a point, found via Gemini with Google Search
+ * grounding. Search grounding can't be combined with a structured-output
+ * schema, so the prompt demands raw JSON and the output is validated with
+ * `validateEcoEvents` before anything trusts it. Callers cache + fall back.
+ */
+export async function findLiveEvents(
+	lat: number,
+	lng: number,
+): Promise<EcoEvent[]> {
+	const genai = getClient();
+
+	const prompt = `Use Google Search to find real, upcoming (within the next 60 days) environmental / clean-energy / volunteering events near latitude ${lat.toFixed(3)}, longitude ${lng.toFixed(3)} — cleanups, tree plantings, farmers/eco markets, climate talks, recycling drives.
+
+Respond with ONLY a raw JSON array (no markdown fences, no prose) of 5-10 events, each exactly:
+{"id": "<kebab-case-slug>", "name": "...", "description": "<1-2 sentences>", "category": "<cleanup|planting|market|talk|recycling|other>", "date": "<YYYY-MM-DD>", "lat": <number>, "lng": <number>, "city": "...", "url": "<event page URL from search>", "volunteerUrl": "<signup URL if any, else omit>"}
+
+Only include events you actually found via search with a real URL. Coordinates should be the venue's approximate location. If you cannot verify enough events, return fewer — never invent one.`;
+
+	const interaction = await genai.interactions
+		.create({
+			model: MODEL,
+			input: prompt,
+			tools: [{ type: "google_search" }],
+		})
+		.catch((err) => {
+			throw new GeminiRequestError(
+				err instanceof Error ? err.message : "Gemini request failed",
+			);
+		});
+
+	const text = interaction.output_text;
+	if (!text) throw new GeminiRequestError("Gemini returned no content");
+
+	// tolerate ```json fences despite the prompt
+	const stripped = text
+		.trim()
+		.replace(/^```(?:json)?\s*/i, "")
+		.replace(/\s*```$/, "");
+
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(stripped);
+	} catch {
+		throw new GeminiRequestError("Gemini returned invalid JSON for events");
+	}
+
+	const events = validateEcoEvents(parsed);
+	if (events.length === 0)
+		throw new GeminiRequestError("Gemini returned no usable events");
+	return events;
+}
+
 export interface AskContext {
 	kind: "event" | "initiative" | "location";
 	name?: string;
@@ -210,8 +262,12 @@ export interface AskContext {
 	liveData?: string;
 }
 
-function buildAskPrompt(question: string, context: AskContext): string {
-	const factSheet = ENVIRONMENT_FACTS.map((f) => `- ${f}`).join("\n");
+function buildAskPrompt(
+	question: string,
+	context: AskContext,
+	facts: readonly string[],
+): string {
+	const factSheet = facts.map((f) => `- ${f}`).join("\n");
 	const subject =
 		context.kind === "location"
 			? `a map location at (${context.lat.toFixed(3)}, ${context.lng.toFixed(3)})`
@@ -240,7 +296,7 @@ export async function askGemini(
 	const interaction = await genai.interactions
 		.create({
 			model: MODEL,
-			input: buildAskPrompt(question, context),
+			input: buildAskPrompt(question, context, await getEnvironmentFacts()),
 		})
 		.catch((err) => {
 			throw new GeminiRequestError(

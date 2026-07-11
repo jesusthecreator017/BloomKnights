@@ -1,6 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, ClipboardList, Shuffle, Sparkles } from "lucide-react";
+import {
+	ArrowRight,
+	Car,
+	ClipboardList,
+	Droplet,
+	Leaf,
+	Shuffle,
+	Sparkles,
+	Trash2,
+	Utensils,
+	Waves,
+	Zap,
+} from "lucide-react";
 import { useState } from "react";
 import { GlassBadge } from "#/components/ui/glass-badge";
 import { GlassButton } from "#/components/ui/glass-button";
@@ -25,6 +37,22 @@ import type { QuizDetail, QuizSummary } from "#/lib/api-types";
 import { formatCategory } from "#/lib/format";
 
 export const Route = createFileRoute("/quiz/")({ component: QuizListPage });
+
+const CATEGORY_ICON: Record<string, typeof Leaf> = {
+	"clean-energy": Zap,
+	energy: Zap,
+	transport: Car,
+	transportation: Car,
+	waste: Trash2,
+	food: Utensils,
+	water: Droplet,
+	ocean: Waves,
+	"ocean-life": Waves,
+};
+
+function categoryIcon(category: string) {
+	return CATEGORY_ICON[category] ?? Leaf;
+}
 
 function QuizListPage() {
 	const navigate = useNavigate();
@@ -214,11 +242,13 @@ function QuizListPage() {
 }
 
 function QuizCard({ quiz, badge }: { quiz: QuizSummary; badge?: string }) {
+	const CategoryIcon = categoryIcon(quiz.category);
 	return (
 		<Link to="/quiz/$slug" params={{ slug: quiz.slug }}>
 			<GlassCard className="h-full transition hover:-translate-y-0.5">
 				<GlassCardHeader>
 					<div className="flex items-center gap-2">
+						<CategoryIcon className="h-4 w-4 text-forest-400" />
 						<GlassBadge variant="outline" className="w-fit">
 							{formatCategory(quiz.category)}
 						</GlassBadge>

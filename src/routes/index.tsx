@@ -18,7 +18,6 @@ import {
 	GlassCardHeader,
 	GlassCardTitle,
 } from "#/components/ui/glass-card";
-import { GlassProgress } from "#/components/ui/glass-progress";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -28,28 +27,44 @@ const dailyDamage = [
 		stat: "~44 kg",
 		title: "CO2 per person, per day",
 		description:
-			"The average American emits roughly 16 tons of CO2 a year — 4x the global average. Most of it comes from home energy, driving, and what we buy.",
+			"The average American emits roughly 16 tons of CO2 a year — about 4x the global average, mostly from home energy, driving, and what we buy.",
+		source: {
+			label: "EPA — Greenhouse Gas Emissions",
+			url: "https://www.epa.gov/ghgemissions/sources-greenhouse-gas-emissions",
+		},
 	},
 	{
 		icon: Car,
 		stat: "8.9 kg",
 		title: "CO2 per gallon of gas",
 		description:
-			"A single tank of gas releases over 100 kg of CO2. Transportation is the #1 source of US emissions.",
+			"Burning a single gallon releases nearly 9 kg of CO2, and transportation is the single largest source of US emissions.",
+		source: {
+			label: "EPA — Greenhouse Gas Emissions from a Vehicle",
+			url: "https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle",
+		},
 	},
 	{
 		icon: Zap,
 		stat: "~60%",
 		title: "of US electricity is still fossil",
 		description:
-			"Every kilowatt-hour you don't use — or source from clean energy — keeps carbon out of the air.",
+			"Every kilowatt-hour you don't use — or source from clean energy — is carbon that never enters the grid mix.",
+		source: {
+			label: "U.S. Energy Information Administration",
+			url: "https://www.eia.gov/energyexplained/electricity/electricity-in-the-us.php",
+		},
 	},
 	{
 		icon: Trash2,
 		stat: "2.2 kg",
 		title: "of trash per person, per day",
 		description:
-			"Most of it is packaging and food waste, and less than a third gets recycled or composted.",
+			"Most of it is packaging and food waste, and less than a third of US municipal waste gets recycled or composted.",
+		source: {
+			label: "EPA — Facts and Figures about Materials, Waste and Recycling",
+			url: "https://www.epa.gov/facts-and-figures-about-materials-waste-and-recycling",
+		},
 	},
 ] as const;
 
@@ -58,7 +73,7 @@ const features = [
 		icon: MapPinned,
 		title: "Live map & Explorer",
 		description:
-			"Real-time air quality, UV, ocean, and reef data anywhere you look, plus real local clean-energy events, volunteer initiatives, and live weather emergencies near you.",
+			"Real-time air quality, UV, and ocean data anywhere you look, plus local clean-energy events, volunteer initiatives, and live weather emergencies.",
 		to: "/map" as const,
 	},
 	{
@@ -72,77 +87,75 @@ const features = [
 		icon: Trophy,
 		title: "City & individual leaderboards",
 		description:
-			"Compete on quiz points with your city, or check a live Environmental Score built from real air-quality data — updated daily.",
+			"Compete on quiz points with your city, or check a live Environmental Score built from real air-quality data, updated daily.",
 		to: "/leaderboard" as const,
 	},
 	{
 		icon: ListChecks,
 		title: "Resources",
 		description:
-			"Concrete clean-energy actions — community solar, heat pumps, repair over replace — next to live US emissions data for context.",
+			"Concrete clean-energy actions — community solar, heat pumps, repair over replace — next to live emissions data for any country.",
 		to: "/resources" as const,
-	},
-] as const;
-
-const communityGoals = [
-	{ label: "CO2 offset this month", current: 3120, target: 5000, unit: "kg" },
-	{ label: "Clean-energy events joined", current: 84, target: 150, unit: "" },
-	{
-		label: "Repair-instead-of-replace pledges",
-		current: 41,
-		target: 100,
-		unit: "",
 	},
 ] as const;
 
 function Home() {
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-16">
-			<section className="text-center">
-				<p className="font-semibold text-forest-400 text-sm uppercase tracking-widest">
-					Ecoverse · Clean Energy Solution
-				</p>
-				<h1 className="mx-auto mt-3 max-w-3xl text-5xl font-bold leading-tight tracking-tight">
-					Everyday life has a footprint.{" "}
-					<span className="bg-gradient-to-r from-forest-400 to-navy-300 bg-clip-text text-transparent">
-						You can shrink it.
-					</span>
-				</h1>
-				<p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-					Ecoverse turns clean-energy awareness into action: a live map of real
-					environmental data and local initiatives, facts-grounded quizzes, a
-					leaderboard driven by real air-quality data, and concrete steps you
-					can take today.
-				</p>
-				<div className="mt-8 flex items-center justify-center gap-4">
-					<Link to="/map">
-						<GlassButton size="lg">
-							Explore the live map <ArrowRight className="ml-2 h-4 w-4" />
-						</GlassButton>
-					</Link>
-					<Link to="/resources">
-						<GlassButton variant="outline" size="lg">
-							Start acting today
-						</GlassButton>
-					</Link>
+			<section className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+				<div className="text-left">
+					<p className="font-semibold text-forest-400 text-sm uppercase tracking-widest">
+						Ecoverse · Clean Energy Solution
+					</p>
+					<h1 className="mt-3 text-5xl font-bold leading-tight tracking-tight">
+						Everyday life has a footprint.{" "}
+						<span className="bg-gradient-to-r from-forest-400 to-navy-300 bg-clip-text text-transparent">
+							You can shrink it.
+						</span>
+					</h1>
+					<p className="mt-4 max-w-xl text-lg text-muted-foreground">
+						Ecoverse turns clean-energy awareness into action: a live map of
+						real environmental data and local initiatives, facts-grounded
+						quizzes, a leaderboard driven by real air-quality data, and concrete
+						steps you can take today.
+					</p>
+					<div className="mt-8 flex items-center gap-4">
+						<Link to="/map">
+							<GlassButton size="lg">
+								Explore the live map <ArrowRight className="ml-2 h-4 w-4" />
+							</GlassButton>
+						</Link>
+						<Link to="/resources">
+							<GlassButton variant="outline" size="lg">
+								Start acting today
+							</GlassButton>
+						</Link>
+					</div>
 				</div>
+
+				<HeroArt />
 			</section>
 
-			<section className="mt-20">
+			<div
+				className="mt-16 h-px w-full bg-gradient-to-r from-transparent via-forest-400/50 to-transparent"
+				aria-hidden="true"
+			/>
+
+			<section className="mt-16">
 				<h2 className="text-center text-2xl font-semibold text-foreground/90">
 					What Ecoverse does
 				</h2>
-				<div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				<div className="mt-8 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					{features.map((feature) => (
-						<Link key={feature.title} to={feature.to}>
-							<GlassCard className="h-full transition hover:-translate-y-0.5">
+						<Link key={feature.title} to={feature.to} className="flex">
+							<GlassCard className="flex h-full w-full flex-col transition hover:-translate-y-0.5">
 								<GlassCardHeader>
 									<feature.icon className="h-6 w-6 text-forest-400" />
 									<GlassCardTitle className="mt-2 text-lg">
 										{feature.title}
 									</GlassCardTitle>
 								</GlassCardHeader>
-								<GlassCardContent>
+								<GlassCardContent className="flex-1">
 									<p className="text-sm text-white/60">{feature.description}</p>
 								</GlassCardContent>
 							</GlassCard>
@@ -155,9 +168,13 @@ function Home() {
 				<h2 className="text-center text-2xl font-semibold text-foreground/90">
 					The damage adds up daily
 				</h2>
-				<div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+				<div className="mt-8 grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					{dailyDamage.map((item) => (
-						<GlassCard key={item.title} glowEffect={false}>
+						<GlassCard
+							key={item.title}
+							glowEffect={false}
+							className="flex h-full flex-col"
+						>
 							<GlassCardHeader>
 								<item.icon className="h-6 w-6 text-forest-400" />
 								<GlassCardTitle className="mt-2 text-3xl">
@@ -167,36 +184,38 @@ function Home() {
 									{item.title}
 								</GlassCardDescription>
 							</GlassCardHeader>
-							<GlassCardContent>
-								<p className="text-sm text-white/60">{item.description}</p>
+							<GlassCardContent className="flex flex-1 flex-col">
+								<p className="flex-1 text-sm text-white/60">
+									{item.description}
+								</p>
+								<a
+									href={item.source.url}
+									target="_blank"
+									rel="noreferrer"
+									className="mt-3 block text-forest-400 text-xs hover:underline"
+								>
+									Source: {item.source.label}
+								</a>
 							</GlassCardContent>
 						</GlassCard>
 					))}
 				</div>
 			</section>
+		</div>
+	);
+}
 
-			<section className="mt-20">
-				<h2 className="text-center text-2xl font-semibold text-foreground/90">
-					Community progress this month
-				</h2>
-				<GlassCard glowEffect={false} className="mx-auto mt-8 max-w-2xl">
-					<GlassCardContent className="flex flex-col gap-6 pt-6">
-						{communityGoals.map((goal) => (
-							<div key={goal.label}>
-								<div className="mb-2 flex items-baseline justify-between text-sm">
-									<span className="text-white/80">{goal.label}</span>
-									<span className="text-white/50">
-										{goal.current.toLocaleString()} /{" "}
-										{goal.target.toLocaleString()}
-										{goal.unit && ` ${goal.unit}`}
-									</span>
-								</div>
-								<GlassProgress value={(goal.current / goal.target) * 100} />
-							</div>
-						))}
-					</GlassCardContent>
-				</GlassCard>
-			</section>
+function HeroArt() {
+	return (
+		<div className="relative mx-auto flex aspect-square w-full max-w-sm items-center justify-center">
+			<div className="absolute inset-0 rounded-full bg-gradient-to-br from-forest-400/30 via-navy-400/20 to-transparent blur-2xl" />
+			<GlassCard glowEffect={false} className="relative aspect-square w-full">
+				<img
+					src="/hero-photo.avif"
+					alt="Ecoverse — clean energy in action"
+					className="aspect-square w-full object-cover"
+				/>
+			</GlassCard>
 		</div>
 	);
 }

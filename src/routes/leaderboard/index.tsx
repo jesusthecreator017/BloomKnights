@@ -39,6 +39,7 @@ import type {
 	UserCityResponse,
 } from "#/lib/api-types";
 import { useSession } from "#/lib/auth-client";
+import { countryFlag } from "#/lib/country";
 import { aqiColor } from "#/lib/environment-format";
 import { cn } from "#/lib/utils";
 
@@ -212,7 +213,12 @@ function ScoreRow({ score, rank }: { score: CityScore; rank: number }) {
 				</span>
 				<div className="flex-1">
 					<p className="font-medium">{score.name}</p>
-					<p className="text-white/50 text-xs">{score.country}</p>
+					<p className="flex items-center gap-1 text-white/50 text-xs">
+						{countryFlag(score.country) && (
+							<span>{countryFlag(score.country)}</span>
+						)}
+						{score.country}
+					</p>
 				</div>
 				<GlassBadge
 					style={{
@@ -316,6 +322,9 @@ function CityRow({
 						)}
 					</p>
 					<p className="flex items-center gap-1 text-xs text-white/50">
+						{countryFlag(city.country) && (
+							<span>{countryFlag(city.country)}</span>
+						)}
 						{city.country} · <Users className="h-3 w-3" /> {city.memberCount}
 					</p>
 				</div>
@@ -424,7 +433,9 @@ function CityGroup({
 						className="flex items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-white/80 transition hover:bg-white/10 disabled:opacity-50"
 					>
 						<span>{city.name}</span>
-						<span className="text-xs text-white/40">{city.country}</span>
+						<span className="text-xs text-white/40">
+							{countryFlag(city.country)} {city.country}
+						</span>
 					</button>
 				))}
 			</div>

@@ -69,6 +69,10 @@ export const quizzes = pgTable("quizzes", {
 	slug: text("slug").notNull().unique(),
 	title: text("title").notNull(),
 	category: text("category").notNull(),
+	// null for the 8 curated standard quizzes; set for Gemini-generated ones
+	createdBy: text("created_by").references(() => user.id, {
+		onDelete: "set null",
+	}),
 });
 
 export const questions = pgTable(
@@ -108,6 +112,31 @@ export const quizAttempts = pgTable(
 		unique().on(t.userId, t.quizId),
 		index("quiz_attempts_quiz_id_idx").on(t.quizId),
 	],
+);
+
+// ---------- cities + city leaderboard ----------
+
+export const cities = pgTable("cities", {
+	id: serial("id").primaryKey(),
+	slug: text("slug").notNull().unique(),
+	name: text("name").notNull(),
+	country: text("country").notNull(),
+});
+
+export const userCities = pgTable(
+	"user_cities",
+	{
+		// one city per user — joining a new one replaces the old membership
+		userId: text("user_id")
+			.primaryKey()
+			.references(() => user.id, { onDelete: "cascade" }),
+		cityId: integer("city_id")
+			.notNull()
+			.references(() => cities.id, { onDelete: "cascade" }),
+		joinedAt: timestamp("joined_at").notNull().defaultNow(),
+	},
+	// city leaderboard aggregation filters/groups by city_id
+	(t) => [index("user_cities_city_id_idx").on(t.cityId)],
 );
 
 // ---------- external data cache ----------

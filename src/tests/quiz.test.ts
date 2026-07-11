@@ -1,11 +1,23 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { questions, quizzes, user } from "../db/schema";
+import { cities, questions, quizzes, user } from "../db/schema";
 import { clearCache } from "../lib/cache";
-import { getLeaderboard, getQuizForPlay, submitQuiz } from "../lib/quiz";
+import {
+	getCityLeaderboard,
+	getLeaderboard,
+	getQuizForPlay,
+	getUserCity,
+	joinCity,
+	listCities,
+	submitQuiz,
+} from "../lib/quiz";
 import { resetDb, testDb } from "./db";
 
 async function makeUser(id: string, name: string) {
 	await testDb.insert(user).values({ id, name, email: `${id}@test.dev` });
+}
+
+async function makeCity(slug: string, name: string) {
+	await testDb.insert(cities).values({ slug, name, country: "USA" });
 }
 
 async function makeQuiz(slug: string) {
@@ -121,5 +133,83 @@ describe("getLeaderboard", () => {
 		expect(board.me?.userId).toBe("u0");
 		expect(board.me?.points).toBe(10);
 		expect(board.me?.rank).toBe(5);
+	});
+});
+
+describe("joinCity / getUserCity", () => {
+	it("lets a user join and later switch cities", async () => {
+		await makeUser("u1", "Alice");
+		await makeCity("nyc", "New York City");
+		await makeCity("la", "Los Angeles");
+
+		const joined = await joinCity(testDb, "u1", "nyc");
+		expect(joined?.slug).toBe("nyc");
+		expect((await getUserCity(testDb, "u1"))?.slug).toBe("nyc");
+
+		const switched = await joinCity(testDb, "u1", "la");
+		expect(switched?.slug).toBe("la");
+		expect((await getUserCity(testDb, "u1"))?.slug).toBe("la");
+	});
+
+	it("returns null for an unknown city slug", async () => {
+		await makeUser("u1", "Alice");
+		expect(await joinCity(testDb, "u1", "atlantis")).toBeNull();
+	});
+
+	it("returns null when a user hasn't joined a city", async () => {
+		await makeUser("u1", "Alice");
+		expect(await getUserCity(testDb, "u1")).toBeNull();
+	});
+});
+
+describe("listCities", () => {
+	it("ranks cities by the combined score of their members", async () => {
+		await makeUser("u1", "Alice");
+		await makeUser("u2", "Bob");
+		await makeCity("nyc", "New York City");
+		await makeCity("la", "Los Angeles");
+		await makeQuiz("q1");
+		await joinCity(testDb, "u1", "nyc");
+		await joinCity(testDb, "u2", "la");
+		await submitQuiz(testDb, "u1", "q1", [1, 0]); // Alice/nyc: 20
+		await submitQuiz(testDb, "u2", "q1", [1, 1]); // Bob/la: 10
+
+		const board = await listCities(testDb);
+		const nyc = board.find((c) => c.slug === "nyc");
+		const la = board.find((c) => c.slug === "la");
+		expect(nyc?.points).toBe(20);
+		expect(nyc?.memberCount).toBe(1);
+		expect(la?.points).toBe(10);
+		expect(board[0].slug).toBe("nyc");
+	});
+
+	it("shows unjoined cities with zero points and members", async () => {
+		await makeCity("orlando", "Orlando");
+		const board = await listCities(testDb);
+		const orlando = board.find((c) => c.slug === "orlando");
+		expect(orlando?.points).toBe(0);
+		expect(orlando?.memberCount).toBe(0);
+	});
+});
+
+describe("getCityLeaderboard", () => {
+	it("only ranks members of that city", async () => {
+		await makeUser("u1", "Alice");
+		await makeUser("u2", "Bob");
+		await makeCity("nyc", "New York City");
+		await makeQuiz("q1");
+		await joinCity(testDb, "u1", "nyc");
+		// Bob never joins a city
+		await submitQuiz(testDb, "u1", "q1", [1, 0]);
+		await submitQuiz(testDb, "u2", "q1", [1, 1]);
+
+		const board = await getCityLeaderboard(testDb, "nyc", 20, "u1");
+		expect(board?.city.slug).toBe("nyc");
+		expect(board?.entries.map((e) => e.name)).toEqual(["Alice"]);
+		expect(board?.me?.name).toBe("Alice");
+	});
+
+	it("returns null for an unknown city", async () => {
+		expect(await getCityLeaderboard(testDb, "atlantis")).toBeNull();
 	});
 });

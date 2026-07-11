@@ -13,13 +13,15 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
 		return (
 			<div className="relative">
 				{glowEffect && (
-					<div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-cyan-500/30 via-blue-500/30 to-purple-500/30 blur-xl opacity-70" />
+					<div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-forest-400/30 via-forest-500/30 to-navy-600/30 blur-xl opacity-70" />
 				)}
 				<div
 					ref={ref}
 					className={cn(
 						"relative rounded-2xl border border-white/20",
-						"bg-white/10 backdrop-blur-xl",
+						// intrinsically dark so the card reads as frosted glass on
+						// both the light and dark app shell, not just a dark one
+						"bg-slate-900/75 backdrop-blur-xl",
 						"shadow-[0_8px_32px_rgba(0,0,0,0.37)]",
 						"before:absolute before:inset-0 before:rounded-2xl",
 						"before:bg-linear-to-b before:from-white/20 before:to-transparent before:pointer-events-none",

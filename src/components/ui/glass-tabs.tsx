@@ -11,7 +11,7 @@ const GlassTabsList = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<div className="relative">
 		<motion.div
-			className="absolute -inset-1 rounded-2xl bg-linear-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg"
+			className="absolute -inset-1 rounded-2xl bg-linear-to-r from-forest-400/20 via-forest-500/20 to-navy-600/20 blur-lg"
 			animate={{
 				opacity: [0.4, 0.6, 0.4],
 			}}
@@ -26,7 +26,8 @@ const GlassTabsList = React.forwardRef<
 			ref={ref}
 			className={cn(
 				"relative inline-flex h-12 items-center justify-center gap-1 rounded-xl p-1",
-				"bg-white/10 backdrop-blur-xl border border-white/20",
+				// intrinsically dark so the tab bar reads on both app-shell themes
+				"bg-slate-900/75 backdrop-blur-xl border border-white/20",
 				"shadow-[0_4px_16px_rgba(0,0,0,0.2)]",
 				className,
 			)}

@@ -103,9 +103,9 @@ Real facilities from OpenStreetMap within ~15km. `kind` defaults to `recycling`;
 ## Quiz + leaderboard (gamification)
 
 ### `GET /api/quizzes`
-List for a quiz-picker screen.
+List for a quiz-picker screen. There are 8 curated standard quizzes (`createdBy: null`) plus any Gemini-generated ones (`createdBy: "<userId>"`, `category: "ai-generated"`) — split them client-side on `createdBy`.
 ```json
-[ { "slug": "daily-footprint", "title": "Your Daily Footprint", "category": "awareness", "questionCount": 4, "totalPoints": 40 }, ... ]
+[ { "slug": "daily-footprint", "title": "Your Daily Footprint", "category": "awareness", "createdBy": null, "questionCount": 5, "totalPoints": 50 }, ... ]
 ```
 
 ### `GET /api/quizzes/:slug`
@@ -127,10 +127,60 @@ Body: `{ "answers": number[] }` — the chosen choice index per question, in que
 Status codes to handle: **401** not logged in → prompt sign-in; **409** already completed this quiz (one attempt per user per quiz — disable the button / show "already done"); **400** malformed body; **404** unknown quiz.
 
 ### `GET /api/leaderboard?limit=20`
-Top users plus the current user's own rank (`me` is `null` if logged out or no attempts).
+Top users globally plus the current user's own rank (`me` is `null` if logged out or no attempts).
 ```json
 { "entries": [ { "rank": 1, "userId": "...", "name": "Demo", "points": 30, "quizzesTaken": 1 }, ... ],
   "me": { "rank": 1, "userId": "...", "name": "Demo", "points": 30, "quizzesTaken": 1 } }
+```
+
+### `POST /api/quizzes/generate`  🔒 requires login, rate-limited
+Generates a fresh 5-question quiz with Gemini and immediately persists it (same grading/leaderboard path as curated quizzes). Body: `{ "topic"?: string }` — omit `topic` for a random "reshuffle", or pass one for a specific ask (e.g. `"solar panel recycling"`).
+```json
+{ "slug": "ai-solar-panel-recycling-a1b2c3d4", "title": "Solar Panel Recycling", "category": "clean-energy",
+  "questions": [ { "id": 301, "prompt": "...", "choices": ["...","...","...","..."], "points": 10 }, ... ] }
+```
+Same shape as `GET /api/quizzes/:slug` — no answer key, ready to play immediately. Status codes: **401** not logged in; **429** (with `Retry-After`) if this user has generated 5+ quizzes in the last 5 minutes — this is on top of the global per-IP limit; **500** if `GEMINI_API_KEY` isn't configured server-side; **502** if Gemini fails or returns something unusable.
+
+## Geocoding (Places API (New) proxy, used by /explorer's search box)
+
+### `GET /api/geocode/autocomplete?input=<text>`
+Address/place suggestions as the user types (debounce client-side). 400 if `input` missing; 500 if `GOOGLE_PLACES_API_KEY` isn't configured; 502 on an upstream failure.
+```json
+{ "suggestions": [ { "placeId": "ChIJ...", "text": "Seattle, WA, USA" }, ... ] }
+```
+
+### `GET /api/geocode/place?id=<placeId>`
+Resolves a `placeId` (from the autocomplete response) to coordinates. Same error codes as above.
+```json
+{ "formattedAddress": "Seattle, WA, USA", "lat": 47.6062, "lng": -122.3321 }
+```
+
+## Cities (city-vs-city leaderboard)
+
+### `GET /api/cities`
+All 26 seeded cities (14 US + 12 global), ranked by the combined quiz score of everyone who's joined them.
+```json
+{ "cities": [ { "rank": 1, "slug": "nyc", "name": "New York City", "country": "USA", "points": 120, "memberCount": 4 }, ... ] }
+```
+
+### `GET /api/cities/:slug?limit=20`
+One city's individual leaderboard (same shape as `/api/leaderboard`, scoped to that city's members) plus city info. 404 on an unknown slug.
+```json
+{ "city": { "slug": "nyc", "name": "New York City", "country": "USA" },
+  "entries": [ { "rank": 1, "userId": "...", "name": "Demo", "points": 30, "quizzesTaken": 1 }, ... ],
+  "me": null }
+```
+
+### `GET /api/user/city`  🔒 requires login
+The signed-in user's currently joined city, or `null` if they haven't joined one. **401** if signed out.
+```json
+{ "city": { "slug": "nyc", "name": "New York City", "country": "USA" } }
+```
+
+### `POST /api/user/city`  🔒 requires login
+Join or switch cities — a user belongs to exactly one at a time; switching immediately re-attributes their full points total to the new city (no historical point-locking). Body: `{ "citySlug": string }`. **401** signed out, **404** unknown slug, **400** malformed body.
+```json
+{ "city": { "slug": "la", "name": "Los Angeles", "country": "USA" } }
 ```
 
 ## Auth (better-auth) — use the client, not raw fetch

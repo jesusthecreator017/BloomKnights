@@ -1,10 +1,86 @@
+import { TTL } from "./api-utils";
+import { cached } from "./cache";
+
 /**
- * Curated facts from EPA / UN (and well-established figures where the source
- * page blocked automated fetches) — shared by the seeded quizzes and injected
- * as grounding context for Gemini-generated quizzes so AI questions stay
- * anchored to real data instead of drifting.
+ * Grounding facts for Gemini prompts (quiz generation + Ask AI).
+ * Live headline stats come from the World Bank API (keyless) and are cached
+ * 24h; the curated EPA/UN list below is the fallback when the fetch fails and
+ * is always appended for breadth — live numbers lead, curated context follows.
  */
-export const ENVIRONMENT_FACTS: readonly string[] = [
+
+const WORLD_BANK_BASE = "https://api.worldbank.org/v2/country/USA;WLD";
+
+/** Indicators verified to return current data (2023-2024 vintages). */
+const INDICATORS: Array<{ id: string; describe: string; unit: string }> = [
+	{
+		id: "EN.GHG.CO2.PC.CE.AR5",
+		describe: "CO2 emissions per capita",
+		unit: "tonnes CO2e per person",
+	},
+	{
+		id: "EN.GHG.ALL.PC.CE.AR5",
+		describe: "total greenhouse gas emissions per capita",
+		unit: "tonnes CO2e per person",
+	},
+	{
+		id: "AG.LND.FRST.ZS",
+		describe: "forest area as a share of land area",
+		unit: "%",
+	},
+];
+
+interface WorldBankRow {
+	country?: { value?: string };
+	date?: string;
+	value?: number | null;
+}
+
+/** Pure — formats one World Bank response body into fact strings. Exported for tests. */
+export function formatWorldBankFacts(
+	body: unknown,
+	describe: string,
+	unit: string,
+): string[] {
+	if (!Array.isArray(body) || !Array.isArray(body[1])) return [];
+	const facts: string[] = [];
+	for (const row of body[1] as WorldBankRow[]) {
+		const country = row.country?.value;
+		if (typeof country !== "string" || typeof row.value !== "number") continue;
+		const label = country === "World" ? "Global" : country;
+		facts.push(
+			`${label} ${describe}: ${row.value.toFixed(1)} ${unit} (${row.date}, World Bank).`,
+		);
+	}
+	return facts;
+}
+
+async function fetchLiveFacts(): Promise<string[]> {
+	const results = await Promise.allSettled(
+		INDICATORS.map(async ({ id, describe, unit }) => {
+			const res = await fetch(
+				`${WORLD_BANK_BASE}/indicator/${id}?format=json&mrnev=1&per_page=10`,
+				{ signal: AbortSignal.timeout(10_000) },
+			);
+			if (!res.ok) throw new Error(`World Bank responded ${res.status}`);
+			return formatWorldBankFacts(await res.json(), describe, unit);
+		}),
+	);
+	return results.flatMap((r) => (r.status === "fulfilled" ? r.value : []));
+}
+
+/**
+ * Live facts first, curated facts after. Never throws — worst case is the
+ * curated list alone, so Gemini grounding always has material.
+ */
+export async function getEnvironmentFacts(): Promise<readonly string[]> {
+	const live = await cached("facts:worldbank", TTL.rare, fetchLiveFacts).catch(
+		() => [],
+	);
+	return [...live, ...CURATED_FACTS];
+}
+
+/** Curated facts from EPA / UN — fallback + breadth alongside the live stats. */
+const CURATED_FACTS: readonly string[] = [
 	"US total 2022 greenhouse gas emissions: 6,343.2 million metric tons of CO2 equivalent (EPA).",
 	"Gross US greenhouse gas emissions are down just over 3% since 1990 (EPA).",
 	"Buildings use about 75% of all electricity generated in the US (EPA).",

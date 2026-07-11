@@ -98,7 +98,11 @@ Real facilities from OpenStreetMap within ~15km. `kind` defaults to `recycling`;
   "places": [ { "id": 361100877, "name": "San Francisco Dump", "lat": 37.70, "lng": -122.39, "kind": "recycling" }, ... ] }
 ```
 
-> There's also `GET /api/events` (seeded local eco-events with `{id,name,description,category,date,lat,lng,city,url}`) already rendered as markers in `live-map.tsx`.
+### `GET /api/events?lat=&lng=` — now live data
+Real upcoming eco events near the point, found by Gemini with Google Search grounding, cached 24h server-side. `lat`/`lng` are **optional** (defaults to Orlando), so existing parameterless calls keep working — but **pass the map center** to get location-aware events. Shape unchanged: `[{id,name,description,category,date,lat,lng,city,url,volunteerUrl?}]`. If Gemini is unavailable the endpoint silently serves the curated fallback list — same shape, so nothing to handle client-side.
+
+### `GET /api/initiatives?lat=&lng=` — now live data
+Real environmental organizations near the point from Google Places (name, address as `description`, real `website`), cached 24h. `lat`/`lng` optional (defaults Orlando) — **pass the map center**. Shape unchanged: `[{id,name,description,category,lat,lng,city,website,volunteerUrl?}]` (`volunteerUrl` no longer set on live results; `website` is the link to show). Falls back to the curated list on Places failure — same shape.
 
 ## Quiz + leaderboard (gamification)
 

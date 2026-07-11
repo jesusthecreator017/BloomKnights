@@ -26,7 +26,8 @@ const GlassTabsList = React.forwardRef<
 			ref={ref}
 			className={cn(
 				"relative inline-flex h-12 items-center justify-center gap-1 rounded-xl p-1",
-				"bg-white/10 backdrop-blur-xl border border-white/20",
+				// intrinsically dark so the tab bar reads on both app-shell themes
+				"bg-slate-900/75 backdrop-blur-xl border border-white/20",
 				"shadow-[0_4px_16px_rgba(0,0,0,0.2)]",
 				className,
 			)}

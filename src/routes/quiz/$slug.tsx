@@ -21,6 +21,7 @@ import { GlassProgress } from "#/components/ui/glass-progress";
 import { leaderboardQueryKey } from "#/hooks/use-leaderboard";
 import { ApiClientError, fetchJson } from "#/lib/api-client";
 import type { QuizDetail, QuizSubmitResult } from "#/lib/api-types";
+import { formatCategory } from "#/lib/format";
 import { cn } from "#/lib/utils";
 
 export const Route = createFileRoute("/quiz/$slug")({
@@ -74,7 +75,7 @@ function QuizPlayPage() {
 
 	if (isLoading) {
 		return (
-			<p className="mx-auto max-w-2xl px-4 py-16 text-white/50">
+			<p className="mx-auto max-w-2xl px-4 py-16 text-muted-foreground">
 				Loading quiz…
 			</p>
 		);
@@ -83,7 +84,7 @@ function QuizPlayPage() {
 	if (error || !quiz) {
 		return (
 			<div className="mx-auto max-w-2xl px-4 py-16">
-				<p className="text-red-300">
+				<p className="text-red-400">
 					{error instanceof ApiClientError && error.status === 404
 						? "That quiz doesn't exist."
 						: "Couldn't load this quiz right now."}
@@ -105,7 +106,7 @@ function QuizPlayPage() {
 				<h1 className="mt-4 text-2xl font-bold">
 					You've already completed this quiz
 				</h1>
-				<p className="mt-2 text-white/60">
+				<p className="mt-2 text-muted-foreground">
 					One attempt per quiz — check your standing on the leaderboard.
 				</p>
 				<Link to="/leaderboard">
@@ -128,11 +129,13 @@ function QuizPlayPage() {
 	return (
 		<div className="mx-auto max-w-2xl px-4 py-16">
 			<h1 className="text-3xl font-bold">{quiz.title}</h1>
-			<p className="mt-1 text-sm text-white/50 capitalize">{quiz.category}</p>
+			<p className="mt-1 text-sm text-muted-foreground">
+				{formatCategory(quiz.category)}
+			</p>
 
 			<div className="mt-6">
 				<GlassProgress value={progress} />
-				<p className="mt-2 text-xs text-white/50">
+				<p className="mt-2 text-xs text-muted-foreground">
 					{answeredCount} / {quiz.questions.length} answered
 				</p>
 			</div>
@@ -223,7 +226,7 @@ function ResultsView({
 				<h1 className="mt-4 text-3xl font-bold">
 					{result.score} / {result.maxScore} points
 				</h1>
-				<p className="mt-1 text-white/60">on {quiz.title}</p>
+				<p className="mt-1 text-muted-foreground">on {quiz.title}</p>
 				<Link to="/leaderboard">
 					<GlassButton variant="primary" className="mt-4">
 						View leaderboard

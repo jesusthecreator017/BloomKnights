@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Leaf, LogOut } from "lucide-react";
+import { ThemeToggle } from "#/components/theme-toggle";
 import { GlassButton } from "#/components/ui/glass-button";
 import { useLeaderboard } from "#/hooks/use-leaderboard";
 import { signOut, useSession } from "#/lib/auth-client";
@@ -53,10 +54,9 @@ const navLinks = [
 	{ to: "/", label: "Home" },
 	{ to: "/map", label: "Map" },
 	{ to: "/explorer", label: "Explorer" },
-	{ to: "/act", label: "Act" },
+	{ to: "/act", label: "Act & Data" },
 	{ to: "/quiz", label: "Quiz" },
 	{ to: "/leaderboard", label: "Leaderboard" },
-	{ to: "/data", label: "Data" },
 ] as const;
 
 function AuthNav() {
@@ -77,7 +77,7 @@ function AuthNav() {
 
 	return (
 		<div className="flex items-center gap-3">
-			<span className="hidden text-sm text-white/70 sm:inline">
+			<span className="hidden text-sm text-foreground/70 sm:inline">
 				{session.user.name}
 				{leaderboard?.me && (
 					<span className="text-forest-400">
@@ -86,7 +86,12 @@ function AuthNav() {
 					</span>
 				)}
 			</span>
-			<GlassButton variant="ghost" size="sm" onClick={() => signOut()}>
+			<GlassButton
+				variant="ghost"
+				size="sm"
+				className="text-foreground/70 hover:bg-foreground/10 hover:text-foreground"
+				onClick={() => signOut()}
+			>
 				<LogOut className="h-4 w-4" /> Sign out
 			</GlassButton>
 		</div>
@@ -95,7 +100,7 @@ function AuthNav() {
 
 function RootLayout() {
 	return (
-		<div className="relative flex min-h-screen flex-col bg-[#050b16] text-white">
+		<div className="relative flex min-h-screen flex-col bg-background text-foreground">
 			{/* ambient gradient backdrop so glass surfaces have something to blur */}
 			<div className="pointer-events-none fixed inset-0 overflow-hidden">
 				<div className="absolute -top-40 -left-40 h-[34rem] w-[34rem] rounded-full bg-forest-500/25 blur-[140px]" />
@@ -103,21 +108,21 @@ function RootLayout() {
 				<div className="absolute -bottom-40 left-1/3 h-[28rem] w-[28rem] rounded-full bg-forest-400/15 blur-[140px]" />
 			</div>
 
-			<header className="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl">
+			<header className="sticky top-0 z-40 border-b border-border bg-white/5 backdrop-blur-xl">
 				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
 					<Link to="/" className="flex shrink-0 items-center gap-2 font-bold">
 						<Leaf className="h-5 w-5 text-forest-400" />
 						<span className="text-lg tracking-tight">BloomKnights</span>
 					</Link>
-					<nav className="flex flex-1 items-center gap-1 overflow-x-auto">
+					<nav className="[-ms-overflow-style:none] [scrollbar-width:none] flex flex-1 items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
 						{navLinks.map((link) => (
 							<Link
 								key={link.to}
 								to={link.to}
-								className="shrink-0 rounded-full px-4 py-1.5 text-sm text-white/70 transition hover:bg-white/10 hover:text-white"
+								className="shrink-0 rounded-full px-4 py-1.5 text-sm text-foreground/70 transition hover:bg-foreground/10 hover:text-foreground"
 								activeProps={{
 									className:
-										"shrink-0 rounded-full px-4 py-1.5 text-sm bg-white/15 text-white",
+										"shrink-0 rounded-full px-4 py-1.5 text-sm bg-foreground/10 text-foreground",
 								}}
 								activeOptions={{ exact: link.to === "/" }}
 							>
@@ -125,7 +130,8 @@ function RootLayout() {
 							</Link>
 						))}
 					</nav>
-					<div className="shrink-0">
+					<div className="flex shrink-0 items-center gap-2">
+						<ThemeToggle />
 						<AuthNav />
 					</div>
 				</div>
@@ -135,17 +141,23 @@ function RootLayout() {
 				<Outlet />
 			</main>
 
-			<footer className="relative z-10 border-t border-white/10 py-6 text-center text-sm text-white/50">
+			<footer className="relative z-10 border-t border-border py-6 text-center text-sm text-muted-foreground">
 				© 2026 BloomKnights
 			</footer>
 		</div>
 	);
 }
 
+// Reads the persisted theme (or system preference) and applies the `dark`
+// class before first paint, so there's no flash of the wrong theme.
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('bk-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();`;
+
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en" className="dark">
+		<html lang="en">
 			<head>
+				{/* biome-ignore lint/security/noDangerouslySetInnerHtml: static inline script, no user input */}
+				<script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
 				<HeadContent />
 			</head>
 			<body>

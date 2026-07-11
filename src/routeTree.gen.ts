@@ -11,13 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as ExplorerRouteImport } from './routes/explorer'
-import { Route as DataRouteImport } from './routes/data'
 import { Route as ActRouteImport } from './routes/act'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuizIndexRouteImport } from './routes/quiz/index'
+import { Route as LeaderboardIndexRouteImport } from './routes/leaderboard/index'
 import { Route as QuizSlugRouteImport } from './routes/quiz/$slug'
+import { Route as LeaderboardCitySlugRouteImport } from './routes/leaderboard/$citySlug'
 import { Route as ApiUvSolarRouteImport } from './routes/api/uv-solar'
 import { Route as ApiPlacesRouteImport } from './routes/api/places'
 import { Route as ApiOceanRouteImport } from './routes/api/ocean'
@@ -28,7 +28,13 @@ import { Route as ApiEmissionsRouteImport } from './routes/api/emissions'
 import { Route as ApiCoralRouteImport } from './routes/api/coral'
 import { Route as ApiAirQualityRouteImport } from './routes/api/air-quality'
 import { Route as ApiQuizzesIndexRouteImport } from './routes/api/quizzes/index'
+import { Route as ApiCitiesIndexRouteImport } from './routes/api/cities/index'
+import { Route as ApiUserCityRouteImport } from './routes/api/user/city'
+import { Route as ApiQuizzesGenerateRouteImport } from './routes/api/quizzes/generate'
 import { Route as ApiQuizzesSlugRouteImport } from './routes/api/quizzes/$slug'
+import { Route as ApiGeocodePlaceRouteImport } from './routes/api/geocode/place'
+import { Route as ApiGeocodeAutocompleteRouteImport } from './routes/api/geocode/autocomplete'
+import { Route as ApiCitiesSlugRouteImport } from './routes/api/cities/$slug'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiQuizzesSlugSubmitRouteImport } from './routes/api/quizzes/$slug.submit'
 
@@ -42,19 +48,9 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LeaderboardRoute = LeaderboardRouteImport.update({
-  id: '/leaderboard',
-  path: '/leaderboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ExplorerRoute = ExplorerRouteImport.update({
   id: '/explorer',
   path: '/explorer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DataRoute = DataRouteImport.update({
-  id: '/data',
-  path: '/data',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActRoute = ActRouteImport.update({
@@ -72,9 +68,19 @@ const QuizIndexRoute = QuizIndexRouteImport.update({
   path: '/quiz/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LeaderboardIndexRoute = LeaderboardIndexRouteImport.update({
+  id: '/leaderboard/',
+  path: '/leaderboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuizSlugRoute = QuizSlugRouteImport.update({
   id: '/quiz/$slug',
   path: '/quiz/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeaderboardCitySlugRoute = LeaderboardCitySlugRouteImport.update({
+  id: '/leaderboard/$citySlug',
+  path: '/leaderboard/$citySlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiUvSolarRoute = ApiUvSolarRouteImport.update({
@@ -127,9 +133,39 @@ const ApiQuizzesIndexRoute = ApiQuizzesIndexRouteImport.update({
   path: '/api/quizzes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCitiesIndexRoute = ApiCitiesIndexRouteImport.update({
+  id: '/api/cities/',
+  path: '/api/cities/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiUserCityRoute = ApiUserCityRouteImport.update({
+  id: '/api/user/city',
+  path: '/api/user/city',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiQuizzesGenerateRoute = ApiQuizzesGenerateRouteImport.update({
+  id: '/api/quizzes/generate',
+  path: '/api/quizzes/generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiQuizzesSlugRoute = ApiQuizzesSlugRouteImport.update({
   id: '/api/quizzes/$slug',
   path: '/api/quizzes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGeocodePlaceRoute = ApiGeocodePlaceRouteImport.update({
+  id: '/api/geocode/place',
+  path: '/api/geocode/place',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGeocodeAutocompleteRoute = ApiGeocodeAutocompleteRouteImport.update({
+  id: '/api/geocode/autocomplete',
+  path: '/api/geocode/autocomplete',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCitiesSlugRoute = ApiCitiesSlugRouteImport.update({
+  id: '/api/cities/$slug',
+  path: '/api/cities/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -146,9 +182,7 @@ const ApiQuizzesSlugSubmitRoute = ApiQuizzesSlugSubmitRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/act': typeof ActRoute
-  '/data': typeof DataRoute
   '/explorer': typeof ExplorerRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
@@ -160,19 +194,25 @@ export interface FileRoutesByFullPath {
   '/api/ocean': typeof ApiOceanRoute
   '/api/places': typeof ApiPlacesRoute
   '/api/uv-solar': typeof ApiUvSolarRoute
+  '/leaderboard/$citySlug': typeof LeaderboardCitySlugRoute
   '/quiz/$slug': typeof QuizSlugRoute
+  '/leaderboard/': typeof LeaderboardIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cities/$slug': typeof ApiCitiesSlugRoute
+  '/api/geocode/autocomplete': typeof ApiGeocodeAutocompleteRoute
+  '/api/geocode/place': typeof ApiGeocodePlaceRoute
   '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
+  '/api/quizzes/generate': typeof ApiQuizzesGenerateRoute
+  '/api/user/city': typeof ApiUserCityRoute
+  '/api/cities/': typeof ApiCitiesIndexRoute
   '/api/quizzes/': typeof ApiQuizzesIndexRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/act': typeof ActRoute
-  '/data': typeof DataRoute
   '/explorer': typeof ExplorerRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
@@ -184,10 +224,18 @@ export interface FileRoutesByTo {
   '/api/ocean': typeof ApiOceanRoute
   '/api/places': typeof ApiPlacesRoute
   '/api/uv-solar': typeof ApiUvSolarRoute
+  '/leaderboard/$citySlug': typeof LeaderboardCitySlugRoute
   '/quiz/$slug': typeof QuizSlugRoute
+  '/leaderboard': typeof LeaderboardIndexRoute
   '/quiz': typeof QuizIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cities/$slug': typeof ApiCitiesSlugRoute
+  '/api/geocode/autocomplete': typeof ApiGeocodeAutocompleteRoute
+  '/api/geocode/place': typeof ApiGeocodePlaceRoute
   '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
+  '/api/quizzes/generate': typeof ApiQuizzesGenerateRoute
+  '/api/user/city': typeof ApiUserCityRoute
+  '/api/cities': typeof ApiCitiesIndexRoute
   '/api/quizzes': typeof ApiQuizzesIndexRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
@@ -195,9 +243,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/act': typeof ActRoute
-  '/data': typeof DataRoute
   '/explorer': typeof ExplorerRoute
-  '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
@@ -209,10 +255,18 @@ export interface FileRoutesById {
   '/api/ocean': typeof ApiOceanRoute
   '/api/places': typeof ApiPlacesRoute
   '/api/uv-solar': typeof ApiUvSolarRoute
+  '/leaderboard/$citySlug': typeof LeaderboardCitySlugRoute
   '/quiz/$slug': typeof QuizSlugRoute
+  '/leaderboard/': typeof LeaderboardIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cities/$slug': typeof ApiCitiesSlugRoute
+  '/api/geocode/autocomplete': typeof ApiGeocodeAutocompleteRoute
+  '/api/geocode/place': typeof ApiGeocodePlaceRoute
   '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
+  '/api/quizzes/generate': typeof ApiQuizzesGenerateRoute
+  '/api/user/city': typeof ApiUserCityRoute
+  '/api/cities/': typeof ApiCitiesIndexRoute
   '/api/quizzes/': typeof ApiQuizzesIndexRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
@@ -221,9 +275,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/act'
-    | '/data'
     | '/explorer'
-    | '/leaderboard'
     | '/login'
     | '/map'
     | '/api/air-quality'
@@ -235,19 +287,25 @@ export interface FileRouteTypes {
     | '/api/ocean'
     | '/api/places'
     | '/api/uv-solar'
+    | '/leaderboard/$citySlug'
     | '/quiz/$slug'
+    | '/leaderboard/'
     | '/quiz/'
     | '/api/auth/$'
+    | '/api/cities/$slug'
+    | '/api/geocode/autocomplete'
+    | '/api/geocode/place'
     | '/api/quizzes/$slug'
+    | '/api/quizzes/generate'
+    | '/api/user/city'
+    | '/api/cities/'
     | '/api/quizzes/'
     | '/api/quizzes/$slug/submit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/act'
-    | '/data'
     | '/explorer'
-    | '/leaderboard'
     | '/login'
     | '/map'
     | '/api/air-quality'
@@ -259,19 +317,25 @@ export interface FileRouteTypes {
     | '/api/ocean'
     | '/api/places'
     | '/api/uv-solar'
+    | '/leaderboard/$citySlug'
     | '/quiz/$slug'
+    | '/leaderboard'
     | '/quiz'
     | '/api/auth/$'
+    | '/api/cities/$slug'
+    | '/api/geocode/autocomplete'
+    | '/api/geocode/place'
     | '/api/quizzes/$slug'
+    | '/api/quizzes/generate'
+    | '/api/user/city'
+    | '/api/cities'
     | '/api/quizzes'
     | '/api/quizzes/$slug/submit'
   id:
     | '__root__'
     | '/'
     | '/act'
-    | '/data'
     | '/explorer'
-    | '/leaderboard'
     | '/login'
     | '/map'
     | '/api/air-quality'
@@ -283,10 +347,18 @@ export interface FileRouteTypes {
     | '/api/ocean'
     | '/api/places'
     | '/api/uv-solar'
+    | '/leaderboard/$citySlug'
     | '/quiz/$slug'
+    | '/leaderboard/'
     | '/quiz/'
     | '/api/auth/$'
+    | '/api/cities/$slug'
+    | '/api/geocode/autocomplete'
+    | '/api/geocode/place'
     | '/api/quizzes/$slug'
+    | '/api/quizzes/generate'
+    | '/api/user/city'
+    | '/api/cities/'
     | '/api/quizzes/'
     | '/api/quizzes/$slug/submit'
   fileRoutesById: FileRoutesById
@@ -294,9 +366,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActRoute: typeof ActRoute
-  DataRoute: typeof DataRoute
   ExplorerRoute: typeof ExplorerRoute
-  LeaderboardRoute: typeof LeaderboardRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   ApiAirQualityRoute: typeof ApiAirQualityRoute
@@ -308,10 +378,18 @@ export interface RootRouteChildren {
   ApiOceanRoute: typeof ApiOceanRoute
   ApiPlacesRoute: typeof ApiPlacesRoute
   ApiUvSolarRoute: typeof ApiUvSolarRoute
+  LeaderboardCitySlugRoute: typeof LeaderboardCitySlugRoute
   QuizSlugRoute: typeof QuizSlugRoute
+  LeaderboardIndexRoute: typeof LeaderboardIndexRoute
   QuizIndexRoute: typeof QuizIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiCitiesSlugRoute: typeof ApiCitiesSlugRoute
+  ApiGeocodeAutocompleteRoute: typeof ApiGeocodeAutocompleteRoute
+  ApiGeocodePlaceRoute: typeof ApiGeocodePlaceRoute
   ApiQuizzesSlugRoute: typeof ApiQuizzesSlugRouteWithChildren
+  ApiQuizzesGenerateRoute: typeof ApiQuizzesGenerateRoute
+  ApiUserCityRoute: typeof ApiUserCityRoute
+  ApiCitiesIndexRoute: typeof ApiCitiesIndexRoute
   ApiQuizzesIndexRoute: typeof ApiQuizzesIndexRoute
 }
 
@@ -331,25 +409,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/leaderboard': {
-      id: '/leaderboard'
-      path: '/leaderboard'
-      fullPath: '/leaderboard'
-      preLoaderRoute: typeof LeaderboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/explorer': {
       id: '/explorer'
       path: '/explorer'
       fullPath: '/explorer'
       preLoaderRoute: typeof ExplorerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/data': {
-      id: '/data'
-      path: '/data'
-      fullPath: '/data'
-      preLoaderRoute: typeof DataRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/act': {
@@ -373,11 +437,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuizIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/leaderboard/': {
+      id: '/leaderboard/'
+      path: '/leaderboard'
+      fullPath: '/leaderboard/'
+      preLoaderRoute: typeof LeaderboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quiz/$slug': {
       id: '/quiz/$slug'
       path: '/quiz/$slug'
       fullPath: '/quiz/$slug'
       preLoaderRoute: typeof QuizSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leaderboard/$citySlug': {
+      id: '/leaderboard/$citySlug'
+      path: '/leaderboard/$citySlug'
+      fullPath: '/leaderboard/$citySlug'
+      preLoaderRoute: typeof LeaderboardCitySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/uv-solar': {
@@ -450,11 +528,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiQuizzesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cities/': {
+      id: '/api/cities/'
+      path: '/api/cities'
+      fullPath: '/api/cities/'
+      preLoaderRoute: typeof ApiCitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/user/city': {
+      id: '/api/user/city'
+      path: '/api/user/city'
+      fullPath: '/api/user/city'
+      preLoaderRoute: typeof ApiUserCityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/quizzes/generate': {
+      id: '/api/quizzes/generate'
+      path: '/api/quizzes/generate'
+      fullPath: '/api/quizzes/generate'
+      preLoaderRoute: typeof ApiQuizzesGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/quizzes/$slug': {
       id: '/api/quizzes/$slug'
       path: '/api/quizzes/$slug'
       fullPath: '/api/quizzes/$slug'
       preLoaderRoute: typeof ApiQuizzesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/geocode/place': {
+      id: '/api/geocode/place'
+      path: '/api/geocode/place'
+      fullPath: '/api/geocode/place'
+      preLoaderRoute: typeof ApiGeocodePlaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/geocode/autocomplete': {
+      id: '/api/geocode/autocomplete'
+      path: '/api/geocode/autocomplete'
+      fullPath: '/api/geocode/autocomplete'
+      preLoaderRoute: typeof ApiGeocodeAutocompleteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cities/$slug': {
+      id: '/api/cities/$slug'
+      path: '/api/cities/$slug'
+      fullPath: '/api/cities/$slug'
+      preLoaderRoute: typeof ApiCitiesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -489,9 +609,7 @@ const ApiQuizzesSlugRouteWithChildren = ApiQuizzesSlugRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActRoute: ActRoute,
-  DataRoute: DataRoute,
   ExplorerRoute: ExplorerRoute,
-  LeaderboardRoute: LeaderboardRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   ApiAirQualityRoute: ApiAirQualityRoute,
@@ -503,10 +621,18 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOceanRoute: ApiOceanRoute,
   ApiPlacesRoute: ApiPlacesRoute,
   ApiUvSolarRoute: ApiUvSolarRoute,
+  LeaderboardCitySlugRoute: LeaderboardCitySlugRoute,
   QuizSlugRoute: QuizSlugRoute,
+  LeaderboardIndexRoute: LeaderboardIndexRoute,
   QuizIndexRoute: QuizIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiCitiesSlugRoute: ApiCitiesSlugRoute,
+  ApiGeocodeAutocompleteRoute: ApiGeocodeAutocompleteRoute,
+  ApiGeocodePlaceRoute: ApiGeocodePlaceRoute,
   ApiQuizzesSlugRoute: ApiQuizzesSlugRouteWithChildren,
+  ApiQuizzesGenerateRoute: ApiQuizzesGenerateRoute,
+  ApiUserCityRoute: ApiUserCityRoute,
+  ApiCitiesIndexRoute: ApiCitiesIndexRoute,
   ApiQuizzesIndexRoute: ApiQuizzesIndexRoute,
 }
 export const routeTree = rootRouteImport

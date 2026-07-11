@@ -12,7 +12,7 @@ if (!url) {
 export const testClient = postgres(url, { max: 5 });
 export const testDb = drizzle(testClient, { schema });
 
-/** Wipe quiz/attempt/user rows between tests. */
+/** Wipe quiz/attempt/user/city rows between tests. */
 export async function resetDb() {
-	await testClient`truncate table quiz_attempts, questions, quizzes, "user" restart identity cascade`;
+	await testClient`truncate table user_cities, quiz_attempts, questions, quizzes, cities, "user" restart identity cascade`;
 }

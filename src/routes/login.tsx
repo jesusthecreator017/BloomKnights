@@ -77,7 +77,7 @@ function LoginPage() {
 			<div className="mb-6 flex flex-col items-center text-center">
 				<Leaf className="h-8 w-8 text-forest-400" />
 				<h1 className="mt-3 text-2xl font-bold">Join BloomKnights</h1>
-				<p className="mt-1 text-sm text-white/60">
+				<p className="mt-1 text-sm text-muted-foreground">
 					Track your impact and find clean-energy actions near you.
 				</p>
 			</div>

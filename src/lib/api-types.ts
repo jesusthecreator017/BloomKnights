@@ -97,6 +97,21 @@ export interface EmissionsResponse {
 	data: EmissionsEntry[];
 }
 
+export interface PlaceSuggestion {
+	placeId: string;
+	text: string;
+}
+
+export interface PlaceAutocompleteResponse {
+	suggestions: PlaceSuggestion[];
+}
+
+export interface PlaceDetailsResponse {
+	formattedAddress: string;
+	lat: number;
+	lng: number;
+}
+
 export interface EcoEvent {
 	id: string;
 	name: string;
@@ -113,8 +128,13 @@ export interface QuizSummary {
 	slug: string;
 	title: string;
 	category: string;
+	createdBy: string | null;
 	questionCount: number;
 	totalPoints: number;
+}
+
+export interface GenerateQuizRequest {
+	topic?: string;
 }
 
 export interface QuizQuestion {
@@ -161,4 +181,33 @@ export interface LeaderboardEntry {
 export interface LeaderboardResponse {
 	entries: LeaderboardEntry[];
 	me: LeaderboardEntry | null;
+}
+
+export interface City {
+	slug: string;
+	name: string;
+	country: string;
+}
+
+export interface CityLeaderboardEntry {
+	rank: number;
+	slug: string;
+	name: string;
+	country: string;
+	points: number;
+	memberCount: number;
+}
+
+export interface CitiesResponse {
+	cities: CityLeaderboardEntry[];
+}
+
+export interface CityDetailResponse {
+	city: City;
+	entries: LeaderboardEntry[];
+	me: LeaderboardEntry | null;
+}
+
+export interface UserCityResponse {
+	city: City | null;
 }

@@ -7,7 +7,7 @@ export const Route = createFileRoute("/explorer")({ component: ExplorerPage });
 
 function MapFallback() {
 	return (
-		<div className="flex h-full items-center justify-center text-white/50">
+		<div className="flex h-full items-center justify-center text-muted-foreground">
 			Loading map…
 		</div>
 	);

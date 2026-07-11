@@ -67,7 +67,7 @@ function Home() {
 						You can shrink it.
 					</span>
 				</h1>
-				<p className="mx-auto mt-4 max-w-2xl text-lg text-white/70">
+				<p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
 					See the real environmental cost of daily habits, check the air you're
 					breathing right now, and find clean-energy actions and events near
 					you.
@@ -79,7 +79,11 @@ function Home() {
 						</GlassButton>
 					</Link>
 					<Link to="/act">
-						<GlassButton variant="outline" size="lg">
+						<GlassButton
+							variant="outline"
+							size="lg"
+							className="border-foreground/40 text-foreground hover:border-foreground/60 hover:bg-foreground/10"
+						>
 							Start acting today
 						</GlassButton>
 					</Link>
@@ -87,7 +91,7 @@ function Home() {
 			</section>
 
 			<section className="mt-20">
-				<h2 className="text-center text-2xl font-semibold text-white/90">
+				<h2 className="text-center text-2xl font-semibold text-foreground/90">
 					The damage adds up daily
 				</h2>
 				<div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -111,7 +115,7 @@ function Home() {
 			</section>
 
 			<section className="mt-20">
-				<h2 className="text-center text-2xl font-semibold text-white/90">
+				<h2 className="text-center text-2xl font-semibold text-foreground/90">
 					Community progress this month
 				</h2>
 				<GlassCard glowEffect={false} className="mx-auto mt-8 max-w-2xl">

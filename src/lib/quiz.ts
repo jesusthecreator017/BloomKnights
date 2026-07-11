@@ -1,8 +1,11 @@
 import { asc, desc, eq, sql } from "drizzle-orm";
 import type { db as appDb } from "../db";
 import { questions, quizAttempts, quizzes, user } from "../db/schema";
+import { bust, cached } from "./cache";
 
 type DB = typeof appDb;
+
+const LEADERBOARD_TTL_MS = 15_000;
 
 export async function listQuizzes(db: DB) {
 	return db
@@ -92,6 +95,7 @@ export async function submitQuiz(
 
 	try {
 		await db.insert(quizAttempts).values({ userId, quizId: quiz.id, score });
+		bust("leaderboard:"); // scores changed — drop cached rankings
 	} catch (err) {
 		// unique(userId, quizId) violation → already attempted
 		// drizzle wraps the PostgresError, so the code may live on err.cause
@@ -111,18 +115,22 @@ export async function submitQuiz(
 }
 
 export async function getLeaderboard(db: DB, limit = 20, userId?: string) {
-	const top = await db
-		.select({
-			userId: quizAttempts.userId,
-			name: user.name,
-			points: sql<number>`sum(${quizAttempts.score})::int`,
-			quizzesTaken: sql<number>`count(*)::int`,
-		})
-		.from(quizAttempts)
-		.innerJoin(user, eq(user.id, quizAttempts.userId))
-		.groupBy(quizAttempts.userId, user.name)
-		.orderBy(desc(sql`sum(${quizAttempts.score})`))
-		.limit(limit);
+	// The top-N aggregate is identical for everyone, so cache it briefly; the
+	// per-user `me` below stays live. Busted on every quiz submit.
+	const top = await cached(`leaderboard:top:${limit}`, LEADERBOARD_TTL_MS, () =>
+		db
+			.select({
+				userId: quizAttempts.userId,
+				name: user.name,
+				points: sql<number>`sum(${quizAttempts.score})::int`,
+				quizzesTaken: sql<number>`count(*)::int`,
+			})
+			.from(quizAttempts)
+			.innerJoin(user, eq(user.id, quizAttempts.userId))
+			.groupBy(quizAttempts.userId, user.name)
+			.orderBy(desc(sql`sum(${quizAttempts.score})`))
+			.limit(limit),
+	);
 
 	const entries = top.map((row, i) => ({ rank: i + 1, ...row }));
 

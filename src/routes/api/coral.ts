@@ -1,7 +1,13 @@
 // side-effect import: registers the `server` route option types from TanStack Start
 import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
-import { fetchUpstream, jsonError, parseLatLng } from "../../lib/api-utils";
+import {
+	fetchUpstream,
+	geoCacheKey,
+	jsonError,
+	parseLatLng,
+	TTL,
+} from "../../lib/api-utils";
 
 // NOAA Coral Reef Watch bleaching alert area, 0=none .. 4=alert level 2
 const ALERT_LABELS = [
@@ -31,6 +37,8 @@ export const Route = createFileRoute("/api/coral")({
 
 				const result = await fetchUpstream(upstream, {
 					name: "NOAA Coral Reef Watch",
+					cacheKey: geoCacheKey("coral", coords.lat, coords.lng),
+					ttlMs: TTL.daily,
 				});
 				if (!result.ok) return result.response;
 

@@ -1,7 +1,13 @@
 // side-effect import: registers the `server` route option types from TanStack Start
 import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
-import { fetchUpstream, jsonError, parseLatLng } from "../../lib/api-utils";
+import {
+	fetchUpstream,
+	geoCacheKey,
+	jsonError,
+	parseLatLng,
+	TTL,
+} from "../../lib/api-utils";
 
 export const Route = createFileRoute("/api/air-quality")({
 	server: {
@@ -21,7 +27,11 @@ export const Route = createFileRoute("/api/air-quality")({
 					"us_aqi,pm2_5,pm10,carbon_monoxide,nitrogen_dioxide,ozone",
 				);
 
-				const result = await fetchUpstream(upstream, { name: "Open-Meteo" });
+				const result = await fetchUpstream(upstream, {
+					name: "Open-Meteo",
+					cacheKey: geoCacheKey("air-quality", coords.lat, coords.lng),
+					ttlMs: TTL.weather,
+				});
 				if (!result.ok) return result.response;
 				return Response.json(result.data, {
 					headers: { "cache-control": "public, max-age=300" },

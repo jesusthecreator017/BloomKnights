@@ -1,7 +1,13 @@
 // side-effect import: registers the `server` route option types from TanStack Start
 import "@tanstack/react-start";
 import { createFileRoute } from "@tanstack/react-router";
-import { fetchUpstream, jsonError, parseLatLng } from "../../lib/api-utils";
+import {
+	fetchUpstream,
+	geoCacheKey,
+	jsonError,
+	parseLatLng,
+	TTL,
+} from "../../lib/api-utils";
 
 interface ObisResponse {
 	total: number;
@@ -29,7 +35,11 @@ export const Route = createFileRoute("/api/marine-life")({
 				upstream.searchParams.set("geometry", poly);
 				upstream.searchParams.set("size", "200");
 
-				const result = await fetchUpstream(upstream, { name: "OBIS" });
+				const result = await fetchUpstream(upstream, {
+					name: "OBIS",
+					cacheKey: geoCacheKey("marine-life", coords.lat, coords.lng),
+					ttlMs: TTL.rare,
+				});
 				if (!result.ok) return result.response;
 
 				const obis = result.data as ObisResponse;

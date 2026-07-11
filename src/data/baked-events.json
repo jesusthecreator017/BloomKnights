@@ -1,1 +1,345 @@
-{}
+{
+	"nyc": {
+		"name": "New York City",
+		"lat": 40.7128,
+		"lng": -74.006,
+		"events": [
+			{
+				"id": "nyc-parks-stewardship",
+				"name": "NYC Parks Volunteer Stewardship Day",
+				"description": "Tree and shrub planting, invasive removal, and street-tree care across NYC parks — hundreds of dates through December.",
+				"category": "planting",
+				"date": "2026-08-08",
+				"lat": 40.7829,
+				"lng": -73.9654,
+				"city": "New York City",
+				"url": "https://www.nycgovparks.org/events/volunteer",
+				"volunteerUrl": "https://www.nycgovparks.org/reg/stewardship"
+			},
+			{
+				"id": "nyc-east-river-cleanup",
+				"name": "East River Esplanade Cleanup",
+				"description": "Waterfront litter cleanup along the East River Esplanade with Alliance for Kips Bay.",
+				"category": "cleanup",
+				"date": "2026-08-15",
+				"lat": 40.7398,
+				"lng": -73.9713,
+				"city": "New York City",
+				"url": "https://www.nycgovparks.org/events/volunteer"
+			}
+		]
+	},
+	"los-angeles": {
+		"name": "Los Angeles",
+		"lat": 34.0522,
+		"lng": -118.2437,
+		"events": [
+			{
+				"id": "la-coastal-cleanup-day",
+				"name": "California Coastal Cleanup Day (LA County)",
+				"description": "Heal the Bay coordinates thousands of volunteers at 50 sites across LA County — beach cleanups, habitat restoration, and underwater dives.",
+				"category": "cleanup",
+				"date": "2026-09-19",
+				"lat": 34.0095,
+				"lng": -118.4977,
+				"city": "Los Angeles",
+				"url": "https://healthebay.org/coastalcleanupday/",
+				"volunteerUrl": "https://healthebay.org/coastalcleanupday/"
+			},
+			{
+				"id": "la-surfrider-monthly",
+				"name": "Surfrider LA Monthly Beach Cleanup",
+				"description": "Monthly volunteer beach cleanups across LA County beaches with the Surfrider Foundation LA chapter.",
+				"category": "cleanup",
+				"date": "2026-08-16",
+				"lat": 33.985,
+				"lng": -118.4695,
+				"city": "Los Angeles",
+				"url": "https://www.eventbrite.com/d/ca--los-angeles/beach-clean-up/"
+			}
+		]
+	},
+	"chicago": {
+		"name": "Chicago",
+		"lat": 41.8781,
+		"lng": -87.6298,
+		"events": [
+			{
+				"id": "chi-litter-free-river",
+				"name": "Litter Free Chicago River Cleanup",
+				"description": "Community litter cleanup and habitat management at Canal Origins Park with Friends of the Chicago River — last Saturday of the month through October.",
+				"category": "cleanup",
+				"date": "2026-08-29",
+				"lat": 41.8434,
+				"lng": -87.6631,
+				"city": "Chicago",
+				"url": "https://www.chicagoriver.org/get-involved/volunteer",
+				"volunteerUrl": "https://www.chicagoriver.org/get-involved/volunteer/chicago-river-eco-warriors-crew"
+			},
+			{
+				"id": "chi-stewardship-days",
+				"name": "Natural Areas Community Stewardship Day",
+				"description": "Native planting, invasive removal, and litter pickup at Chicago Park District natural areas including Garfield Park and Big Marsh.",
+				"category": "planting",
+				"date": "2026-09-12",
+				"lat": 41.7233,
+				"lng": -87.5698,
+				"city": "Chicago",
+				"url": "https://www.chicagoparkdistrict.com/get-involved/volunteer/natural-areas-community-stewardship-days"
+			}
+		]
+	},
+	"orlando": {
+		"name": "Orlando",
+		"lat": 28.5383,
+		"lng": -81.3792,
+		"events": [
+			{
+				"id": "orl-ideas-hive",
+				"name": "IDEAS For Us Orlando Hive",
+				"description": "Monthly environmental action meetup in Winter Park — first Wednesday of each month, leads into local eco-action projects.",
+				"category": "talk",
+				"date": "2026-08-05",
+				"lat": 28.5999,
+				"lng": -81.3392,
+				"city": "Orlando",
+				"url": "https://ideasforus.org/branches/orlando/volunteer-opportunities-in-orlando/",
+				"volunteerUrl": "https://ideasforus.org/branches/orlando/volunteer-opportunities-in-orlando/"
+			},
+			{
+				"id": "orl-keep-orlando-beautiful",
+				"name": "Keep Orlando Beautiful Cleanup",
+				"description": "City-run community litter cleanups and lake shore beautification events throughout the year.",
+				"category": "cleanup",
+				"date": "2026-08-22",
+				"lat": 28.5383,
+				"lng": -81.3792,
+				"city": "Orlando",
+				"url": "https://www.orlando.gov/Our-Government/Departments-Offices/Public-Works/Streets-and-Stormwater-Division/Keep-Orlando-Beautiful/Become-a-Volunteer-for-Keep-Orlando-Beautiful"
+			},
+			{
+				"id": "orl-wetlands-volunteer",
+				"name": "Orlando Wetlands Volunteer Day",
+				"description": "Gardening, restoration, and tour support at the Orlando Wetlands Park in Christmas, FL.",
+				"category": "planting",
+				"date": "2026-09-05",
+				"lat": 28.5734,
+				"lng": -81.0206,
+				"city": "Orlando",
+				"url": "https://www.orlando.gov/Our-Government/Departments-Offices/Public-Works/Water-Reclamation-Division/Orlando-Wetlands/Volunteer-at-the-Orlando-Wetlands"
+			}
+		]
+	},
+	"san-francisco": {
+		"name": "San Francisco",
+		"lat": 37.7749,
+		"lng": -122.4194,
+		"events": [
+			{
+				"id": "sf-ocean-beach-cleanup",
+				"name": "Ocean Beach Clean-up",
+				"description": "Monthly first-Saturday beach cleanup with the Golden Gate National Parks Conservancy, 10am-1pm.",
+				"category": "cleanup",
+				"date": "2026-08-01",
+				"lat": 37.7594,
+				"lng": -122.5107,
+				"city": "San Francisco",
+				"url": "https://www.parksconservancy.org/programs/ocean-beach-clean-ups",
+				"volunteerUrl": "https://www.parksconservancy.org/volunteer/habitat-restoration-volunteering"
+			},
+			{
+				"id": "sf-coastal-cleanup-day",
+				"name": "California Coastal Cleanup Day (SF)",
+				"description": "California's largest volunteer event — cleanups at beaches and waterways across the Bay Area, including the Treasure Island Trashure Hunt.",
+				"category": "cleanup",
+				"date": "2026-09-19",
+				"lat": 37.8235,
+				"lng": -122.3705,
+				"city": "San Francisco",
+				"url": "https://www.coastal.ca.gov/publiced/ccd/ccd.html",
+				"volunteerUrl": "https://www.calparks.org/coastalcleanup"
+			}
+		]
+	},
+	"seattle": {
+		"name": "Seattle",
+		"lat": 47.6062,
+		"lng": -122.3321,
+		"events": [
+			{
+				"id": "sea-green-seattle",
+				"name": "Green Seattle Partnership Forest Restoration",
+				"description": "Invasive removal, native planting, and trail work across Seattle's forested parks — dozens of dates on the CEDAR calendar.",
+				"category": "planting",
+				"date": "2026-08-15",
+				"lat": 47.5721,
+				"lng": -122.4076,
+				"city": "Seattle",
+				"url": "https://greenseattle.org/get-involved/volunteer/",
+				"volunteerUrl": "https://seattle.greencitypartnerships.org/event/map/"
+			}
+		]
+	},
+	"austin": {
+		"name": "Austin",
+		"lat": 30.2672,
+		"lng": -97.7431,
+		"events": [
+			{
+				"id": "atx-clean-streets-day",
+				"name": "Clean Streets Day",
+				"description": "Keep Austin Beautiful's citywide street and creek cleanup day.",
+				"category": "cleanup",
+				"date": "2026-09-19",
+				"lat": 30.2672,
+				"lng": -97.7431,
+				"city": "Austin",
+				"url": "https://keepaustinbeautiful.org/volunteer/clean-streets-day/",
+				"volunteerUrl": "https://keepaustinbeautiful.org/volunteer/"
+			},
+			{
+				"id": "atx-lady-bird-lake",
+				"name": "Clean Lady Bird Lake",
+				"description": "Shoreline, kayak, and paddleboard cleanup of Lady Bird Lake with Keep Austin Beautiful — every other month.",
+				"category": "cleanup",
+				"date": "2026-08-08",
+				"lat": 30.2565,
+				"lng": -97.7445,
+				"city": "Austin",
+				"url": "https://keepaustinbeautiful.org/volunteer/clean-lady-bird-lake/"
+			}
+		]
+	},
+	"denver": {
+		"name": "Denver",
+		"lat": 39.7392,
+		"lng": -104.9903,
+		"events": [
+			{
+				"id": "den-greenway-stewardship",
+				"name": "Greenway Foundation Stewardship Day",
+				"description": "South Platte River and riverside park restoration — debris removal, trail repair, and trash pickup.",
+				"category": "cleanup",
+				"date": "2026-08-15",
+				"lat": 39.7541,
+				"lng": -105.0071,
+				"city": "Denver",
+				"url": "https://thegreenwayfoundation.org/events/stewardship/",
+				"volunteerUrl": "https://thegreenwayfoundation.org/events/stewardship/"
+			},
+			{
+				"id": "den-groundwork-planting",
+				"name": "Groundwork Denver Tree Planting",
+				"description": "Year-round creek cleanups and neighborhood tree plantings with Groundwork Denver.",
+				"category": "planting",
+				"date": "2026-09-12",
+				"lat": 39.7392,
+				"lng": -104.9903,
+				"city": "Denver",
+				"url": "https://groundworkcolorado.org/get-involved/get-involved-volunteer/"
+			}
+		]
+	},
+	"miami": {
+		"name": "Miami",
+		"lat": 25.7617,
+		"lng": -80.1918,
+		"events": [
+			{
+				"id": "mia-adopt-a-tree",
+				"name": "Miami-Dade Adopt-a-Tree at Zoo Miami",
+				"description": "Free trees for Miami-Dade homeowners plus planting guidance — fall event at Zoo Miami, 8:30-11:30am.",
+				"category": "planting",
+				"date": "2026-09-12",
+				"lat": 25.608,
+				"lng": -80.4,
+				"city": "Miami",
+				"url": "https://ediblesouthflorida.ediblecommunities.com/things-do/miami-dade-launches-2026-adopt-a-tree-events/"
+			},
+			{
+				"id": "mia-deering-action-day",
+				"name": "Deering Estate Community Action Day",
+				"description": "Second-Saturday habitat restoration at the Deering Estate — invasive removal, planting, mulching, and litter cleanup.",
+				"category": "planting",
+				"date": "2026-10-10",
+				"lat": 25.6151,
+				"lng": -80.3097,
+				"city": "Miami",
+				"url": "https://deeringestate.org/events/community-action-days/",
+				"volunteerUrl": "https://deeringestate.org/events/community-action-days/"
+			},
+			{
+				"id": "mia-volunteer-cleanup",
+				"name": "VolunteerCleanup.org Shoreline Cleanup",
+				"description": "Recurring shoreline and mangrove cleanups across Miami-Dade — multiple sites every weekend.",
+				"category": "cleanup",
+				"date": "2026-08-08",
+				"lat": 25.7617,
+				"lng": -80.1918,
+				"city": "Miami",
+				"url": "https://volunteercleanup.org/events/",
+				"volunteerUrl": "https://volunteercleanup.org/events/"
+			}
+		]
+	},
+	"boston": {
+		"name": "Boston",
+		"lat": 42.3601,
+		"lng": -71.0589,
+		"events": [
+			{
+				"id": "bos-harbor-now",
+				"name": "Boston Harbor Now Volunteer Day",
+				"description": "Harbor and waterfront cleanups, planting, and invasive clearing across Boston's harbor and islands.",
+				"category": "cleanup",
+				"date": "2026-08-22",
+				"lat": 42.3554,
+				"lng": -71.0433,
+				"city": "Boston",
+				"url": "https://www.bostonharbornow.org/volunteer/",
+				"volunteerUrl": "https://www.bostonharbornow.org/volunteer/"
+			},
+			{
+				"id": "bos-green-infrastructure",
+				"name": "Boston Green Infrastructure Volunteer Day",
+				"description": "Help maintain rain gardens and green stormwater infrastructure with the City of Boston.",
+				"category": "planting",
+				"date": "2026-09-12",
+				"lat": 42.3601,
+				"lng": -71.0589,
+				"city": "Boston",
+				"url": "https://www.boston.gov/departments/green-infrastructure/green-infrastructure-volunteer-opportunities"
+			}
+		]
+	},
+	"houston": {
+		"name": "Houston",
+		"lat": 29.7604,
+		"lng": -95.3698,
+		"events": [
+			{
+				"id": "hou-national-cleanup-day",
+				"name": "National CleanUp Day Houston",
+				"description": "Citywide volunteer cleanup — third Saturday in September, sites across Houston.",
+				"category": "cleanup",
+				"date": "2026-09-19",
+				"lat": 29.7604,
+				"lng": -95.3698,
+				"city": "Houston",
+				"url": "https://www.nationalcleanupday.org/houston",
+				"volunteerUrl": "https://www.nationalcleanupday.org/houston"
+			},
+			{
+				"id": "hou-buffalo-bayou",
+				"name": "Buffalo Bayou Monthly Volunteer Day",
+				"description": "Monthly bayou cleanup and greenspace maintenance with Buffalo Bayou Partnership.",
+				"category": "cleanup",
+				"date": "2026-08-08",
+				"lat": 29.7622,
+				"lng": -95.3834,
+				"city": "Houston",
+				"url": "https://www.buffalobayou.org/volunteer/"
+			}
+		]
+	}
+}

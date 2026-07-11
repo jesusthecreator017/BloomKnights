@@ -1,0 +1,63 @@
+# Production stack for the Raspberry Pi (ARM64). Fixed project name so the
+# Postgres volume survives across auto-deploys.
+#   docker compose -f compose.prod.yml up -d --build
+name: bloomknights
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-bloom}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-bloom}
+      POSTGRES_DB: ${POSTGRES_DB:-bloomknights}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bloom} -d ${POSTGRES_DB:-bloomknights}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    # no host port published — only reachable inside the compose network
+
+  # one-shot: sync schema + seed, then exit. app waits for it to finish.
+  migrate:
+    build:
+      context: .
+      target: builder
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "bun run db:push && bun run db:seed"
+    restart: "no"
+
+  app:
+    build:
+      context: .
+      target: runtime
+    env_file: .env
+    environment:
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    expose:
+      - "3000"
+    restart: unless-stopped
+
+  # Cloudflare Tunnel: dials out to Cloudflare, routes your domain -> app:3000.
+  # Configure the public hostname (-> http://app:3000) in the Zero Trust dashboard.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    depends_on:
+      - app
+
+volumes:
+  db-data:

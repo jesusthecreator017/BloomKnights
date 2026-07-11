@@ -1,0 +1,36 @@
+name: Deploy to Pi
+
+# Runs on the self-hosted runner on the Raspberry Pi. Secrets live in GitHub
+# (Settings > Secrets and variables > Actions), never in the repo.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-pi
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, ARM64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write .env from secrets
+        run: |
+          cat > .env <<EOF
+          DATABASE_URL=postgres://bloom:bloom@db:5432/bloomknights
+          POSTGRES_USER=bloom
+          POSTGRES_PASSWORD=bloom
+          POSTGRES_DB=bloomknights
+          BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}
+          TUNNEL_TOKEN=${{ secrets.TUNNEL_TOKEN }}
+          EOF
+
+      - name: Build and (re)start the stack
+        run: docker compose -f compose.prod.yml up -d --build --remove-orphans
+
+      - name: Prune dangling images
+        run: docker image prune -f

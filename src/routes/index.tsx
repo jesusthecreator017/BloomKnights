@@ -1,5 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Car, Flame, Trash2, Zap } from "lucide-react";
+import {
+	ArrowRight,
+	Car,
+	ClipboardList,
+	Flame,
+	ListChecks,
+	MapPinned,
+	Trash2,
+	Trophy,
+	Zap,
+} from "lucide-react";
 import { GlassButton } from "#/components/ui/glass-button";
 import {
 	GlassCard,
@@ -43,6 +53,37 @@ const dailyDamage = [
 	},
 ] as const;
 
+const features = [
+	{
+		icon: MapPinned,
+		title: "Live map & Explorer",
+		description:
+			"Real-time air quality, UV, ocean, and reef data anywhere you look, plus real local clean-energy events, volunteer initiatives, and live weather emergencies near you.",
+		to: "/map" as const,
+	},
+	{
+		icon: ClipboardList,
+		title: "Quizzes, grounded in real data",
+		description:
+			"Standard and Gemini-generated quizzes sourced from EPA, UN, and NOAA figures — learn the facts behind the footprint, not trivia.",
+		to: "/quiz" as const,
+	},
+	{
+		icon: Trophy,
+		title: "City & individual leaderboards",
+		description:
+			"Compete on quiz points with your city, or check a live Environmental Score built from real air-quality data — updated daily.",
+		to: "/leaderboard" as const,
+	},
+	{
+		icon: ListChecks,
+		title: "Resources",
+		description:
+			"Concrete clean-energy actions — community solar, heat pumps, repair over replace — next to live US emissions data for context.",
+		to: "/resources" as const,
+	},
+] as const;
+
 const communityGoals = [
 	{ label: "CO2 offset this month", current: 3120, target: 5000, unit: "kg" },
 	{ label: "Clean-energy events joined", current: 84, target: 150, unit: "" },
@@ -59,7 +100,7 @@ function Home() {
 		<div className="mx-auto max-w-6xl px-4 py-16">
 			<section className="text-center">
 				<p className="font-semibold text-forest-400 text-sm uppercase tracking-widest">
-					BloomKnights
+					Ecoverse · Clean Energy Solution
 				</p>
 				<h1 className="mx-auto mt-3 max-w-3xl text-5xl font-bold leading-tight tracking-tight">
 					Everyday life has a footprint.{" "}
@@ -68,9 +109,10 @@ function Home() {
 					</span>
 				</h1>
 				<p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-					See the real environmental cost of daily habits, check the air you're
-					breathing right now, and find clean-energy actions and events near
-					you.
+					Ecoverse turns clean-energy awareness into action: a live map of real
+					environmental data and local initiatives, facts-grounded quizzes, a
+					leaderboard driven by real air-quality data, and concrete steps you
+					can take today.
 				</p>
 				<div className="mt-8 flex items-center justify-center gap-4">
 					<Link to="/map">
@@ -78,15 +120,34 @@ function Home() {
 							Explore the live map <ArrowRight className="ml-2 h-4 w-4" />
 						</GlassButton>
 					</Link>
-					<Link to="/act">
-						<GlassButton
-							variant="outline"
-							size="lg"
-							className="border-foreground/40 text-foreground hover:border-foreground/60 hover:bg-foreground/10"
-						>
+					<Link to="/resources">
+						<GlassButton variant="outline" size="lg">
 							Start acting today
 						</GlassButton>
 					</Link>
+				</div>
+			</section>
+
+			<section className="mt-20">
+				<h2 className="text-center text-2xl font-semibold text-foreground/90">
+					What Ecoverse does
+				</h2>
+				<div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+					{features.map((feature) => (
+						<Link key={feature.title} to={feature.to}>
+							<GlassCard className="h-full transition hover:-translate-y-0.5">
+								<GlassCardHeader>
+									<feature.icon className="h-6 w-6 text-forest-400" />
+									<GlassCardTitle className="mt-2 text-lg">
+										{feature.title}
+									</GlassCardTitle>
+								</GlassCardHeader>
+								<GlassCardContent>
+									<p className="text-sm text-white/60">{feature.description}</p>
+								</GlassCardContent>
+							</GlassCard>
+						</Link>
+					))}
 				</div>
 			</section>
 

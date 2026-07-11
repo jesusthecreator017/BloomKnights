@@ -1,4 +1,4 @@
-# 🌱 BloomKnights
+# 🌱 Ecoverse
 
 ## Quick start
 
@@ -30,7 +30,7 @@ Postgres runs in Docker (`docker-compose.yml`), accessed through **Drizzle ORM**
 
 ### Tests
 
-Integration tests run against the `bloomknights_test` database (created automatically by `db:up`):
+Integration tests run against the `bloomknights_test` database (created automatically by `db:up` — the database identifiers stay `bloomknights`/`bloom` under the hood even though the product is now called Ecoverse):
 
 ```bash
 bun run db:push:test   # once, to create test tables

@@ -9,20 +9,22 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ExplorerRouteImport } from './routes/explorer'
-import { Route as ActRouteImport } from './routes/act'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuizIndexRouteImport } from './routes/quiz/index'
 import { Route as LeaderboardIndexRouteImport } from './routes/leaderboard/index'
 import { Route as QuizSlugRouteImport } from './routes/quiz/$slug'
 import { Route as LeaderboardCitySlugRouteImport } from './routes/leaderboard/$citySlug'
+import { Route as ApiWeatherAlertsRouteImport } from './routes/api/weather-alerts'
 import { Route as ApiUvSolarRouteImport } from './routes/api/uv-solar'
 import { Route as ApiPlacesRouteImport } from './routes/api/places'
 import { Route as ApiOceanRouteImport } from './routes/api/ocean'
 import { Route as ApiMarineLifeRouteImport } from './routes/api/marine-life'
 import { Route as ApiLeaderboardRouteImport } from './routes/api/leaderboard'
+import { Route as ApiInitiativesRouteImport } from './routes/api/initiatives'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiEmissionsRouteImport } from './routes/api/emissions'
 import { Route as ApiCoralRouteImport } from './routes/api/coral'
@@ -34,10 +36,18 @@ import { Route as ApiQuizzesGenerateRouteImport } from './routes/api/quizzes/gen
 import { Route as ApiQuizzesSlugRouteImport } from './routes/api/quizzes/$slug'
 import { Route as ApiGeocodePlaceRouteImport } from './routes/api/geocode/place'
 import { Route as ApiGeocodeAutocompleteRouteImport } from './routes/api/geocode/autocomplete'
+import { Route as ApiGeminiAskRouteImport } from './routes/api/gemini/ask'
+import { Route as ApiCitiesScoresRouteImport } from './routes/api/cities/scores'
 import { Route as ApiCitiesSlugRouteImport } from './routes/api/cities/$slug'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiQuizzesSlugSubmitRouteImport } from './routes/api/quizzes/$slug.submit'
+import { Route as ApiQuizzesSlugCheckRouteImport } from './routes/api/quizzes/$slug.check'
 
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapRoute = MapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -51,11 +61,6 @@ const LoginRoute = LoginRouteImport.update({
 const ExplorerRoute = ExplorerRouteImport.update({
   id: '/explorer',
   path: '/explorer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActRoute = ActRouteImport.update({
-  id: '/act',
-  path: '/act',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -83,6 +88,11 @@ const LeaderboardCitySlugRoute = LeaderboardCitySlugRouteImport.update({
   path: '/leaderboard/$citySlug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWeatherAlertsRoute = ApiWeatherAlertsRouteImport.update({
+  id: '/api/weather-alerts',
+  path: '/api/weather-alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiUvSolarRoute = ApiUvSolarRouteImport.update({
   id: '/api/uv-solar',
   path: '/api/uv-solar',
@@ -106,6 +116,11 @@ const ApiMarineLifeRoute = ApiMarineLifeRouteImport.update({
 const ApiLeaderboardRoute = ApiLeaderboardRouteImport.update({
   id: '/api/leaderboard',
   path: '/api/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiInitiativesRoute = ApiInitiativesRouteImport.update({
+  id: '/api/initiatives',
+  path: '/api/initiatives',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiEventsRoute = ApiEventsRouteImport.update({
@@ -163,6 +178,16 @@ const ApiGeocodeAutocompleteRoute = ApiGeocodeAutocompleteRouteImport.update({
   path: '/api/geocode/autocomplete',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiGeminiAskRoute = ApiGeminiAskRouteImport.update({
+  id: '/api/gemini/ask',
+  path: '/api/gemini/ask',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCitiesScoresRoute = ApiCitiesScoresRouteImport.update({
+  id: '/api/cities/scores',
+  path: '/api/cities/scores',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCitiesSlugRoute = ApiCitiesSlugRouteImport.update({
   id: '/api/cities/$slug',
   path: '/api/cities/$slug',
@@ -178,28 +203,37 @@ const ApiQuizzesSlugSubmitRoute = ApiQuizzesSlugSubmitRouteImport.update({
   path: '/submit',
   getParentRoute: () => ApiQuizzesSlugRoute,
 } as any)
+const ApiQuizzesSlugCheckRoute = ApiQuizzesSlugCheckRouteImport.update({
+  id: '/check',
+  path: '/check',
+  getParentRoute: () => ApiQuizzesSlugRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/act': typeof ActRoute
   '/explorer': typeof ExplorerRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/resources': typeof ResourcesRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/initiatives': typeof ApiInitiativesRoute
   '/api/leaderboard': typeof ApiLeaderboardRoute
   '/api/marine-life': typeof ApiMarineLifeRoute
   '/api/ocean': typeof ApiOceanRoute
   '/api/places': typeof ApiPlacesRoute
   '/api/uv-solar': typeof ApiUvSolarRoute
+  '/api/weather-alerts': typeof ApiWeatherAlertsRoute
   '/leaderboard/$citySlug': typeof LeaderboardCitySlugRoute
   '/quiz/$slug': typeof QuizSlugRoute
   '/leaderboard/': typeof LeaderboardIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cities/$slug': typeof ApiCitiesSlugRoute
+  '/api/cities/scores': typeof ApiCitiesScoresRoute
+  '/api/gemini/ask': typeof ApiGeminiAskRoute
   '/api/geocode/autocomplete': typeof ApiGeocodeAutocompleteRoute
   '/api/geocode/place': typeof ApiGeocodePlaceRoute
   '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
@@ -207,29 +241,34 @@ export interface FileRoutesByFullPath {
   '/api/user/city': typeof ApiUserCityRoute
   '/api/cities/': typeof ApiCitiesIndexRoute
   '/api/quizzes/': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/check': typeof ApiQuizzesSlugCheckRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/act': typeof ActRoute
   '/explorer': typeof ExplorerRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/resources': typeof ResourcesRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/initiatives': typeof ApiInitiativesRoute
   '/api/leaderboard': typeof ApiLeaderboardRoute
   '/api/marine-life': typeof ApiMarineLifeRoute
   '/api/ocean': typeof ApiOceanRoute
   '/api/places': typeof ApiPlacesRoute
   '/api/uv-solar': typeof ApiUvSolarRoute
+  '/api/weather-alerts': typeof ApiWeatherAlertsRoute
   '/leaderboard/$citySlug': typeof LeaderboardCitySlugRoute
   '/quiz/$slug': typeof QuizSlugRoute
   '/leaderboard': typeof LeaderboardIndexRoute
   '/quiz': typeof QuizIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cities/$slug': typeof ApiCitiesSlugRoute
+  '/api/cities/scores': typeof ApiCitiesScoresRoute
+  '/api/gemini/ask': typeof ApiGeminiAskRoute
   '/api/geocode/autocomplete': typeof ApiGeocodeAutocompleteRoute
   '/api/geocode/place': typeof ApiGeocodePlaceRoute
   '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
@@ -237,30 +276,35 @@ export interface FileRoutesByTo {
   '/api/user/city': typeof ApiUserCityRoute
   '/api/cities': typeof ApiCitiesIndexRoute
   '/api/quizzes': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/check': typeof ApiQuizzesSlugCheckRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/act': typeof ActRoute
   '/explorer': typeof ExplorerRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
+  '/resources': typeof ResourcesRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/initiatives': typeof ApiInitiativesRoute
   '/api/leaderboard': typeof ApiLeaderboardRoute
   '/api/marine-life': typeof ApiMarineLifeRoute
   '/api/ocean': typeof ApiOceanRoute
   '/api/places': typeof ApiPlacesRoute
   '/api/uv-solar': typeof ApiUvSolarRoute
+  '/api/weather-alerts': typeof ApiWeatherAlertsRoute
   '/leaderboard/$citySlug': typeof LeaderboardCitySlugRoute
   '/quiz/$slug': typeof QuizSlugRoute
   '/leaderboard/': typeof LeaderboardIndexRoute
   '/quiz/': typeof QuizIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cities/$slug': typeof ApiCitiesSlugRoute
+  '/api/cities/scores': typeof ApiCitiesScoresRoute
+  '/api/gemini/ask': typeof ApiGeminiAskRoute
   '/api/geocode/autocomplete': typeof ApiGeocodeAutocompleteRoute
   '/api/geocode/place': typeof ApiGeocodePlaceRoute
   '/api/quizzes/$slug': typeof ApiQuizzesSlugRouteWithChildren
@@ -268,31 +312,36 @@ export interface FileRoutesById {
   '/api/user/city': typeof ApiUserCityRoute
   '/api/cities/': typeof ApiCitiesIndexRoute
   '/api/quizzes/': typeof ApiQuizzesIndexRoute
+  '/api/quizzes/$slug/check': typeof ApiQuizzesSlugCheckRoute
   '/api/quizzes/$slug/submit': typeof ApiQuizzesSlugSubmitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/act'
     | '/explorer'
     | '/login'
     | '/map'
+    | '/resources'
     | '/api/air-quality'
     | '/api/coral'
     | '/api/emissions'
     | '/api/events'
+    | '/api/initiatives'
     | '/api/leaderboard'
     | '/api/marine-life'
     | '/api/ocean'
     | '/api/places'
     | '/api/uv-solar'
+    | '/api/weather-alerts'
     | '/leaderboard/$citySlug'
     | '/quiz/$slug'
     | '/leaderboard/'
     | '/quiz/'
     | '/api/auth/$'
     | '/api/cities/$slug'
+    | '/api/cities/scores'
+    | '/api/gemini/ask'
     | '/api/geocode/autocomplete'
     | '/api/geocode/place'
     | '/api/quizzes/$slug'
@@ -300,29 +349,34 @@ export interface FileRouteTypes {
     | '/api/user/city'
     | '/api/cities/'
     | '/api/quizzes/'
+    | '/api/quizzes/$slug/check'
     | '/api/quizzes/$slug/submit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/act'
     | '/explorer'
     | '/login'
     | '/map'
+    | '/resources'
     | '/api/air-quality'
     | '/api/coral'
     | '/api/emissions'
     | '/api/events'
+    | '/api/initiatives'
     | '/api/leaderboard'
     | '/api/marine-life'
     | '/api/ocean'
     | '/api/places'
     | '/api/uv-solar'
+    | '/api/weather-alerts'
     | '/leaderboard/$citySlug'
     | '/quiz/$slug'
     | '/leaderboard'
     | '/quiz'
     | '/api/auth/$'
     | '/api/cities/$slug'
+    | '/api/cities/scores'
+    | '/api/gemini/ask'
     | '/api/geocode/autocomplete'
     | '/api/geocode/place'
     | '/api/quizzes/$slug'
@@ -330,29 +384,34 @@ export interface FileRouteTypes {
     | '/api/user/city'
     | '/api/cities'
     | '/api/quizzes'
+    | '/api/quizzes/$slug/check'
     | '/api/quizzes/$slug/submit'
   id:
     | '__root__'
     | '/'
-    | '/act'
     | '/explorer'
     | '/login'
     | '/map'
+    | '/resources'
     | '/api/air-quality'
     | '/api/coral'
     | '/api/emissions'
     | '/api/events'
+    | '/api/initiatives'
     | '/api/leaderboard'
     | '/api/marine-life'
     | '/api/ocean'
     | '/api/places'
     | '/api/uv-solar'
+    | '/api/weather-alerts'
     | '/leaderboard/$citySlug'
     | '/quiz/$slug'
     | '/leaderboard/'
     | '/quiz/'
     | '/api/auth/$'
     | '/api/cities/$slug'
+    | '/api/cities/scores'
+    | '/api/gemini/ask'
     | '/api/geocode/autocomplete'
     | '/api/geocode/place'
     | '/api/quizzes/$slug'
@@ -360,30 +419,35 @@ export interface FileRouteTypes {
     | '/api/user/city'
     | '/api/cities/'
     | '/api/quizzes/'
+    | '/api/quizzes/$slug/check'
     | '/api/quizzes/$slug/submit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ActRoute: typeof ActRoute
   ExplorerRoute: typeof ExplorerRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
+  ResourcesRoute: typeof ResourcesRoute
   ApiAirQualityRoute: typeof ApiAirQualityRoute
   ApiCoralRoute: typeof ApiCoralRoute
   ApiEmissionsRoute: typeof ApiEmissionsRoute
   ApiEventsRoute: typeof ApiEventsRoute
+  ApiInitiativesRoute: typeof ApiInitiativesRoute
   ApiLeaderboardRoute: typeof ApiLeaderboardRoute
   ApiMarineLifeRoute: typeof ApiMarineLifeRoute
   ApiOceanRoute: typeof ApiOceanRoute
   ApiPlacesRoute: typeof ApiPlacesRoute
   ApiUvSolarRoute: typeof ApiUvSolarRoute
+  ApiWeatherAlertsRoute: typeof ApiWeatherAlertsRoute
   LeaderboardCitySlugRoute: typeof LeaderboardCitySlugRoute
   QuizSlugRoute: typeof QuizSlugRoute
   LeaderboardIndexRoute: typeof LeaderboardIndexRoute
   QuizIndexRoute: typeof QuizIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCitiesSlugRoute: typeof ApiCitiesSlugRoute
+  ApiCitiesScoresRoute: typeof ApiCitiesScoresRoute
+  ApiGeminiAskRoute: typeof ApiGeminiAskRoute
   ApiGeocodeAutocompleteRoute: typeof ApiGeocodeAutocompleteRoute
   ApiGeocodePlaceRoute: typeof ApiGeocodePlaceRoute
   ApiQuizzesSlugRoute: typeof ApiQuizzesSlugRouteWithChildren
@@ -395,6 +459,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/map': {
       id: '/map'
       path: '/map'
@@ -414,13 +485,6 @@ declare module '@tanstack/react-router' {
       path: '/explorer'
       fullPath: '/explorer'
       preLoaderRoute: typeof ExplorerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/act': {
-      id: '/act'
-      path: '/act'
-      fullPath: '/act'
-      preLoaderRoute: typeof ActRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -458,6 +522,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeaderboardCitySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/weather-alerts': {
+      id: '/api/weather-alerts'
+      path: '/api/weather-alerts'
+      fullPath: '/api/weather-alerts'
+      preLoaderRoute: typeof ApiWeatherAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/uv-solar': {
       id: '/api/uv-solar'
       path: '/api/uv-solar'
@@ -491,6 +562,13 @@ declare module '@tanstack/react-router' {
       path: '/api/leaderboard'
       fullPath: '/api/leaderboard'
       preLoaderRoute: typeof ApiLeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/initiatives': {
+      id: '/api/initiatives'
+      path: '/api/initiatives'
+      fullPath: '/api/initiatives'
+      preLoaderRoute: typeof ApiInitiativesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/events': {
@@ -570,6 +648,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiGeocodeAutocompleteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/gemini/ask': {
+      id: '/api/gemini/ask'
+      path: '/api/gemini/ask'
+      fullPath: '/api/gemini/ask'
+      preLoaderRoute: typeof ApiGeminiAskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cities/scores': {
+      id: '/api/cities/scores'
+      path: '/api/cities/scores'
+      fullPath: '/api/cities/scores'
+      preLoaderRoute: typeof ApiCitiesScoresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cities/$slug': {
       id: '/api/cities/$slug'
       path: '/api/cities/$slug'
@@ -591,14 +683,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiQuizzesSlugSubmitRouteImport
       parentRoute: typeof ApiQuizzesSlugRoute
     }
+    '/api/quizzes/$slug/check': {
+      id: '/api/quizzes/$slug/check'
+      path: '/check'
+      fullPath: '/api/quizzes/$slug/check'
+      preLoaderRoute: typeof ApiQuizzesSlugCheckRouteImport
+      parentRoute: typeof ApiQuizzesSlugRoute
+    }
   }
 }
 
 interface ApiQuizzesSlugRouteChildren {
+  ApiQuizzesSlugCheckRoute: typeof ApiQuizzesSlugCheckRoute
   ApiQuizzesSlugSubmitRoute: typeof ApiQuizzesSlugSubmitRoute
 }
 
 const ApiQuizzesSlugRouteChildren: ApiQuizzesSlugRouteChildren = {
+  ApiQuizzesSlugCheckRoute: ApiQuizzesSlugCheckRoute,
   ApiQuizzesSlugSubmitRoute: ApiQuizzesSlugSubmitRoute,
 }
 
@@ -608,25 +709,29 @@ const ApiQuizzesSlugRouteWithChildren = ApiQuizzesSlugRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ActRoute: ActRoute,
   ExplorerRoute: ExplorerRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
+  ResourcesRoute: ResourcesRoute,
   ApiAirQualityRoute: ApiAirQualityRoute,
   ApiCoralRoute: ApiCoralRoute,
   ApiEmissionsRoute: ApiEmissionsRoute,
   ApiEventsRoute: ApiEventsRoute,
+  ApiInitiativesRoute: ApiInitiativesRoute,
   ApiLeaderboardRoute: ApiLeaderboardRoute,
   ApiMarineLifeRoute: ApiMarineLifeRoute,
   ApiOceanRoute: ApiOceanRoute,
   ApiPlacesRoute: ApiPlacesRoute,
   ApiUvSolarRoute: ApiUvSolarRoute,
+  ApiWeatherAlertsRoute: ApiWeatherAlertsRoute,
   LeaderboardCitySlugRoute: LeaderboardCitySlugRoute,
   QuizSlugRoute: QuizSlugRoute,
   LeaderboardIndexRoute: LeaderboardIndexRoute,
   QuizIndexRoute: QuizIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCitiesSlugRoute: ApiCitiesSlugRoute,
+  ApiCitiesScoresRoute: ApiCitiesScoresRoute,
+  ApiGeminiAskRoute: ApiGeminiAskRoute,
   ApiGeocodeAutocompleteRoute: ApiGeocodeAutocompleteRoute,
   ApiGeocodePlaceRoute: ApiGeocodePlaceRoute,
   ApiQuizzesSlugRoute: ApiQuizzesSlugRouteWithChildren,

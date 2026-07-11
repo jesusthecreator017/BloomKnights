@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Fish, Recycle, Sun, Waves, Wind, X } from "lucide-react";
+import { AskGeminiBox } from "#/components/ask-gemini-box";
 import { GlassBadge } from "#/components/ui/glass-badge";
 import {
 	GlassCard,
@@ -196,6 +197,23 @@ export function LocationDetailPanel({
 					) : (
 						<p className="mt-1 text-sm text-white/50">Loading…</p>
 					)}
+				</GlassCardContent>
+			</GlassCard>
+
+			<GlassCard glowEffect={false}>
+				<GlassCardContent className="pt-6">
+					<AskGeminiBox
+						context={{
+							kind: "location",
+							name: address,
+							lat,
+							lng,
+							liveData:
+								aqi != null && aqiInfo
+									? `AQI ${aqi} (${aqiInfo.label})${uvSolar?.current ? `, UV index ${uvSolar.current.uv_index}` : ""}`
+									: undefined,
+						}}
+					/>
 				</GlassCardContent>
 			</GlassCard>
 		</div>

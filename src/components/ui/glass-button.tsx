@@ -15,12 +15,14 @@ const glassButtonVariants = cva(
 	{
 		variants: {
 			variant: {
+				// theme-aware (foreground/background tokens) since these sit
+				// directly on the page shell, not always on a dark glass card
 				default: cn(
-					"bg-white/20 backdrop-blur-xl border border-white/30 text-white",
-					"shadow-[0_4px_16px_rgba(0,0,0,0.2)]",
-					"hover:bg-white/30 hover:border-white/40",
+					"bg-foreground/10 backdrop-blur-xl border border-foreground/20 text-foreground",
+					"shadow-[0_4px_16px_rgba(0,0,0,0.12)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.2)]",
+					"hover:bg-foreground/15 hover:border-foreground/30",
 					"before:absolute before:inset-0 before:rounded-xl",
-					"before:bg-linear-to-b before:from-white/20 before:to-transparent before:pointer-events-none",
+					"before:bg-linear-to-b before:from-white/25 before:to-transparent before:pointer-events-none before:opacity-70",
 				),
 				primary: cn(
 					"bg-linear-to-r from-forest-500/80 via-forest-600/70 to-navy-700/80",
@@ -31,12 +33,12 @@ const glassButtonVariants = cva(
 					"before:bg-linear-to-b before:from-white/30 before:to-transparent before:pointer-events-none",
 				),
 				outline: cn(
-					"bg-transparent backdrop-blur-sm border-2 border-white/40 text-white",
-					"hover:bg-white/10 hover:border-white/60",
+					"bg-transparent backdrop-blur-sm border-2 border-foreground/30 text-foreground",
+					"hover:bg-foreground/10 hover:border-foreground/50",
 				),
 				ghost: cn(
-					"bg-transparent text-white/70",
-					"hover:bg-white/10 hover:text-white",
+					"bg-transparent text-foreground/70",
+					"hover:bg-foreground/10 hover:text-foreground",
 				),
 				destructive: cn(
 					"bg-red-500/30 backdrop-blur-xl border border-red-400/40 text-red-100",

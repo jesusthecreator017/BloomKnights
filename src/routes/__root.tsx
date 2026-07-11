@@ -1,4 +1,3 @@
-import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,
@@ -7,13 +6,11 @@ import {
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Leaf, LogOut } from "lucide-react";
 import { ThemeToggle } from "#/components/theme-toggle";
 import { GlassButton } from "#/components/ui/glass-button";
 import { useLeaderboard } from "#/hooks/use-leaderboard";
 import { signOut, useSession } from "#/lib/auth-client";
-import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
@@ -31,7 +28,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "BloomKnights — Grow the Change",
+				title: "Ecoverse — Grow the Change",
 			},
 			{
 				name: "description",
@@ -54,7 +51,7 @@ const navLinks = [
 	{ to: "/", label: "Home" },
 	{ to: "/map", label: "Map" },
 	{ to: "/explorer", label: "Explorer" },
-	{ to: "/act", label: "Act & Data" },
+	{ to: "/resources", label: "Resources" },
 	{ to: "/quiz", label: "Quiz" },
 	{ to: "/leaderboard", label: "Leaderboard" },
 ] as const;
@@ -109,12 +106,15 @@ function RootLayout() {
 			</div>
 
 			<header className="sticky top-0 z-40 border-b border-border bg-white/5 backdrop-blur-xl">
-				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
-					<Link to="/" className="flex shrink-0 items-center gap-2 font-bold">
+				<div className="mx-auto grid h-16 max-w-6xl grid-cols-3 items-center gap-4 px-4">
+					<Link
+						to="/"
+						className="flex shrink-0 items-center gap-2 justify-self-start font-bold"
+					>
 						<Leaf className="h-5 w-5 text-forest-400" />
-						<span className="text-lg tracking-tight">BloomKnights</span>
+						<span className="text-lg tracking-tight">Ecoverse</span>
 					</Link>
-					<nav className="[-ms-overflow-style:none] [scrollbar-width:none] flex flex-1 items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+					<nav className="[-ms-overflow-style:none] [scrollbar-width:none] col-start-2 flex items-center justify-center gap-1 overflow-x-auto justify-self-center [&::-webkit-scrollbar]:hidden">
 						{navLinks.map((link) => (
 							<Link
 								key={link.to}
@@ -130,7 +130,7 @@ function RootLayout() {
 							</Link>
 						))}
 					</nav>
-					<div className="flex shrink-0 items-center gap-2">
+					<div className="flex shrink-0 items-center gap-2 justify-self-end">
 						<ThemeToggle />
 						<AuthNav />
 					</div>
@@ -142,7 +142,7 @@ function RootLayout() {
 			</main>
 
 			<footer className="relative z-10 border-t border-border py-6 text-center text-sm text-muted-foreground">
-				© 2026 BloomKnights
+				© 2026 Ecoverse
 			</footer>
 		</div>
 	);
@@ -162,18 +162,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body>
 				{children}
-				<TanStackDevtools
-					config={{
-						position: "bottom-right",
-					}}
-					plugins={[
-						{
-							name: "Tanstack Router",
-							render: <TanStackRouterDevtoolsPanel />,
-						},
-						TanStackQueryDevtools,
-					]}
-				/>
 				<Scripts />
 			</body>
 		</html>

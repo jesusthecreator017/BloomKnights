@@ -1,35 +1,193 @@
+import { eq } from "drizzle-orm";
 import { db } from "./index";
-import { cities, questions, quizzes } from "./schema";
+import {
+	cities,
+	questions,
+	quizAttempts,
+	quizzes,
+	user,
+	userCities,
+} from "./schema";
 
 const seedCities = [
 	// US
-	{ slug: "nyc", name: "New York City", country: "USA" },
-	{ slug: "los-angeles", name: "Los Angeles", country: "USA" },
-	{ slug: "chicago", name: "Chicago", country: "USA" },
-	{ slug: "orlando", name: "Orlando", country: "USA" },
-	{ slug: "san-francisco", name: "San Francisco", country: "USA" },
-	{ slug: "seattle", name: "Seattle", country: "USA" },
-	{ slug: "austin", name: "Austin", country: "USA" },
-	{ slug: "denver", name: "Denver", country: "USA" },
-	{ slug: "miami", name: "Miami", country: "USA" },
-	{ slug: "boston", name: "Boston", country: "USA" },
-	{ slug: "houston", name: "Houston", country: "USA" },
-	{ slug: "atlanta", name: "Atlanta", country: "USA" },
-	{ slug: "portland", name: "Portland", country: "USA" },
-	{ slug: "washington-dc", name: "Washington D.C.", country: "USA" },
+	{
+		slug: "nyc",
+		name: "New York City",
+		country: "USA",
+		lat: 40.7128,
+		lng: -74.006,
+	},
+	{
+		slug: "los-angeles",
+		name: "Los Angeles",
+		country: "USA",
+		lat: 34.0522,
+		lng: -118.2437,
+	},
+	{
+		slug: "chicago",
+		name: "Chicago",
+		country: "USA",
+		lat: 41.8781,
+		lng: -87.6298,
+	},
+	{
+		slug: "orlando",
+		name: "Orlando",
+		country: "USA",
+		lat: 28.5383,
+		lng: -81.3792,
+	},
+	{
+		slug: "san-francisco",
+		name: "San Francisco",
+		country: "USA",
+		lat: 37.7749,
+		lng: -122.4194,
+	},
+	{
+		slug: "seattle",
+		name: "Seattle",
+		country: "USA",
+		lat: 47.6062,
+		lng: -122.3321,
+	},
+	{
+		slug: "austin",
+		name: "Austin",
+		country: "USA",
+		lat: 30.2672,
+		lng: -97.7431,
+	},
+	{
+		slug: "denver",
+		name: "Denver",
+		country: "USA",
+		lat: 39.7392,
+		lng: -104.9903,
+	},
+	{ slug: "miami", name: "Miami", country: "USA", lat: 25.7617, lng: -80.1918 },
+	{
+		slug: "boston",
+		name: "Boston",
+		country: "USA",
+		lat: 42.3601,
+		lng: -71.0589,
+	},
+	{
+		slug: "houston",
+		name: "Houston",
+		country: "USA",
+		lat: 29.7604,
+		lng: -95.3698,
+	},
+	{
+		slug: "atlanta",
+		name: "Atlanta",
+		country: "USA",
+		lat: 33.749,
+		lng: -84.388,
+	},
+	{
+		slug: "portland",
+		name: "Portland",
+		country: "USA",
+		lat: 45.5152,
+		lng: -122.6784,
+	},
+	{
+		slug: "washington-dc",
+		name: "Washington D.C.",
+		country: "USA",
+		lat: 38.9072,
+		lng: -77.0369,
+	},
 	// global
-	{ slug: "london", name: "London", country: "United Kingdom" },
-	{ slug: "tokyo", name: "Tokyo", country: "Japan" },
-	{ slug: "paris", name: "Paris", country: "France" },
-	{ slug: "berlin", name: "Berlin", country: "Germany" },
-	{ slug: "toronto", name: "Toronto", country: "Canada" },
-	{ slug: "sydney", name: "Sydney", country: "Australia" },
-	{ slug: "singapore", name: "Singapore", country: "Singapore" },
-	{ slug: "amsterdam", name: "Amsterdam", country: "Netherlands" },
-	{ slug: "stockholm", name: "Stockholm", country: "Sweden" },
-	{ slug: "dubai", name: "Dubai", country: "United Arab Emirates" },
-	{ slug: "mexico-city", name: "Mexico City", country: "Mexico" },
-	{ slug: "sao-paulo", name: "São Paulo", country: "Brazil" },
+	{
+		slug: "london",
+		name: "London",
+		country: "United Kingdom",
+		lat: 51.5074,
+		lng: -0.1278,
+	},
+	{
+		slug: "tokyo",
+		name: "Tokyo",
+		country: "Japan",
+		lat: 35.6762,
+		lng: 139.6503,
+	},
+	{
+		slug: "paris",
+		name: "Paris",
+		country: "France",
+		lat: 48.8566,
+		lng: 2.3522,
+	},
+	{
+		slug: "berlin",
+		name: "Berlin",
+		country: "Germany",
+		lat: 52.52,
+		lng: 13.405,
+	},
+	{
+		slug: "toronto",
+		name: "Toronto",
+		country: "Canada",
+		lat: 43.6532,
+		lng: -79.3832,
+	},
+	{
+		slug: "sydney",
+		name: "Sydney",
+		country: "Australia",
+		lat: -33.8688,
+		lng: 151.2093,
+	},
+	{
+		slug: "singapore",
+		name: "Singapore",
+		country: "Singapore",
+		lat: 1.3521,
+		lng: 103.8198,
+	},
+	{
+		slug: "amsterdam",
+		name: "Amsterdam",
+		country: "Netherlands",
+		lat: 52.3676,
+		lng: 4.9041,
+	},
+	{
+		slug: "stockholm",
+		name: "Stockholm",
+		country: "Sweden",
+		lat: 59.3293,
+		lng: 18.0686,
+	},
+	{
+		slug: "dubai",
+		name: "Dubai",
+		country: "United Arab Emirates",
+		lat: 25.2048,
+		lng: 55.2708,
+	},
+	{
+		slug: "mexico-city",
+		name: "Mexico City",
+		country: "Mexico",
+		lat: 19.4326,
+		lng: -99.1332,
+	},
+	{
+		slug: "sao-paulo",
+		name: "São Paulo",
+		country: "Brazil",
+		lat: -23.5505,
+		lng: -46.6333,
+	},
 ] as const;
 
 const seedQuizzes = [
@@ -503,11 +661,17 @@ async function seed() {
 			.values(city)
 			.onConflictDoUpdate({
 				target: cities.slug,
-				set: { name: city.name, country: city.country },
+				set: {
+					name: city.name,
+					country: city.country,
+					lat: city.lat,
+					lng: city.lng,
+				},
 			});
 	}
 	console.log(`seeded ${seedCities.length} cities`);
 
+	const quizIdBySlug = new Map<string, number>();
 	for (const quiz of seedQuizzes) {
 		const [inserted] = await db
 			.insert(quizzes)
@@ -517,9 +681,9 @@ async function seed() {
 				set: { title: quiz.title, category: quiz.category },
 			})
 			.returning();
+		quizIdBySlug.set(quiz.slug, inserted.id);
 
 		// re-seed questions idempotently: wipe and reinsert for this quiz
-		const { eq } = await import("drizzle-orm");
 		await db.delete(questions).where(eq(questions.quizId, inserted.id));
 		await db.insert(questions).values(
 			quiz.questions.map((q) => ({
@@ -534,7 +698,404 @@ async function seed() {
 			`seeded quiz: ${quiz.slug} (${quiz.questions.length} questions)`,
 		);
 	}
+
+	await seedDemoActivity(quizIdBySlug);
 	process.exit(0);
+}
+
+const demoUsers = [
+	{
+		id: "demo-taylor-swift",
+		name: "Taylor Swift (demo)",
+		email: "demo-taylor-swift@ecoverse.demo",
+		citySlug: "nyc",
+		attempts: [{ quizSlug: "clean-energy-basics", score: 50 }],
+	},
+	{
+		id: "demo-beyonce",
+		name: "Beyoncé (demo)",
+		email: "demo-beyonce@ecoverse.demo",
+		citySlug: "houston",
+		attempts: [
+			{ quizSlug: "daily-footprint", score: 40 },
+			{ quizSlug: "climate-causes-global", score: 30 },
+		],
+	},
+	{
+		id: "demo-drake",
+		name: "Drake (demo)",
+		email: "demo-drake@ecoverse.demo",
+		citySlug: "toronto",
+		attempts: [
+			{ quizSlug: "oceans-and-air", score: 30 },
+			{ quizSlug: "climate-effects", score: 40 },
+			{ quizSlug: "clean-energy-basics", score: 20 },
+		],
+	},
+	{
+		id: "demo-adele",
+		name: "Adele (demo)",
+		email: "demo-adele@ecoverse.demo",
+		citySlug: "london",
+		attempts: [{ quizSlug: "greenhouse-gas-sources", score: 40 }],
+	},
+	{
+		id: "demo-billie-eilish",
+		name: "Billie Eilish (demo)",
+		email: "demo-billie-eilish@ecoverse.demo",
+		citySlug: "los-angeles",
+		attempts: [
+			{ quizSlug: "climate-causes-global", score: 20 },
+			{ quizSlug: "us-footprint-deep-dive", score: 50 },
+		],
+	},
+	{
+		id: "demo-kendrick-lamar",
+		name: "Kendrick Lamar (demo)",
+		email: "demo-kendrick-lamar@ecoverse.demo",
+		citySlug: "los-angeles",
+		attempts: [
+			{ quizSlug: "climate-effects", score: 50 },
+			{ quizSlug: "clean-energy-basics", score: 30 },
+			{ quizSlug: "greenhouse-gas-sources", score: 50 },
+		],
+	},
+	{
+		id: "demo-the-weeknd",
+		name: "The Weeknd (demo)",
+		email: "demo-the-weeknd@ecoverse.demo",
+		citySlug: "toronto",
+		attempts: [{ quizSlug: "resource-consumption", score: 30 }],
+	},
+	{
+		id: "demo-dua-lipa",
+		name: "Dua Lipa (demo)",
+		email: "demo-dua-lipa@ecoverse.demo",
+		citySlug: "london",
+		attempts: [
+			{ quizSlug: "us-footprint-deep-dive", score: 50 },
+			{ quizSlug: "oceans-and-air", score: 40 },
+		],
+	},
+	{
+		id: "demo-bad-bunny",
+		name: "Bad Bunny (demo)",
+		email: "demo-bad-bunny@ecoverse.demo",
+		citySlug: "miami",
+		attempts: [
+			{ quizSlug: "clean-energy-basics", score: 40 },
+			{ quizSlug: "greenhouse-gas-sources", score: 30 },
+			{ quizSlug: "resource-consumption", score: 40 },
+		],
+	},
+	{
+		id: "demo-ed-sheeran",
+		name: "Ed Sheeran (demo)",
+		email: "demo-ed-sheeran@ecoverse.demo",
+		citySlug: "london",
+		attempts: [{ quizSlug: "daily-footprint", score: 30 }],
+	},
+	{
+		id: "demo-ariana-grande",
+		name: "Ariana Grande (demo)",
+		email: "demo-ariana-grande@ecoverse.demo",
+		citySlug: "boston",
+		attempts: [
+			{ quizSlug: "oceans-and-air", score: 40 },
+			{ quizSlug: "climate-effects", score: 20 },
+		],
+	},
+	{
+		id: "demo-bruno-mars",
+		name: "Bruno Mars (demo)",
+		email: "demo-bruno-mars@ecoverse.demo",
+		citySlug: "san-francisco",
+		attempts: [
+			{ quizSlug: "greenhouse-gas-sources", score: 20 },
+			{ quizSlug: "resource-consumption", score: 50 },
+			{ quizSlug: "daily-footprint", score: 30 },
+		],
+	},
+	{
+		id: "demo-rihanna",
+		name: "Rihanna (demo)",
+		email: "demo-rihanna@ecoverse.demo",
+		citySlug: "nyc",
+		attempts: [{ quizSlug: "climate-causes-global", score: 50 }],
+	},
+	{
+		id: "demo-harry-styles",
+		name: "Harry Styles (demo)",
+		email: "demo-harry-styles@ecoverse.demo",
+		citySlug: "london",
+		attempts: [
+			{ quizSlug: "climate-effects", score: 30 },
+			{ quizSlug: "clean-energy-basics", score: 50 },
+		],
+	},
+	{
+		id: "demo-olivia-rodrigo",
+		name: "Olivia Rodrigo (demo)",
+		email: "demo-olivia-rodrigo@ecoverse.demo",
+		citySlug: "los-angeles",
+		attempts: [
+			{ quizSlug: "resource-consumption", score: 50 },
+			{ quizSlug: "daily-footprint", score: 40 },
+			{ quizSlug: "climate-causes-global", score: 30 },
+		],
+	},
+	{
+		id: "demo-post-malone",
+		name: "Post Malone (demo)",
+		email: "demo-post-malone@ecoverse.demo",
+		citySlug: "austin",
+		attempts: [{ quizSlug: "us-footprint-deep-dive", score: 40 }],
+	},
+	{
+		id: "demo-sza",
+		name: "SZA (demo)",
+		email: "demo-sza@ecoverse.demo",
+		citySlug: "atlanta",
+		attempts: [
+			{ quizSlug: "clean-energy-basics", score: 30 },
+			{ quizSlug: "greenhouse-gas-sources", score: 40 },
+		],
+	},
+	{
+		id: "demo-doja-cat",
+		name: "Doja Cat (demo)",
+		email: "demo-doja-cat@ecoverse.demo",
+		citySlug: "los-angeles",
+		attempts: [
+			{ quizSlug: "daily-footprint", score: 40 },
+			{ quizSlug: "climate-causes-global", score: 20 },
+			{ quizSlug: "us-footprint-deep-dive", score: 50 },
+		],
+	},
+	{
+		id: "demo-travis-scott",
+		name: "Travis Scott (demo)",
+		email: "demo-travis-scott@ecoverse.demo",
+		citySlug: "houston",
+		attempts: [{ quizSlug: "oceans-and-air", score: 20 }],
+	},
+	{
+		id: "demo-lady-gaga",
+		name: "Lady Gaga (demo)",
+		email: "demo-lady-gaga@ecoverse.demo",
+		citySlug: "nyc",
+		attempts: [
+			{ quizSlug: "greenhouse-gas-sources", score: 50 },
+			{ quizSlug: "resource-consumption", score: 30 },
+		],
+	},
+	{
+		id: "demo-shawn-mendes",
+		name: "Shawn Mendes (demo)",
+		email: "demo-shawn-mendes@ecoverse.demo",
+		citySlug: "toronto",
+		attempts: [
+			{ quizSlug: "climate-causes-global", score: 30 },
+			{ quizSlug: "us-footprint-deep-dive", score: 50 },
+			{ quizSlug: "oceans-and-air", score: 40 },
+		],
+	},
+	{
+		id: "demo-camila-cabello",
+		name: "Camila Cabello (demo)",
+		email: "demo-camila-cabello@ecoverse.demo",
+		citySlug: "miami",
+		attempts: [{ quizSlug: "climate-effects", score: 50 }],
+	},
+	{
+		id: "demo-j-balvin",
+		name: "J Balvin (demo)",
+		email: "demo-j-balvin@ecoverse.demo",
+		citySlug: "mexico-city",
+		attempts: [
+			{ quizSlug: "resource-consumption", score: 40 },
+			{ quizSlug: "daily-footprint", score: 30 },
+		],
+	},
+	{
+		id: "demo-anitta",
+		name: "Anitta (demo)",
+		email: "demo-anitta@ecoverse.demo",
+		citySlug: "sao-paulo",
+		attempts: [
+			{ quizSlug: "us-footprint-deep-dive", score: 30 },
+			{ quizSlug: "oceans-and-air", score: 40 },
+			{ quizSlug: "climate-effects", score: 20 },
+		],
+	},
+	{
+		id: "demo-hikaru-utada",
+		name: "Hikaru Utada (demo)",
+		email: "demo-hikaru-utada@ecoverse.demo",
+		citySlug: "tokyo",
+		attempts: [{ quizSlug: "clean-energy-basics", score: 40 }],
+	},
+	{
+		id: "demo-aya-nakamura",
+		name: "Aya Nakamura (demo)",
+		email: "demo-aya-nakamura@ecoverse.demo",
+		citySlug: "paris",
+		attempts: [
+			{ quizSlug: "daily-footprint", score: 20 },
+			{ quizSlug: "climate-causes-global", score: 50 },
+		],
+	},
+	{
+		id: "demo-robyn",
+		name: "Robyn (demo)",
+		email: "demo-robyn@ecoverse.demo",
+		citySlug: "stockholm",
+		attempts: [
+			{ quizSlug: "oceans-and-air", score: 50 },
+			{ quizSlug: "climate-effects", score: 30 },
+			{ quizSlug: "clean-energy-basics", score: 50 },
+		],
+	},
+	{
+		id: "demo-tiesto",
+		name: "Tiësto (demo)",
+		email: "demo-tiesto@ecoverse.demo",
+		citySlug: "amsterdam",
+		attempts: [{ quizSlug: "greenhouse-gas-sources", score: 30 }],
+	},
+	{
+		id: "demo-chance-the-rapper",
+		name: "Chance the Rapper (demo)",
+		email: "demo-chance-the-rapper@ecoverse.demo",
+		citySlug: "chicago",
+		attempts: [
+			{ quizSlug: "climate-causes-global", score: 50 },
+			{ quizSlug: "us-footprint-deep-dive", score: 40 },
+		],
+	},
+	{
+		id: "demo-flo-rida",
+		name: "Flo Rida (demo)",
+		email: "demo-flo-rida@ecoverse.demo",
+		citySlug: "orlando",
+		attempts: [
+			{ quizSlug: "climate-effects", score: 40 },
+			{ quizSlug: "clean-energy-basics", score: 30 },
+			{ quizSlug: "greenhouse-gas-sources", score: 40 },
+		],
+	},
+	{
+		id: "demo-macklemore",
+		name: "Macklemore (demo)",
+		email: "demo-macklemore@ecoverse.demo",
+		citySlug: "seattle",
+		attempts: [{ quizSlug: "resource-consumption", score: 30 }],
+	},
+	{
+		id: "demo-the-lumineers",
+		name: "The Lumineers (demo)",
+		email: "demo-the-lumineers@ecoverse.demo",
+		citySlug: "denver",
+		attempts: [
+			{ quizSlug: "us-footprint-deep-dive", score: 40 },
+			{ quizSlug: "oceans-and-air", score: 20 },
+		],
+	},
+	{
+		id: "demo-esperanza-spalding",
+		name: "Esperanza Spalding (demo)",
+		email: "demo-esperanza-spalding@ecoverse.demo",
+		citySlug: "portland",
+		attempts: [
+			{ quizSlug: "clean-energy-basics", score: 20 },
+			{ quizSlug: "greenhouse-gas-sources", score: 50 },
+			{ quizSlug: "resource-consumption", score: 30 },
+		],
+	},
+	{
+		id: "demo-wale",
+		name: "Wale (demo)",
+		email: "demo-wale@ecoverse.demo",
+		citySlug: "washington-dc",
+		attempts: [{ quizSlug: "daily-footprint", score: 50 }],
+	},
+	{
+		id: "demo-nancy-ajram",
+		name: "Nancy Ajram (demo)",
+		email: "demo-nancy-ajram@ecoverse.demo",
+		citySlug: "dubai",
+		attempts: [
+			{ quizSlug: "oceans-and-air", score: 30 },
+			{ quizSlug: "climate-effects", score: 50 },
+		],
+	},
+	{
+		id: "demo-stefanie-sun",
+		name: "Stefanie Sun (demo)",
+		email: "demo-stefanie-sun@ecoverse.demo",
+		citySlug: "singapore",
+		attempts: [
+			{ quizSlug: "greenhouse-gas-sources", score: 50 },
+			{ quizSlug: "resource-consumption", score: 40 },
+			{ quizSlug: "daily-footprint", score: 30 },
+		],
+	},
+	{
+		id: "demo-robin-schulz",
+		name: "Robin Schulz (demo)",
+		email: "demo-robin-schulz@ecoverse.demo",
+		citySlug: "berlin",
+		attempts: [{ quizSlug: "climate-causes-global", score: 40 }],
+	},
+	{
+		id: "demo-sia",
+		name: "Sia (demo)",
+		email: "demo-sia@ecoverse.demo",
+		citySlug: "sydney",
+		attempts: [
+			{ quizSlug: "climate-effects", score: 30 },
+			{ quizSlug: "clean-energy-basics", score: 40 },
+		],
+	},
+] as const;
+
+/** Placeholder accounts (name suffixed "(demo)", no login capability) so the leaderboard has activity to show. */
+async function seedDemoActivity(quizIdBySlug: Map<string, number>) {
+	for (const demo of demoUsers) {
+		await db
+			.insert(user)
+			.values({ id: demo.id, name: demo.name, email: demo.email })
+			.onConflictDoNothing({ target: user.id });
+
+		const city = seedCities.find((c) => c.slug === demo.citySlug);
+		if (city) {
+			const [row] = await db
+				.select({ id: cities.id })
+				.from(cities)
+				.where(eq(cities.slug, city.slug));
+			if (row) {
+				await db
+					.insert(userCities)
+					.values({ userId: demo.id, cityId: row.id })
+					.onConflictDoUpdate({
+						target: userCities.userId,
+						set: { cityId: row.id },
+					});
+			}
+		}
+
+		for (const attempt of demo.attempts) {
+			const quizId = quizIdBySlug.get(attempt.quizSlug);
+			if (!quizId) continue;
+			await db
+				.insert(quizAttempts)
+				.values({ userId: demo.id, quizId, score: attempt.score })
+				.onConflictDoNothing({
+					target: [quizAttempts.userId, quizAttempts.quizId],
+				});
+		}
+	}
+	console.log(`seeded ${demoUsers.length} demo users with quiz activity`);
 }
 
 seed().catch((err) => {

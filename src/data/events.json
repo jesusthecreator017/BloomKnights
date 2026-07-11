@@ -108,5 +108,41 @@
 		"lng": -71.0589,
 		"city": "Boston, MA",
 		"url": "https://www.solarunitedneighbors.org"
+	},
+	{
+		"id": "orlando-eco-action",
+		"name": "IDEAS For Us Eco-Action Project",
+		"description": "Monthly hands-on project from IDEAS For Us Orlando — renewable-energy trainings, native landscaping, and sustainability workshops rotate month to month.",
+		"category": "clean-energy",
+		"date": "2026-08-05",
+		"lat": 28.5479,
+		"lng": -81.3758,
+		"city": "Orlando, FL",
+		"url": "https://ideasforus.org/branches/orlando/volunteer-opportunities-in-orlando/",
+		"volunteerUrl": "https://ideasforus.org/branches/orlando/volunteer-opportunities-in-orlando/"
+	},
+	{
+		"id": "orlando-south-street-farm",
+		"name": "South Street Farm Volunteer Workday",
+		"description": "Help tend the City of Orlando's urban farm — planting, composting, and harvesting for local food access.",
+		"category": "food",
+		"date": "2026-07-25",
+		"lat": 28.5411,
+		"lng": -81.3721,
+		"city": "Orlando, FL",
+		"url": "https://www.orlando.gov/Our-Government/Departments-Offices/Executive-Offices/CAO/Sustainability-Resilience",
+		"volunteerUrl": "https://www.orlando.gov/Our-Government/Departments-Offices/Executive-Offices/CAO/Sustainability-Resilience"
+	},
+	{
+		"id": "orlando-lake-eola-cleanup",
+		"name": "Lake Eola Shoreline Cleanup",
+		"description": "Orange County Environmental Protection Division-backed shoreline cleanup — gloves and bags provided.",
+		"category": "cleanup",
+		"date": "2026-07-28",
+		"lat": 28.5449,
+		"lng": -81.3712,
+		"city": "Orlando, FL",
+		"url": "https://www.orangecountyfl.net/Environment/EnvironmentalVolunteerOpportunities.aspx",
+		"volunteerUrl": "https://www.orangecountyfl.net/Environment/EnvironmentalVolunteerOpportunities.aspx"
 	}
 ]

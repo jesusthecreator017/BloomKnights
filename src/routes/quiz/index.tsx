@@ -121,7 +121,6 @@ function QuizListPage() {
 					<GlassButton
 						variant="outline"
 						size="sm"
-						className="border-foreground/40 text-foreground hover:border-foreground/60 hover:bg-foreground/10"
 						disabled={generate.isPending}
 						onClick={reshuffle}
 					>

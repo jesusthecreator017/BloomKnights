@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Building2, Medal, Trophy, Users } from "lucide-react";
+import { Building2, Leaf, Medal, Trophy, Users } from "lucide-react";
 import { useState } from "react";
 import { GlassBadge } from "#/components/ui/glass-badge";
 import { GlassButton } from "#/components/ui/glass-button";
@@ -26,6 +26,7 @@ import {
 import {
 	citiesQueryKey,
 	useCities,
+	useCityScores,
 	userCityQueryKey,
 	useUserCity,
 } from "#/hooks/use-cities";
@@ -34,9 +35,11 @@ import { ApiClientError, fetchJson } from "#/lib/api-client";
 import type {
 	City,
 	CityLeaderboardEntry,
+	CityScore,
 	UserCityResponse,
 } from "#/lib/api-types";
 import { useSession } from "#/lib/auth-client";
+import { aqiColor } from "#/lib/environment-format";
 import { cn } from "#/lib/utils";
 
 export const Route = createFileRoute("/leaderboard/")({
@@ -79,11 +82,14 @@ function LeaderboardPage() {
 	);
 }
 
+type CityView = "community" | "environmental";
+
 function CitiesLeaderboard() {
 	const { data: session } = useSession();
 	const { data, isLoading, error } = useCities();
 	const { data: userCity } = useUserCity();
 	const [dialogOpen, setDialogOpen] = useState(false);
+	const [view, setView] = useState<CityView>("community");
 
 	return (
 		<div>
@@ -93,25 +99,58 @@ function CitiesLeaderboard() {
 				onOpenPicker={() => setDialogOpen(true)}
 			/>
 
-			{isLoading && (
-				<p className="mt-6 text-muted-foreground">Loading cities…</p>
-			)}
-			{error && (
-				<p className="mt-6 text-red-400">Couldn't load cities right now.</p>
-			)}
+			<div className="mt-4 flex gap-1 rounded-full border border-white/10 bg-white/5 p-1">
+				<button
+					type="button"
+					onClick={() => setView("community")}
+					className={cn(
+						"flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition",
+						view === "community"
+							? "bg-forest-500/25 text-forest-100"
+							: "text-white/60 hover:text-white/80",
+					)}
+				>
+					<Users className="h-3.5 w-3.5" /> Community Score
+				</button>
+				<button
+					type="button"
+					onClick={() => setView("environmental")}
+					className={cn(
+						"flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition",
+						view === "environmental"
+							? "bg-forest-500/25 text-forest-100"
+							: "text-white/60 hover:text-white/80",
+					)}
+				>
+					<Leaf className="h-3.5 w-3.5" /> Environmental Score
+				</button>
+			</div>
 
-			{data && (
-				<GlassCard className="mt-4">
-					<GlassCardContent className="divide-y divide-white/10 p-0">
-						{data.cities.map((city) => (
-							<CityRow
-								key={city.slug}
-								city={city}
-								isMine={userCity?.city?.slug === city.slug}
-							/>
-						))}
-					</GlassCardContent>
-				</GlassCard>
+			{view === "community" ? (
+				<>
+					{isLoading && (
+						<p className="mt-6 text-muted-foreground">Loading cities…</p>
+					)}
+					{error && (
+						<p className="mt-6 text-red-400">Couldn't load cities right now.</p>
+					)}
+
+					{data && (
+						<GlassCard className="mt-4">
+							<GlassCardContent className="divide-y divide-white/10 p-0">
+								{data.cities.map((city) => (
+									<CityRow
+										key={city.slug}
+										city={city}
+										isMine={userCity?.city?.slug === city.slug}
+									/>
+								))}
+							</GlassCardContent>
+						</GlassCard>
+					)}
+				</>
+			) : (
+				<EnvironmentalScoreList />
 			)}
 
 			<CityPickerDialog
@@ -120,6 +159,72 @@ function CitiesLeaderboard() {
 				cities={data?.cities ?? []}
 			/>
 		</div>
+	);
+}
+
+function EnvironmentalScoreList() {
+	const { data, isLoading, error } = useCityScores();
+
+	return (
+		<>
+			<p className="mt-4 text-white/50 text-xs">
+				Live US AQI at each city's center, refreshed daily from Open-Meteo —
+				lower is cleaner air.
+			</p>
+			{isLoading && (
+				<p className="mt-6 text-muted-foreground">Loading live air quality…</p>
+			)}
+			{error && (
+				<p className="mt-6 text-red-400">
+					Couldn't load live environmental scores right now.
+				</p>
+			)}
+			{data && (
+				<GlassCard className="mt-4">
+					<GlassCardContent className="divide-y divide-white/10 p-0">
+						{data.scores.map((score, i) => (
+							<ScoreRow key={score.slug} score={score} rank={i + 1} />
+						))}
+					</GlassCardContent>
+				</GlassCard>
+			)}
+		</>
+	);
+}
+
+function ScoreRow({ score, rank }: { score: CityScore; rank: number }) {
+	const medalColor = MEDAL_CLASS[rank];
+	return (
+		<Link
+			to="/leaderboard/$citySlug"
+			params={{ citySlug: score.slug }}
+			className="block"
+		>
+			<div className="flex items-center gap-4 px-4 py-3 transition hover:bg-white/5">
+				<span
+					className={cn(
+						"flex w-8 shrink-0 items-center gap-1 font-semibold",
+						medalColor ?? "text-white/50",
+					)}
+				>
+					{medalColor && <Medal className="h-4 w-4" />}
+					{rank}
+				</span>
+				<div className="flex-1">
+					<p className="font-medium">{score.name}</p>
+					<p className="text-white/50 text-xs">{score.country}</p>
+				</div>
+				<GlassBadge
+					style={{
+						backgroundColor: `${aqiColor(score.aqi)}33`,
+						borderColor: `${aqiColor(score.aqi)}66`,
+						color: aqiColor(score.aqi),
+					}}
+				>
+					AQI {score.aqi}
+				</GlassBadge>
+			</div>
+		</Link>
 	);
 }
 

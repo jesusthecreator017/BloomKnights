@@ -1,0 +1,45 @@
+[
+	{
+		"id": "ideas-for-us-orlando",
+		"name": "IDEAS For Us — Orlando",
+		"description": "Grassroots environmental nonprofit running monthly Eco-Action projects across energy, water, food, waste, and ecology — renewable-energy trainings, native landscaping, and tree plantings. Meets the first Wednesday of each month.",
+		"category": "clean-energy",
+		"lat": 28.5991,
+		"lng": -81.3392,
+		"city": "Winter Park, FL",
+		"website": "https://ideasforus.org/branches/orlando/",
+		"volunteerUrl": "https://ideasforus.org/branches/orlando/volunteer-opportunities-in-orlando/"
+	},
+	{
+		"id": "citizens-climate-lobby-orlando",
+		"name": "Citizens' Climate Lobby — Orlando Chapter",
+		"description": "Volunteer-run chapter of the national nonprofit that trains everyday people to advocate for climate policy with local community members and members of Congress.",
+		"category": "advocacy",
+		"lat": 28.5383,
+		"lng": -81.3792,
+		"city": "Orlando, FL",
+		"website": "https://citizensclimatelobby.org/chapters/FL_Orlando/",
+		"volunteerUrl": "https://citizensclimatelobby.org/chapters/FL_Orlando/"
+	},
+	{
+		"id": "orlando-sustainability-office",
+		"name": "City of Orlando — Office of Sustainability & Resilience",
+		"description": "The city's own sustainability office, running composting programs, South Street Farm volunteer workdays, and Orlando's Community Action Plan toward 100% renewable electricity.",
+		"category": "government",
+		"lat": 28.5405,
+		"lng": -81.38,
+		"city": "Orlando, FL",
+		"website": "https://www.orlando.gov/Our-Government/Departments-Offices/Executive-Offices/CAO/Sustainability-Resilience"
+	},
+	{
+		"id": "orange-county-epd",
+		"name": "Orange County Environmental Protection Division",
+		"description": "County agency coordinating shoreline cleanups, water-quality monitoring, and conservation volunteer days across Orange County's lakes and parks.",
+		"category": "conservation",
+		"lat": 28.5595,
+		"lng": -81.3441,
+		"city": "Orlando, FL",
+		"website": "https://www.orangecountyfl.net/Environment/EnvironmentalVolunteerOpportunities.aspx",
+		"volunteerUrl": "https://www.orangecountyfl.net/Environment/EnvironmentalVolunteerOpportunities.aspx"
+	}
+]

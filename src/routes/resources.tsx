@@ -13,7 +13,9 @@ import { fetchJson } from "#/lib/api-client";
 import type { EmissionsResponse } from "#/lib/api-types";
 import { formatTonnesCo2e } from "#/lib/format";
 
-export const Route = createFileRoute("/act")({ component: ActPage });
+export const Route = createFileRoute("/resources")({
+	component: ResourcesPage,
+});
 
 const actions = [
 	{
@@ -60,7 +62,7 @@ const actions = [
 	},
 ] as const;
 
-function ActPage() {
+function ResourcesPage() {
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-16">
 			<h1 className="text-3xl font-bold">Be part of the solution</h1>

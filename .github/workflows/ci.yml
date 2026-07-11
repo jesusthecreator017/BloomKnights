@@ -12,6 +12,28 @@ concurrency:
 jobs:
   ci:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: bloom
+          POSTGRES_PASSWORD: bloom
+          POSTGRES_DB: bloomknights_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U bloom -d bloomknights_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgres://bloom:bloom@localhost:5432/bloomknights_test
+      TEST_DATABASE_URL: postgres://bloom:bloom@localhost:5432/bloomknights_test
+      BETTER_AUTH_SECRET: ci-secret
+      BETTER_AUTH_URL: http://localhost:3000
+
     steps:
       - uses: actions/checkout@v4
 
@@ -27,6 +49,12 @@ jobs:
 
       - name: Typecheck
         run: bun run typecheck
+
+      - name: Push schema to test database
+        run: bun run db:push
+
+      - name: Test
+        run: bun run test
 
       - name: Build
         run: bun run build

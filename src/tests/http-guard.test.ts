@@ -4,6 +4,7 @@ import {
 	clientIp,
 	hasJsonContentType,
 	methodHasBody,
+	requiresAuth,
 } from "../lib/http-guard";
 
 describe("acceptsJson", () => {
@@ -34,6 +35,25 @@ describe("methodHasBody / hasJsonContentType", () => {
 		expect(hasJsonContentType("application/json; charset=utf-8")).toBe(true);
 		expect(hasJsonContentType("application/x-www-form-urlencoded")).toBe(false);
 		expect(hasJsonContentType(null)).toBe(false);
+	});
+});
+
+describe("requiresAuth", () => {
+	it("protects user-scoped endpoints", () => {
+		expect(requiresAuth("/api/quizzes")).toBe(true);
+		expect(requiresAuth("/api/quizzes/ocean-basics")).toBe(true);
+		expect(requiresAuth("/api/quizzes/ocean-basics/submit")).toBe(true);
+		expect(requiresAuth("/api/leaderboard")).toBe(true);
+		expect(requiresAuth("/api/user/city")).toBe(true);
+		expect(requiresAuth("/api/cities")).toBe(true);
+		expect(requiresAuth("/api/cities/nyc")).toBe(true);
+	});
+
+	it("leaves info and auth endpoints public", () => {
+		expect(requiresAuth("/api/air-quality")).toBe(false);
+		expect(requiresAuth("/api/geocode/autocomplete")).toBe(false);
+		expect(requiresAuth("/api/auth/sign-in")).toBe(false);
+		expect(requiresAuth("/api/quizzical")).toBe(false);
 	});
 });
 

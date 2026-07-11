@@ -4,6 +4,7 @@ import {
 	clientIp,
 	hasJsonContentType,
 	methodHasBody,
+	requiresAuth,
 } from "./lib/http-guard";
 import { rateLimit } from "./lib/rate-limit";
 
@@ -46,6 +47,15 @@ const apiGuard = createMiddleware({ type: "request" }).server(
 			return json({ error: "rate limit exceeded, slow down" }, 429, {
 				"retry-after": String(limit.retryAfter),
 			});
+		}
+
+		// User-scoped endpoints (quizzes, leaderboard, user profile) require a
+		// session. auth is imported lazily so this server-only module never
+		// lands in the client bundle via the shared start instance.
+		if (requiresAuth(pathname)) {
+			const { auth } = await import("./lib/auth");
+			const session = await auth.api.getSession({ headers: request.headers });
+			if (!session) return json({ error: "sign in required" }, 401);
 		}
 
 		return next();

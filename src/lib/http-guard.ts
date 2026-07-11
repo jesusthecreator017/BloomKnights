@@ -30,6 +30,25 @@ export function hasJsonContentType(contentType: string | null): boolean {
 	return (contentType ?? "").toLowerCase().includes("application/json");
 }
 
+/**
+ * API prefixes that require a signed-in user. Everything else under /api/*
+ * (environmental data, cities, geocoding) stays public. Add a prefix here when
+ * a new user-scoped feature lands.
+ */
+const AUTH_REQUIRED_PREFIXES = [
+	"/api/quizzes",
+	"/api/leaderboard",
+	"/api/user",
+	"/api/cities",
+];
+
+/** Does this API path require an authenticated session? */
+export function requiresAuth(pathname: string): boolean {
+	return AUTH_REQUIRED_PREFIXES.some(
+		(p) => pathname === p || pathname.startsWith(`${p}/`),
+	);
+}
+
 /** Best-effort client IP for rate-limit bucketing. */
 export function clientIp(request: Request): string {
 	const fwd = request.headers.get("x-forwarded-for");

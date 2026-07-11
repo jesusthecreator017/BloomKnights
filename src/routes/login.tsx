@@ -1,17 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Leaf } from "lucide-react";
 import type { FormEvent, ReactNode } from "react";
 import { useState } from "react";
 import { GlassButton } from "#/components/ui/glass-button";
 import { GlassCard, GlassCardContent } from "#/components/ui/glass-card";
-import {
-	GlassDialog,
-	GlassDialogContent,
-	GlassDialogDescription,
-	GlassDialogFooter,
-	GlassDialogHeader,
-	GlassDialogTitle,
-} from "#/components/ui/glass-dialog";
 import { GlassInput } from "#/components/ui/glass-input";
 import {
 	GlassTabs,
@@ -19,6 +11,7 @@ import {
 	GlassTabsList,
 	GlassTabsTrigger,
 } from "#/components/ui/glass-tabs";
+import { signIn, signUp } from "#/lib/auth-client";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
 
@@ -40,13 +33,43 @@ function Field({
 }
 
 function LoginPage() {
-	const [dialogOpen, setDialogOpen] = useState(false);
+	const navigate = useNavigate();
+	const [error, setError] = useState<string | null>(null);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 
-	// Frontend-only preview — no auth backend exists yet. Swap this for a
-	// real submit handler once the team's API is up.
-	function handleSubmit(e: FormEvent) {
+	async function handleLogin(e: FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		setDialogOpen(true);
+		setError(null);
+		setIsSubmitting(true);
+		const form = new FormData(e.currentTarget);
+		const { error: authError } = await signIn.email({
+			email: String(form.get("email")),
+			password: String(form.get("password")),
+		});
+		setIsSubmitting(false);
+		if (authError) {
+			setError(authError.message ?? "Couldn't sign in — check your details.");
+			return;
+		}
+		navigate({ to: "/" });
+	}
+
+	async function handleRegister(e: FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		setError(null);
+		setIsSubmitting(true);
+		const form = new FormData(e.currentTarget);
+		const { error: authError } = await signUp.email({
+			name: String(form.get("name")),
+			email: String(form.get("email")),
+			password: String(form.get("password")),
+		});
+		setIsSubmitting(false);
+		if (authError) {
+			setError(authError.message ?? "Couldn't create your account.");
+			return;
+		}
+		navigate({ to: "/" });
 	}
 
 	return (
@@ -72,10 +95,11 @@ function LoginPage() {
 						</GlassTabsList>
 
 						<GlassTabsContent value="login">
-							<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+							<form className="flex flex-col gap-4" onSubmit={handleLogin}>
 								<Field id="login-email" label="Email">
 									<GlassInput
 										id="login-email"
+										name="email"
 										type="email"
 										required
 										placeholder="you@example.com"
@@ -84,22 +108,30 @@ function LoginPage() {
 								<Field id="login-password" label="Password">
 									<GlassInput
 										id="login-password"
+										name="password"
 										type="password"
 										required
+										minLength={8}
 										placeholder="••••••••"
 									/>
 								</Field>
-								<GlassButton type="submit" variant="primary" className="mt-2">
-									Sign in
+								<GlassButton
+									type="submit"
+									variant="primary"
+									className="mt-2"
+									disabled={isSubmitting}
+								>
+									{isSubmitting ? "Signing in…" : "Sign in"}
 								</GlassButton>
 							</form>
 						</GlassTabsContent>
 
 						<GlassTabsContent value="register">
-							<form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+							<form className="flex flex-col gap-4" onSubmit={handleRegister}>
 								<Field id="register-name" label="Name">
 									<GlassInput
 										id="register-name"
+										name="name"
 										required
 										placeholder="Ada Lovelace"
 									/>
@@ -107,6 +139,7 @@ function LoginPage() {
 								<Field id="register-email" label="Email">
 									<GlassInput
 										id="register-email"
+										name="email"
 										type="email"
 										required
 										placeholder="you@example.com"
@@ -115,36 +148,32 @@ function LoginPage() {
 								<Field id="register-password" label="Password">
 									<GlassInput
 										id="register-password"
+										name="password"
 										type="password"
 										required
+										minLength={8}
 										placeholder="At least 8 characters"
 									/>
 								</Field>
-								<GlassButton type="submit" variant="primary" className="mt-2">
-									Create account
+								<GlassButton
+									type="submit"
+									variant="primary"
+									className="mt-2"
+									disabled={isSubmitting}
+								>
+									{isSubmitting ? "Creating account…" : "Create account"}
 								</GlassButton>
 							</form>
 						</GlassTabsContent>
 					</GlassTabs>
+
+					{error && (
+						<p className="mt-4 rounded-lg bg-red-500/15 px-3 py-2 text-sm text-red-200">
+							{error}
+						</p>
+					)}
 				</GlassCardContent>
 			</GlassCard>
-
-			<GlassDialog open={dialogOpen} onOpenChange={setDialogOpen}>
-				<GlassDialogContent>
-					<GlassDialogHeader>
-						<GlassDialogTitle>Accounts are coming soon</GlassDialogTitle>
-						<GlassDialogDescription>
-							This is a frontend preview — sign-in and registration aren't wired
-							up to a backend yet. Check back once auth is live.
-						</GlassDialogDescription>
-					</GlassDialogHeader>
-					<GlassDialogFooter>
-						<GlassButton variant="outline" onClick={() => setDialogOpen(false)}>
-							Got it
-						</GlassButton>
-					</GlassDialogFooter>
-				</GlassDialogContent>
-			</GlassDialog>
 		</div>
 	);
 }

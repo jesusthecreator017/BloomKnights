@@ -8,8 +8,9 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { Leaf } from "lucide-react";
+import { Leaf, LogOut } from "lucide-react";
 import { GlassButton } from "#/components/ui/glass-button";
+import { signOut, useSession } from "#/lib/auth-client";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 
@@ -54,6 +55,33 @@ const navLinks = [
 	{ to: "/act", label: "Act" },
 ] as const;
 
+function AuthNav() {
+	const { data: session, isPending } = useSession();
+
+	if (isPending) return null;
+
+	if (!session) {
+		return (
+			<Link to="/login">
+				<GlassButton variant="primary" size="sm">
+					Get Started
+				</GlassButton>
+			</Link>
+		);
+	}
+
+	return (
+		<div className="flex items-center gap-3">
+			<span className="hidden text-sm text-white/70 sm:inline">
+				{session.user.name}
+			</span>
+			<GlassButton variant="ghost" size="sm" onClick={() => signOut()}>
+				<LogOut className="h-4 w-4" /> Sign out
+			</GlassButton>
+		</div>
+	);
+}
+
 function RootLayout() {
 	return (
 		<div className="relative min-h-screen bg-[#050b16] text-white">
@@ -86,11 +114,7 @@ function RootLayout() {
 							</Link>
 						))}
 					</nav>
-					<Link to="/login">
-						<GlassButton variant="primary" size="sm">
-							Get Started
-						</GlassButton>
-					</Link>
+					<AuthNav />
 				</div>
 			</header>
 

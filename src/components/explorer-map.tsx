@@ -6,6 +6,7 @@ import {
 } from "@react-google-maps/api";
 import { Search } from "lucide-react";
 import { useRef, useState } from "react";
+import { LocationDetailPanel } from "#/components/location-detail-panel";
 import { GlassInput } from "#/components/ui/glass-input";
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
@@ -68,6 +69,7 @@ export default function ExplorerMap() {
 	const [marker, setMarker] = useState<{ lat: number; lng: number } | null>(
 		null,
 	);
+	const [address, setAddress] = useState<string | undefined>();
 	const [autocomplete, setAutocomplete] =
 		useState<google.maps.places.Autocomplete | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -84,6 +86,15 @@ export default function ExplorerMap() {
 		if (lat == null || lng == null) return;
 		setCenter({ lat, lng });
 		setMarker({ lat, lng });
+		setAddress(place?.formatted_address);
+	}
+
+	function handleMapClick(e: google.maps.MapMouseEvent) {
+		const lat = e.latLng?.lat();
+		const lng = e.latLng?.lng();
+		if (lat == null || lng == null) return;
+		setMarker({ lat, lng });
+		setAddress(undefined);
 	}
 
 	if (!GOOGLE_MAPS_API_KEY) {
@@ -106,6 +117,7 @@ export default function ExplorerMap() {
 				mapContainerStyle={{ width: "100%", height: "100%" }}
 				center={center}
 				zoom={marker ? 16 : 4}
+				onClick={handleMapClick}
 				options={{
 					styles: MAP_STYLE,
 					mapTypeControl: true,
@@ -128,12 +140,21 @@ export default function ExplorerMap() {
 						<Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-white/50" />
 						<GlassInput
 							ref={inputRef}
-							placeholder="Search an address…"
+							placeholder="Search an address or click the map…"
 							className="pl-9"
 						/>
 					</div>
 				</Autocomplete>
 			</div>
+
+			{marker && (
+				<LocationDetailPanel
+					lat={marker.lat}
+					lng={marker.lng}
+					address={address}
+					onClose={() => setMarker(null)}
+				/>
+			)}
 		</div>
 	);
 }

@@ -10,6 +10,7 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Leaf, LogOut } from "lucide-react";
 import { GlassButton } from "#/components/ui/glass-button";
+import { useLeaderboard } from "#/hooks/use-leaderboard";
 import { signOut, useSession } from "#/lib/auth-client";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
@@ -53,10 +54,14 @@ const navLinks = [
 	{ to: "/map", label: "Map" },
 	{ to: "/explorer", label: "Explorer" },
 	{ to: "/act", label: "Act" },
+	{ to: "/quiz", label: "Quiz" },
+	{ to: "/leaderboard", label: "Leaderboard" },
+	{ to: "/data", label: "Data" },
 ] as const;
 
 function AuthNav() {
 	const { data: session, isPending } = useSession();
+	const { data: leaderboard } = useLeaderboard(1);
 
 	if (isPending) return null;
 
@@ -74,6 +79,12 @@ function AuthNav() {
 		<div className="flex items-center gap-3">
 			<span className="hidden text-sm text-white/70 sm:inline">
 				{session.user.name}
+				{leaderboard?.me && (
+					<span className="text-forest-400">
+						{" "}
+						· {leaderboard.me.points} pts
+					</span>
+				)}
 			</span>
 			<GlassButton variant="ghost" size="sm" onClick={() => signOut()}>
 				<LogOut className="h-4 w-4" /> Sign out
@@ -84,7 +95,7 @@ function AuthNav() {
 
 function RootLayout() {
 	return (
-		<div className="relative min-h-screen bg-[#050b16] text-white">
+		<div className="relative flex min-h-screen flex-col bg-[#050b16] text-white">
 			{/* ambient gradient backdrop so glass surfaces have something to blur */}
 			<div className="pointer-events-none fixed inset-0 overflow-hidden">
 				<div className="absolute -top-40 -left-40 h-[34rem] w-[34rem] rounded-full bg-forest-500/25 blur-[140px]" />
@@ -93,20 +104,20 @@ function RootLayout() {
 			</div>
 
 			<header className="sticky top-0 z-40 border-b border-white/10 bg-white/5 backdrop-blur-xl">
-				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-					<Link to="/" className="flex items-center gap-2 font-bold">
+				<div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
+					<Link to="/" className="flex shrink-0 items-center gap-2 font-bold">
 						<Leaf className="h-5 w-5 text-forest-400" />
 						<span className="text-lg tracking-tight">BloomKnights</span>
 					</Link>
-					<nav className="flex items-center gap-1">
+					<nav className="flex flex-1 items-center gap-1 overflow-x-auto">
 						{navLinks.map((link) => (
 							<Link
 								key={link.to}
 								to={link.to}
-								className="rounded-full px-4 py-1.5 text-sm text-white/70 transition hover:bg-white/10 hover:text-white"
+								className="shrink-0 rounded-full px-4 py-1.5 text-sm text-white/70 transition hover:bg-white/10 hover:text-white"
 								activeProps={{
 									className:
-										"rounded-full px-4 py-1.5 text-sm bg-white/15 text-white",
+										"shrink-0 rounded-full px-4 py-1.5 text-sm bg-white/15 text-white",
 								}}
 								activeOptions={{ exact: link.to === "/" }}
 							>
@@ -114,13 +125,19 @@ function RootLayout() {
 							</Link>
 						))}
 					</nav>
-					<AuthNav />
+					<div className="shrink-0">
+						<AuthNav />
+					</div>
 				</div>
 			</header>
 
-			<main className="relative z-10">
+			<main className="relative z-10 flex-1">
 				<Outlet />
 			</main>
+
+			<footer className="relative z-10 border-t border-white/10 py-6 text-center text-sm text-white/50">
+				© 2026 BloomKnights
+			</footer>
 		</div>
 	);
 }

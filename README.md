@@ -1,7 +1,5 @@
 # 🌱 BloomKnights
 
-Hackathon project — **Best Clean Energy Solution** track. See the environmental cost of everyday life, check the air you're breathing right now, and find clean-energy actions and events near you.
-
 ## Quick start
 
 ```bash

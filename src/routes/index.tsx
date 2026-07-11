@@ -8,6 +8,7 @@ import {
 	GlassCardHeader,
 	GlassCardTitle,
 } from "#/components/ui/glass-card";
+import { GlassProgress } from "#/components/ui/glass-progress";
 
 export const Route = createFileRoute("/")({ component: Home });
 
@@ -42,16 +43,27 @@ const dailyDamage = [
 	},
 ] as const;
 
+const communityGoals = [
+	{ label: "CO2 offset this month", current: 3120, target: 5000, unit: "kg" },
+	{ label: "Clean-energy events joined", current: 84, target: 150, unit: "" },
+	{
+		label: "Repair-instead-of-replace pledges",
+		current: 41,
+		target: 100,
+		unit: "",
+	},
+] as const;
+
 function Home() {
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-16">
 			<section className="text-center">
-				<p className="font-semibold text-emerald-400 text-sm uppercase tracking-widest">
+				<p className="font-semibold text-forest-400 text-sm uppercase tracking-widest">
 					BloomKnights
 				</p>
 				<h1 className="mx-auto mt-3 max-w-3xl text-5xl font-bold leading-tight tracking-tight">
 					Everyday life has a footprint.{" "}
-					<span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+					<span className="bg-gradient-to-r from-forest-400 to-navy-300 bg-clip-text text-transparent">
 						You can shrink it.
 					</span>
 				</h1>
@@ -82,7 +94,7 @@ function Home() {
 					{dailyDamage.map((item) => (
 						<GlassCard key={item.title} glowEffect={false}>
 							<GlassCardHeader>
-								<item.icon className="h-6 w-6 text-emerald-400" />
+								<item.icon className="h-6 w-6 text-forest-400" />
 								<GlassCardTitle className="mt-2 text-3xl">
 									{item.stat}
 								</GlassCardTitle>
@@ -96,6 +108,29 @@ function Home() {
 						</GlassCard>
 					))}
 				</div>
+			</section>
+
+			<section className="mt-20">
+				<h2 className="text-center text-2xl font-semibold text-white/90">
+					Community progress this month
+				</h2>
+				<GlassCard glowEffect={false} className="mx-auto mt-8 max-w-2xl">
+					<GlassCardContent className="flex flex-col gap-6 pt-6">
+						{communityGoals.map((goal) => (
+							<div key={goal.label}>
+								<div className="mb-2 flex items-baseline justify-between text-sm">
+									<span className="text-white/80">{goal.label}</span>
+									<span className="text-white/50">
+										{goal.current.toLocaleString()} /{" "}
+										{goal.target.toLocaleString()}
+										{goal.unit && ` ${goal.unit}`}
+									</span>
+								</div>
+								<GlassProgress value={(goal.current / goal.target) * 100} />
+							</div>
+						))}
+					</GlassCardContent>
+				</GlassCard>
 			</section>
 		</div>
 	);

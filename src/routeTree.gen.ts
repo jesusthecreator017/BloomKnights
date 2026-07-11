@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as MapRouteImport } from './routes/map'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ExplorerRouteImport } from './routes/explorer'
 import { Route as ActRouteImport } from './routes/act'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
@@ -18,6 +20,16 @@ import { Route as ApiAirQualityRouteImport } from './routes/api/air-quality'
 const MapRoute = MapRouteImport.update({
   id: '/map',
   path: '/map',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExplorerRoute = ExplorerRouteImport.update({
+  id: '/explorer',
+  path: '/explorer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActRoute = ActRouteImport.update({
@@ -44,6 +56,8 @@ const ApiAirQualityRoute = ApiAirQualityRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/act': typeof ActRoute
+  '/explorer': typeof ExplorerRoute
+  '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/events': typeof ApiEventsRoute
@@ -51,6 +65,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/act': typeof ActRoute
+  '/explorer': typeof ExplorerRoute
+  '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/events': typeof ApiEventsRoute
@@ -59,21 +75,47 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/act': typeof ActRoute
+  '/explorer': typeof ExplorerRoute
+  '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/api/air-quality': typeof ApiAirQualityRoute
   '/api/events': typeof ApiEventsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/act' | '/map' | '/api/air-quality' | '/api/events'
+  fullPaths:
+    | '/'
+    | '/act'
+    | '/explorer'
+    | '/login'
+    | '/map'
+    | '/api/air-quality'
+    | '/api/events'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/act' | '/map' | '/api/air-quality' | '/api/events'
-  id: '__root__' | '/' | '/act' | '/map' | '/api/air-quality' | '/api/events'
+  to:
+    | '/'
+    | '/act'
+    | '/explorer'
+    | '/login'
+    | '/map'
+    | '/api/air-quality'
+    | '/api/events'
+  id:
+    | '__root__'
+    | '/'
+    | '/act'
+    | '/explorer'
+    | '/login'
+    | '/map'
+    | '/api/air-quality'
+    | '/api/events'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActRoute: typeof ActRoute
+  ExplorerRoute: typeof ExplorerRoute
+  LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   ApiAirQualityRoute: typeof ApiAirQualityRoute
   ApiEventsRoute: typeof ApiEventsRoute
@@ -86,6 +128,20 @@ declare module '@tanstack/react-router' {
       path: '/map'
       fullPath: '/map'
       preLoaderRoute: typeof MapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/explorer': {
+      id: '/explorer'
+      path: '/explorer'
+      fullPath: '/explorer'
+      preLoaderRoute: typeof ExplorerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/act': {
@@ -122,6 +178,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActRoute: ActRoute,
+  ExplorerRoute: ExplorerRoute,
+  LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   ApiAirQualityRoute: ApiAirQualityRoute,
   ApiEventsRoute: ApiEventsRoute,

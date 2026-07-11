@@ -11,7 +11,7 @@ const GlassTabsList = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<div className="relative">
 		<motion.div
-			className="absolute -inset-1 rounded-2xl bg-linear-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-lg"
+			className="absolute -inset-1 rounded-2xl bg-linear-to-r from-forest-400/20 via-forest-500/20 to-navy-600/20 blur-lg"
 			animate={{
 				opacity: [0.4, 0.6, 0.4],
 			}}

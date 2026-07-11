@@ -7,7 +7,7 @@ const GlassProgress = React.forwardRef<
 	React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
 >(({ className, value, ...props }, ref) => (
 	<div className="relative">
-		<div className="absolute -inset-1 rounded-full bg-linear-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-md opacity-50" />
+		<div className="absolute -inset-1 rounded-full bg-linear-to-r from-forest-400/20 via-forest-500/20 to-navy-600/20 blur-md opacity-50" />
 		<ProgressPrimitive.Root
 			ref={ref}
 			className={cn(
@@ -20,8 +20,8 @@ const GlassProgress = React.forwardRef<
 			<ProgressPrimitive.Indicator
 				className={cn(
 					"h-full transition-all duration-500 ease-out rounded-full",
-					"bg-linear-to-r from-cyan-400 via-blue-400 to-purple-400",
-					"shadow-[0_0_12px_rgba(59,130,246,0.5)]",
+					"bg-linear-to-r from-forest-400 via-forest-500 to-navy-600",
+					"shadow-[0_0_12px_rgba(24,62,128,0.5)]",
 				)}
 				style={{ width: `${value || 0}%` }}
 			/>

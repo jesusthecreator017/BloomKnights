@@ -23,10 +23,10 @@ const glassButtonVariants = cva(
 					"before:bg-linear-to-b before:from-white/20 before:to-transparent before:pointer-events-none",
 				),
 				primary: cn(
-					"bg-linear-to-r from-cyan-500/80 via-blue-500/80 to-purple-500/80",
+					"bg-linear-to-r from-forest-500/80 via-forest-600/70 to-navy-700/80",
 					"backdrop-blur-xl border border-white/30 text-white",
-					"shadow-[0_4px_20px_rgba(59,130,246,0.4)]",
-					"hover:shadow-[0_4px_30px_rgba(59,130,246,0.6)]",
+					"shadow-[0_4px_20px_rgba(24,62,128,0.4)]",
+					"hover:shadow-[0_4px_30px_rgba(24,62,128,0.6)]",
 					"before:absolute before:inset-0 before:rounded-xl",
 					"before:bg-linear-to-b before:from-white/30 before:to-transparent before:pointer-events-none",
 				),
@@ -84,7 +84,7 @@ const GlassButton = React.forwardRef<HTMLButtonElement, GlassButtonProps>(
 		return (
 			<div className="relative inline-block">
 				{glowEffect && (
-					<div className="absolute -inset-1 rounded-xl bg-linear-to-r from-cyan-500/40 via-blue-500/40 to-purple-500/40 blur-lg opacity-70 transition-opacity group-hover:opacity-100" />
+					<div className="absolute -inset-1 rounded-xl bg-linear-to-r from-forest-400/40 via-forest-500/40 to-navy-600/40 blur-lg opacity-70 transition-opacity group-hover:opacity-100" />
 				)}
 				<Comp
 					className={cn(glassButtonVariants({ variant, size, className }))}

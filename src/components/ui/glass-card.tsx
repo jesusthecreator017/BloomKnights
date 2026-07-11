@@ -13,7 +13,7 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
 		return (
 			<div className="relative">
 				{glowEffect && (
-					<div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-cyan-500/30 via-blue-500/30 to-purple-500/30 blur-xl opacity-70" />
+					<div className="absolute -inset-1 rounded-2xl bg-linear-to-r from-forest-400/30 via-forest-500/30 to-navy-600/30 blur-xl opacity-70" />
 				)}
 				<div
 					ref={ref}

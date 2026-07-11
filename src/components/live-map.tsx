@@ -20,7 +20,7 @@ interface AirQualityResponse {
 }
 
 function aqiLevel(aqi: number): { label: string; className: string } {
-	if (aqi <= 50) return { label: "Good", className: "text-emerald-400" };
+	if (aqi <= 50) return { label: "Good", className: "text-forest-400" };
 	if (aqi <= 100) return { label: "Moderate", className: "text-yellow-400" };
 	if (aqi <= 150)
 		return { label: "Unhealthy (sensitive)", className: "text-orange-400" };
@@ -31,8 +31,8 @@ function aqiLevel(aqi: number): { label: string; className: string } {
 }
 
 const categoryColors: Record<string, string> = {
-	"clean-energy": "#34d399",
-	cleanup: "#22d3ee",
+	"clean-energy": "#3ebd49",
+	cleanup: "#3d76d1",
 	restoration: "#a3e635",
 	transport: "#fbbf24",
 	waste: "#f472b6",
@@ -97,7 +97,7 @@ export default function LiveMap() {
 					>
 						<MapPin
 							className="h-7 w-7 -translate-y-1/2 cursor-pointer drop-shadow-lg"
-							style={{ color: categoryColors[event.category] ?? "#34d399" }}
+							style={{ color: categoryColors[event.category] ?? "#3ebd49" }}
 							fill="currentColor"
 							fillOpacity={0.25}
 						/>
@@ -133,7 +133,7 @@ export default function LiveMap() {
 									href={selected.url}
 									target="_blank"
 									rel="noreferrer"
-									className="font-medium text-emerald-400 hover:underline"
+									className="font-medium text-forest-400 hover:underline"
 								>
 									Learn more →
 								</a>
@@ -146,7 +146,7 @@ export default function LiveMap() {
 			{/* AQI glass overlay for the current map center */}
 			<div className="absolute top-4 left-4 z-10 rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl">
 				<div className="flex items-center gap-2 text-sm text-white/70">
-					<Wind className="h-4 w-4 text-cyan-300" />
+					<Wind className="h-4 w-4 text-navy-300" />
 					Air quality at map center
 				</div>
 				{aqi != null && level ? (

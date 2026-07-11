@@ -70,9 +70,7 @@ function ActPage() {
 						<GlassCardHeader>
 							<div className="flex items-center gap-2">
 								<GlassBadge>{action.effort}</GlassBadge>
-								<span className="text-xs text-emerald-400">
-									{action.impact}
-								</span>
+								<span className="text-xs text-forest-400">{action.impact}</span>
 							</div>
 							<GlassCardTitle className="mt-1">{action.title}</GlassCardTitle>
 						</GlassCardHeader>
@@ -86,7 +84,7 @@ function ActPage() {
 			<div className="mt-10">
 				<Link
 					to="/map"
-					className="inline-flex items-center gap-2 font-medium text-emerald-400 hover:underline"
+					className="inline-flex items-center gap-2 font-medium text-forest-400 hover:underline"
 				>
 					Find an event near you <ArrowRight className="h-4 w-4" />
 				</Link>

@@ -11,3 +11,10 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+CLAUDE.md
+
+# local AI-agent tool configs
+.agents/
+.crush/
+.goose/
+skills-lock.json

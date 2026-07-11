@@ -11,6 +11,12 @@ export const auth = betterAuth({
 	emailAndPassword: {
 		enabled: true,
 	},
+	// better-auth's own limiter, on top of the global middleware guard
+	rateLimit: {
+		enabled: true,
+		window: 60,
+		max: 20,
+	},
 	secret: process.env.BETTER_AUTH_SECRET,
 	baseURL: process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
 });

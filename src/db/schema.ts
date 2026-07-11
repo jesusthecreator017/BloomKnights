@@ -1,5 +1,6 @@
 import {
 	boolean,
+	index,
 	integer,
 	jsonb,
 	pgTable,
@@ -70,17 +71,22 @@ export const quizzes = pgTable("quizzes", {
 	category: text("category").notNull(),
 });
 
-export const questions = pgTable("questions", {
-	id: serial("id").primaryKey(),
-	quizId: integer("quiz_id")
-		.notNull()
-		.references(() => quizzes.id, { onDelete: "cascade" }),
-	prompt: text("prompt").notNull(),
-	choices: jsonb("choices").$type<Array<string>>().notNull(),
-	correctIndex: integer("correct_index").notNull(),
-	points: integer("points").notNull().default(10),
-	explanation: text("explanation").notNull(),
-});
+export const questions = pgTable(
+	"questions",
+	{
+		id: serial("id").primaryKey(),
+		quizId: integer("quiz_id")
+			.notNull()
+			.references(() => quizzes.id, { onDelete: "cascade" }),
+		prompt: text("prompt").notNull(),
+		choices: jsonb("choices").$type<Array<string>>().notNull(),
+		correctIndex: integer("correct_index").notNull(),
+		points: integer("points").notNull().default(10),
+		explanation: text("explanation").notNull(),
+	},
+	// every quiz play/submit filters questions by quiz_id (FKs aren't auto-indexed)
+	(t) => [index("questions_quiz_id_idx").on(t.quizId)],
+);
 
 export const quizAttempts = pgTable(
 	"quiz_attempts",
@@ -95,8 +101,13 @@ export const quizAttempts = pgTable(
 		score: integer("score").notNull(),
 		createdAt: timestamp("created_at").notNull().defaultNow(),
 	},
-	// one attempt per user per quiz — points can't be farmed by retaking
-	(t) => [unique().on(t.userId, t.quizId)],
+	// one attempt per user per quiz — points can't be farmed by retaking.
+	// The composite unique also indexes user_id-led leaderboard scans; add
+	// quiz_id for the FK/cascade side.
+	(t) => [
+		unique().on(t.userId, t.quizId),
+		index("quiz_attempts_quiz_id_idx").on(t.quizId),
+	],
 );
 
 // ---------- external data cache ----------

@@ -26,7 +26,7 @@ function MapPage() {
 				weather emergencies — toggle layers on the left and click any marker for
 				details.
 			</p>
-			<div className="mt-6 h-[70vh] overflow-hidden rounded-2xl border border-white/15 shadow-2xl">
+			<div className="mt-6 h-[72dvh] overflow-hidden rounded-2xl border border-white/15 shadow-2xl md:h-[70vh]">
 				<ClientOnly fallback={<MapFallback />}>
 					<Suspense fallback={<MapFallback />}>
 						<LiveMap />

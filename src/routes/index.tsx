@@ -101,13 +101,13 @@ const features = [
 
 function Home() {
 	return (
-		<div className="mx-auto max-w-6xl px-4 py-16">
+		<div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
 			<section className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
 				<div className="text-left">
 					<p className="font-semibold text-forest-400 text-sm uppercase tracking-widest">
 						Ecoverse · Clean Energy Solution
 					</p>
-					<h1 className="mt-3 text-5xl font-bold leading-tight tracking-tight">
+					<h1 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
 						Everyday life has a footprint.{" "}
 						<span className="bg-gradient-to-r from-forest-400 to-navy-300 bg-clip-text text-transparent">
 							You can shrink it.
@@ -119,7 +119,7 @@ function Home() {
 						quizzes, a leaderboard driven by real air-quality data, and concrete
 						steps you can take today.
 					</p>
-					<div className="mt-8 flex items-center gap-4">
+					<div className="mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
 						<Link to="/map">
 							<GlassButton size="lg">
 								Explore the live map <ArrowRight className="ml-2 h-4 w-4" />

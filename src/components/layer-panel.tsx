@@ -84,7 +84,7 @@ export function LayerPanel({
 				</GlassTabsList>
 			</GlassTabs>
 
-			<div className="flex w-[min(46rem,calc(100vw-2rem))] flex-col gap-4 rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl md:flex-row">
+			<div className="flex max-h-[42vh] w-[min(46rem,calc(100vw-2rem))] flex-col gap-4 overflow-y-auto rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl md:max-h-none md:flex-row md:overflow-visible">
 				<div className="flex-1 md:w-72 md:shrink-0">
 					{title && (
 						<div className="mb-3 flex items-start justify-between gap-2 border-white/10 border-b pb-3">

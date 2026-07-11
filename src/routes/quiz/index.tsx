@@ -124,7 +124,7 @@ function QuizListPage() {
 	}
 
 	return (
-		<div className="mx-auto max-w-3xl px-4 py-16">
+		<div className="mx-auto max-w-3xl px-4 py-10 sm:py-16">
 			<div className="flex items-center gap-2">
 				<ClipboardList className="h-6 w-6 text-forest-400" />
 				<h1 className="text-3xl font-bold">Test your knowledge</h1>

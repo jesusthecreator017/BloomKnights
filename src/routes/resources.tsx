@@ -104,7 +104,7 @@ const actions = [
 
 function ResourcesPage() {
 	return (
-		<div className="mx-auto max-w-6xl px-4 py-16">
+		<div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
 			<h1 className="text-3xl font-bold">Be part of the solution</h1>
 			<p className="mt-2 max-w-2xl text-muted-foreground">
 				Small changes, done by many people, move the grid. Start with one of

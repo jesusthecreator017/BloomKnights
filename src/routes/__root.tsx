@@ -115,23 +115,28 @@ function RootLayout() {
 			</div>
 
 			<header className="sticky top-0 z-40 border-b border-border bg-white/5 backdrop-blur-xl">
-				<div className="mx-auto grid h-16 max-w-6xl grid-cols-3 items-center gap-4 px-4">
+				{/* phones: two rows (logo + controls, then scrollable nav); md+: one 3-col row */}
+				<div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2 md:grid md:h-16 md:grid-cols-3 md:py-0">
 					<Link
 						to="/"
-						className="flex shrink-0 items-center gap-2 justify-self-start font-bold"
+						className="flex shrink-0 items-center gap-2 font-bold md:justify-self-start"
 					>
 						<Leaf className="h-5 w-5 text-forest-400" />
 						<span className="text-lg tracking-tight">Ecoverse</span>
 					</Link>
-					<nav className="[-ms-overflow-style:none] [scrollbar-width:none] col-start-2 flex items-center justify-center gap-1 overflow-x-auto justify-self-center [&::-webkit-scrollbar]:hidden">
+					<div className="ml-auto flex shrink-0 items-center gap-2 md:order-last md:ml-0 md:justify-self-end">
+						<ThemeToggle />
+						<AuthNav />
+					</div>
+					<nav className="[-ms-overflow-style:none] [scrollbar-width:none] -mx-4 flex w-[calc(100%+2rem)] items-center gap-1 overflow-x-auto px-4 md:col-start-2 md:mx-0 md:w-auto md:justify-center md:justify-self-center md:px-0 [&::-webkit-scrollbar]:hidden">
 						{navLinks.map((link) => (
 							<Link
 								key={link.to}
 								to={link.to}
-								className="flex shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm text-foreground/70 transition hover:bg-foreground/10 hover:text-foreground"
+								className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-foreground/70 transition hover:bg-foreground/10 hover:text-foreground md:px-4"
 								activeProps={{
 									className:
-										"flex shrink-0 items-center gap-1.5 rounded-full px-4 py-1.5 text-sm bg-foreground/10 text-foreground",
+										"flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm bg-foreground/10 text-foreground md:px-4",
 								}}
 								activeOptions={{ exact: link.to === "/" }}
 							>
@@ -140,10 +145,6 @@ function RootLayout() {
 							</Link>
 						))}
 					</nav>
-					<div className="flex shrink-0 items-center gap-2 justify-self-end">
-						<ThemeToggle />
-						<AuthNav />
-					</div>
 				</div>
 			</header>
 

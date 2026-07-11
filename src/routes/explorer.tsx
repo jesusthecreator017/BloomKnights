@@ -25,7 +25,7 @@ function ExplorerPage() {
 				Search an address, use your location, or click the map for live air
 				quality, UV, ocean, and nearby-places data.
 			</p>
-			<div className="mt-6 h-[70vh] overflow-hidden rounded-2xl border border-white/15 shadow-2xl">
+			<div className="mt-6 h-[72dvh] overflow-hidden rounded-2xl border border-white/15 shadow-2xl md:h-[70vh]">
 				<ClientOnly fallback={<MapFallback />}>
 					<Suspense fallback={<MapFallback />}>
 						<ExplorerMap />

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { formatWorldBankFacts } from "../lib/environment-facts";
-import { validateEcoEvents } from "../lib/events";
+import { nearestBakedEvents, validateEcoEvents } from "../lib/events";
 import { mapPlacesToInitiatives } from "../lib/initiatives";
 
 const goodEvent = {
@@ -44,6 +44,33 @@ describe("validateEcoEvents", () => {
 	it("returns [] for non-arrays", () => {
 		expect(validateEcoEvents({ events: [] })).toEqual([]);
 		expect(validateEcoEvents(null)).toEqual([]);
+	});
+});
+
+describe("nearestBakedEvents", () => {
+	const baked = {
+		orlando: {
+			name: "Orlando",
+			lat: 28.5383,
+			lng: -81.3792,
+			events: [goodEvent],
+		},
+		miami: { name: "Miami", lat: 25.7617, lng: -80.1918, events: [] },
+	};
+
+	it("returns the nearest city's events within range", () => {
+		// Kissimmee, ~25km from Orlando
+		expect(nearestBakedEvents(baked, 28.29, -81.41)).toEqual([goodEvent]);
+	});
+
+	it("skips cities with no events even when they're closer", () => {
+		// Fort Lauderdale, ~40km from Miami (empty) and ~300km from Orlando
+		expect(nearestBakedEvents(baked, 26.12, -80.14)).toBeNull();
+	});
+
+	it("returns null when nothing is within maxKm", () => {
+		expect(nearestBakedEvents(baked, 47.6, -122.33)).toBeNull();
+		expect(nearestBakedEvents({}, 28.5, -81.4)).toBeNull();
 	});
 });
 

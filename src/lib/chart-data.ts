@@ -1,5 +1,5 @@
-import { aqiColor } from "./environment-format";
 import type { CityScore, EmissionsEntry } from "./api-types";
+import { aqiColor } from "./environment-format";
 
 export interface EmissionsBarDatum {
 	label: string;
@@ -17,7 +17,11 @@ export function emissionsBarData(
 		entry.worldEmissions.co2e_100yr - entry.emissions.co2e_100yr,
 	);
 	return [
-		{ label: countryLabel, value: entry.emissions.co2e_100yr, color: "#1c9920" },
+		{
+			label: countryLabel,
+			value: entry.emissions.co2e_100yr,
+			color: "#1c9920",
+		},
 		{ label: "Rest of world", value: rest, color: "#3d76d1" },
 	];
 }
@@ -29,7 +33,9 @@ export interface EmissionsDonutDatum {
 }
 
 /** Fixed-order 3-slot categorical set: CO2, CH4, N2O. */
-export function emissionsDonutData(entry: EmissionsEntry): EmissionsDonutDatum[] {
+export function emissionsDonutData(
+	entry: EmissionsEntry,
+): EmissionsDonutDatum[] {
 	return [
 		{ name: "CO2", value: entry.emissions.co2, color: "#1c9920" },
 		{ name: "CH4", value: entry.emissions.ch4, color: "#3d76d1" },

@@ -8,7 +8,10 @@ describe("resources data", () => {
 	it("has at least 6 entries per category", () => {
 		for (const cat of CATEGORIES) {
 			const count = resources.filter((r) => r.category === cat.id).length;
-			expect(count, `category ${cat.id} has ${count} entries`).toBeGreaterThanOrEqual(6);
+			expect(
+				count,
+				`category ${cat.id} has ${count} entries`,
+			).toBeGreaterThanOrEqual(6);
 		}
 	});
 

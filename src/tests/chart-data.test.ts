@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
+import type { CityScore, EmissionsEntry } from "../lib/api-types";
 import {
 	cityAqiChartData,
 	emissionsBarData,
 	emissionsDonutData,
 } from "../lib/chart-data";
-import type { CityScore, EmissionsEntry } from "../lib/api-types";
 
 const entry: EmissionsEntry = {
 	country: "USA",

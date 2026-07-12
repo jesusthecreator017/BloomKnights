@@ -53,6 +53,7 @@ export interface MarineLifeResponse {
 	total: number;
 	sampled: number;
 	species: MarineSpecies[];
+	points: { lat: number; lng: number }[];
 }
 
 export type PlaceKind = "recycling" | "charging" | "waste";

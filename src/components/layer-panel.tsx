@@ -1,8 +1,17 @@
-import { BatteryCharging, Fish, Recycle, Trash2, Wind, X } from "lucide-react";
+import {
+	BatteryCharging,
+	Fish,
+	Flame,
+	Recycle,
+	Trash2,
+	Wind,
+	X,
+} from "lucide-react";
 import { AskGeminiBox } from "#/components/ask-gemini-box";
 import { GlassBadge } from "#/components/ui/glass-badge";
 import {
 	ENVIRONMENT_LAYERS,
+	HEATMAP_LAYERS,
 	type EnvironmentLayer,
 } from "#/hooks/use-environment-layers";
 import type {
@@ -36,6 +45,8 @@ interface LayerPanelProps {
 	onLayerChange: (layer: EnvironmentLayer) => void;
 	placeKind: PlaceKind;
 	onPlaceKindChange: (kind: PlaceKind) => void;
+	heatmapEnabled: boolean;
+	onHeatmapToggle: (enabled: boolean) => void;
 	air?: AirQualityResponse;
 	uvSolar?: UvSolarResponse;
 	ocean?: OceanResponse;
@@ -54,6 +65,8 @@ export function LayerPanel({
 	onLayerChange,
 	placeKind,
 	onPlaceKindChange,
+	heatmapEnabled,
+	onHeatmapToggle,
 	air,
 	uvSolar,
 	ocean,
@@ -83,6 +96,18 @@ export function LayerPanel({
 					))}
 				</GlassTabsList>
 			</GlassTabs>
+
+			{HEATMAP_LAYERS.has(layer) && (
+				<label className="mb-3 flex w-fit cursor-pointer items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-sm text-white/80 shadow-lg backdrop-blur-xl">
+					<input
+						type="checkbox"
+						checked={heatmapEnabled}
+						onChange={(e) => onHeatmapToggle(e.target.checked)}
+						className="h-4 w-4 rounded border-white/30 bg-transparent accent-forest-500"
+					/>
+					<Flame className="h-3.5 w-3.5 text-forest-400" /> Show heatmap
+				</label>
+			)}
 
 			<div className="flex max-h-[42vh] w-[min(46rem,calc(100vw-2rem))] flex-col gap-4 overflow-y-auto rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl md:max-h-none md:flex-row md:overflow-visible">
 				<div className="flex-1 md:w-72 md:shrink-0">

@@ -1,4 +1,9 @@
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import {
+	GoogleMap,
+	HeatmapLayerF,
+	Marker,
+	useJsApiLoader,
+} from "@react-google-maps/api";
 import { useQuery } from "@tanstack/react-query";
 import { Crosshair, LocateFixed, Search } from "lucide-react";
 import { useRef, useState } from "react";
@@ -6,6 +11,7 @@ import { LayerPanel, PLACE_COLOR } from "#/components/layer-panel";
 import { GlassInput } from "#/components/ui/glass-input";
 import {
 	type EnvironmentLayer,
+	HEATMAP_LAYERS,
 	useEnvironmentLayers,
 } from "#/hooks/use-environment-layers";
 import { ApiClientError, fetchJson } from "#/lib/api-client";
@@ -20,6 +26,18 @@ import { cn } from "#/lib/utils";
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
 const DEFAULT_CENTER = { lat: 39.5, lng: -98.35 };
+
+// module-level constant: @react-google-maps/api warns/reloads the script if
+// the libraries array isn't referentially stable across renders
+const MAP_LIBRARIES: "visualization"[] = ["visualization"];
+
+// green -> yellow -> red, matching the app's AQI color language elsewhere
+const HEATMAP_GRADIENT = [
+	"rgba(62, 189, 73, 0)",
+	"rgba(62, 189, 73, 1)",
+	"rgba(250, 204, 21, 1)",
+	"rgba(239, 68, 68, 1)",
+];
 
 // dark, forest/navy-tinted map so it matches the rest of the app instead of
 // stock Google Maps colors
@@ -72,6 +90,15 @@ function MessageOverlay({ message }: { message: string }) {
 	);
 }
 
+function toWeightedLocations(
+	points: { lat: number; lng: number; weight?: number }[],
+): google.maps.visualization.WeightedLocation[] {
+	return points.map((p) => ({
+		location: new google.maps.LatLng(p.lat, p.lng),
+		weight: p.weight ?? 1,
+	}));
+}
+
 export default function ExplorerMap() {
 	const [center, setCenter] = useState(DEFAULT_CENTER);
 	const [marker, setMarker] = useState<{ lat: number; lng: number } | null>(
@@ -85,15 +112,22 @@ export default function ExplorerMap() {
 	const [locating, setLocating] = useState(false);
 	const [layer, setLayer] = useState<EnvironmentLayer>("air-quality");
 	const [placeKind, setPlaceKind] = useState<PlaceKind>("recycling");
+	const [heatmapEnabled, setHeatmapEnabled] = useState(false);
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const mapRef = useRef<google.maps.Map | null>(null);
 
 	const { isLoaded, loadError } = useJsApiLoader({
 		googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+		libraries: MAP_LIBRARIES,
 	});
 
 	const activePoint = marker ?? center;
-	const layerData = useEnvironmentLayers(activePoint, layer, placeKind);
+	const layerData = useEnvironmentLayers(
+		activePoint,
+		layer,
+		placeKind,
+		heatmapEnabled,
+	);
 	const { data: marineLife } = useQuery({
 		queryKey: ["marine-life", activePoint],
 		queryFn: () =>
@@ -206,6 +240,22 @@ export default function ExplorerMap() {
 		return <MessageOverlay message="Loading map…" />;
 	}
 
+	const heatmapPoints: { lat: number; lng: number; weight?: number }[] =
+		!heatmapEnabled || !HEATMAP_LAYERS.has(layer)
+			? []
+			: layer === "air-quality" || layer === "uv-solar"
+				? (layerData.heatmap?.points ?? []).map((p) => ({
+						lat: p.lat,
+						lng: p.lng,
+						weight: p.value,
+					}))
+				: layer === "places"
+					? (layerData.places?.places ?? []).map((p) => ({
+							lat: p.lat,
+							lng: p.lng,
+						}))
+					: (marineLife?.points ?? []);
+
 	return (
 		<div className="relative h-full w-full">
 			<GoogleMap
@@ -228,6 +278,7 @@ export default function ExplorerMap() {
 				{marker && <Marker position={marker} />}
 
 				{layer === "places" &&
+					!heatmapEnabled &&
 					layerData.places?.places.map((place) => (
 						<Marker
 							key={place.id}
@@ -242,6 +293,13 @@ export default function ExplorerMap() {
 							}}
 						/>
 					))}
+
+				{heatmapPoints.length > 0 && (
+					<HeatmapLayerF
+						data={toWeightedLocations(heatmapPoints)}
+						options={{ gradient: HEATMAP_GRADIENT, radius: 40, opacity: 0.7 }}
+					/>
+				)}
 			</GoogleMap>
 
 			<LayerPanel
@@ -249,6 +307,8 @@ export default function ExplorerMap() {
 				onLayerChange={setLayer}
 				placeKind={placeKind}
 				onPlaceKindChange={setPlaceKind}
+				heatmapEnabled={heatmapEnabled}
+				onHeatmapToggle={setHeatmapEnabled}
 				air={layerData.air}
 				uvSolar={layerData.uvSolar}
 				ocean={layerData.ocean}

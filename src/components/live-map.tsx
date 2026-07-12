@@ -1,12 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { AlertTriangle, HandHeart, MapPin, Search } from "lucide-react";
+import {
+	AlertTriangle,
+	HandHeart,
+	MapPin,
+	Search,
+	Sparkles,
+} from "lucide-react";
 import type { LngLatBounds } from "maplibre-gl";
 import { useRef, useState } from "react";
 import type { MapRef } from "react-map-gl/maplibre";
 import { Map as MapGL, Marker } from "react-map-gl/maplibre";
+import { AskGeminiSignInDialog } from "#/components/ask-gemini-box";
 import type { MapSelection } from "#/components/map-detail-dialog";
 import { MapDetailDialog } from "#/components/map-detail-dialog";
+import { GlassButton } from "#/components/ui/glass-button";
 import { GlassInput } from "#/components/ui/glass-input";
+import { useAskGemini } from "#/hooks/use-ask-gemini";
 import { ApiClientError, fetchJson, roundCoord } from "#/lib/api-client";
 import type {
 	EcoInitiative,
@@ -42,6 +51,11 @@ const categoryColors: Record<string, string> = {
 	conservation: "#34d399",
 	nonprofit: "#a78bfa",
 	organization: "#38bdf8",
+	planting: "#84cc16",
+	market: "#fb923c",
+	talk: "#38bdf8",
+	recycling: "#3ebd49",
+	other: "#94a3b8",
 };
 
 const SEVERITY_COLOR: Record<string, string> = {
@@ -150,6 +164,22 @@ export default function LiveMap() {
 		queryKey: ["weather-alerts"],
 		queryFn: () => fetchJson<WeatherAlert[]>("/api/weather-alerts"),
 		staleTime: 5 * 60 * 1000,
+	});
+
+	const {
+		question: askQuestion,
+		setQuestion: setAskQuestion,
+		answer: askAnswer,
+		error: askError,
+		isPending: askPending,
+		showSignIn: askShowSignIn,
+		setShowSignIn: setAskShowSignIn,
+		submit: submitAsk,
+	} = useAskGemini({
+		kind: "location",
+		lat: dataCenter.lat,
+		lng: dataCenter.lng,
+		liveData: `${events?.length ?? 0} events, ${initiatives?.length ?? 0} initiatives, ${alerts?.length ?? 0} active alerts nearby`,
 	});
 
 	function toggleLayer(id: MapLayer) {
@@ -313,7 +343,12 @@ export default function LiveMap() {
 				</button>
 
 				{sidebarOpen && (
-					<div className="w-72 max-w-full rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl">
+					<div
+						className={cn(
+							"max-w-full rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl transition-[width]",
+							askAnswer ? "w-96" : "w-72",
+						)}
+					>
 						<div className="relative">
 							<Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-white/50" />
 							<GlassInput
@@ -380,8 +415,46 @@ export default function LiveMap() {
 							initiatives · {visibleAlerts.length} of {scatteredAlerts.length}{" "}
 							active alerts
 						</p>
+
+						<div className="mt-3 border-white/10 border-t pt-3">
+							<div className="flex items-center gap-2 text-sm text-white/70">
+								<Sparkles className="h-4 w-4 text-forest-400" /> Ask Ecoverse AI
+							</div>
+							<div className="mt-2 flex gap-2">
+								<GlassInput
+									value={askQuestion}
+									onChange={(e) => setAskQuestion(e.target.value)}
+									onKeyDown={(e) => e.key === "Enter" && submitAsk()}
+									placeholder="Ask about what's in view…"
+									className="text-sm"
+								/>
+								<GlassButton
+									variant="primary"
+									size="sm"
+									disabled={!askQuestion.trim() || askPending}
+									onClick={submitAsk}
+								>
+									{askPending ? "…" : "Ask"}
+								</GlassButton>
+							</div>
+							{askError && (
+								<p className="mt-2 text-red-400 text-xs">{askError}</p>
+							)}
+							{/* wide box (not the narrow w-72 sidebar) so long answers read as a few
+							 * wrapped lines instead of stacking vertically */}
+							{askAnswer && (
+								<p className="mt-2 text-sm text-white/80 leading-relaxed">
+									{askAnswer}
+								</p>
+							)}
+						</div>
 					</div>
 				)}
+
+				<AskGeminiSignInDialog
+					open={askShowSignIn}
+					onOpenChange={setAskShowSignIn}
+				/>
 			</div>
 		</div>
 	);

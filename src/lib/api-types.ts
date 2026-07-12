@@ -159,6 +159,7 @@ export interface QuizSummary {
 	createdBy: string | null;
 	questionCount: number;
 	totalPoints: number;
+	completedByMe: boolean;
 }
 
 export interface GenerateQuizRequest {

@@ -8,15 +8,11 @@ import {
 	parseLatLng,
 	TTL,
 } from "../../lib/api-utils";
+import { aggregateObisResults, type ObisRecord } from "../../lib/marine-life";
 
 interface ObisResponse {
 	total: number;
-	results: Array<{
-		scientificName?: string;
-		vernacularName?: string;
-		decimalLatitude?: number;
-		decimalLongitude?: number;
-	}>;
+	results: ObisRecord[];
 }
 
 export const Route = createFileRoute("/api/marine-life")({
@@ -43,30 +39,14 @@ export const Route = createFileRoute("/api/marine-life")({
 				if (!result.ok) return result.response;
 
 				const obis = result.data as ObisResponse;
-				const counts = new Map<
-					string,
-					{ name: string; common?: string; count: number }
-				>();
-				for (const r of obis.results ?? []) {
-					const name = r.scientificName;
-					if (!name) continue;
-					const entry = counts.get(name) ?? {
-						name,
-						common: r.vernacularName,
-						count: 0,
-					};
-					entry.count += 1;
-					counts.set(name, entry);
-				}
-				const species = [...counts.values()]
-					.sort((a, b) => b.count - a.count)
-					.slice(0, 25);
+				const { species, points } = aggregateObisResults(obis.results ?? []);
 
 				return Response.json(
 					{
 						total: obis.total ?? 0,
 						sampled: obis.results?.length ?? 0,
 						species,
+						points,
 					},
 					{ headers: { "cache-control": "public, max-age=3600" } },
 				);

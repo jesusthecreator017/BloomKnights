@@ -73,12 +73,20 @@ NOAA Coral Reef Watch bleaching alert at the nearest 5km reef cell.
 `alertArea` 0–4 → labels: No Stress / Watch / Warning / Alert Level 1 / Alert Level 2. If no reef nearby: `{ "available": false, "reason": "..." }`. Color-code it (green→red). Try Miami `25.76,-80.19` for a live "Warning".
 
 ### `GET /api/marine-life?lat=&lng=`
-Marine species sightings near a point (OBIS), aggregated & sorted by count. `total` = all records in area, `species` = top 25.
+Marine species sightings near a point (OBIS), aggregated & sorted by count. `total` = all records in area, `species` = top 25, `points` = every individual sighting's raw coordinates (up to 200) — use `points` for a density heatmap, `species` for a species list.
 ```json
 { "total": 472918, "sampled": 200,
-  "species": [ { "name": "Lucania parva", "common": "NA", "count": 9 }, ... ] }
+  "species": [ { "name": "Lucania parva", "common": "NA", "count": 9 }, ... ],
+  "points": [ { "lat": 25.77, "lng": -80.18 }, ... ] }
 ```
 Note `common` may be the string `"NA"` or missing — fall back to the scientific `name`.
+
+### `GET /api/heatmap?metric=air-quality|uv-index&lat=&lng=`
+64-point grid sample (fixed ~50km box around the point) for a heatmap overlay — one upstream call, not 64. Feed `points` straight into a weighted heatmap layer (e.g. Google Maps' `visualization` library), weighting by `value`.
+```json
+{ "metric": "air-quality", "points": [ { "lat": 40.2, "lng": -74.5, "value": 42 }, ... ] }
+```
+`metric` must be exactly `air-quality` or `uv-index`; anything else is a 400. Points with no upstream value are dropped, so the array can be shorter than 64. Used by the Explorer tab's four heatmap toggles (Air Quality, UV, Places density via `/api/places`, Marine Life density via this endpoint's sibling `points` field above).
 
 ### `GET /api/emissions?country=USA`
 Country carbon emissions (Climate TRACE, cached 24h in Postgres). `country` is an ISO-3 code (default USA). `data` is an array (usually one entry). Numbers are in tonnes — format them (e.g. billions of tonnes CO2e).

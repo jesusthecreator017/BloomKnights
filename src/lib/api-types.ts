@@ -53,6 +53,7 @@ export interface MarineLifeResponse {
 	total: number;
 	sampled: number;
 	species: MarineSpecies[];
+	points: { lat: number; lng: number }[];
 }
 
 export type PlaceKind = "recycling" | "charging" | "waste";
@@ -278,4 +279,15 @@ export interface AskGeminiRequest {
 
 export interface AskGeminiResponse {
 	answer: string;
+}
+
+export interface HeatmapPoint {
+	lat: number;
+	lng: number;
+	value: number;
+}
+
+export interface HeatmapResponse {
+	metric: "air-quality" | "uv-index";
+	points: HeatmapPoint[];
 }

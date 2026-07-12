@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as MapRouteImport } from './routes/map'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as GameRouteImport } from './routes/game'
 import { Route as ExplorerRouteImport } from './routes/explorer'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as QuizIndexRouteImport } from './routes/quiz/index'
@@ -56,6 +57,11 @@ const MapRoute = MapRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GameRoute = GameRouteImport.update({
+  id: '/game',
+  path: '/game',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExplorerRoute = ExplorerRouteImport.update({
@@ -212,6 +218,7 @@ const ApiQuizzesSlugCheckRoute = ApiQuizzesSlugCheckRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/explorer': typeof ExplorerRoute
+  '/game': typeof GameRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/resources': typeof ResourcesRoute
@@ -247,6 +254,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/explorer': typeof ExplorerRoute
+  '/game': typeof GameRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/resources': typeof ResourcesRoute
@@ -283,6 +291,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/explorer': typeof ExplorerRoute
+  '/game': typeof GameRoute
   '/login': typeof LoginRoute
   '/map': typeof MapRoute
   '/resources': typeof ResourcesRoute
@@ -320,6 +329,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/explorer'
+    | '/game'
     | '/login'
     | '/map'
     | '/resources'
@@ -355,6 +365,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/explorer'
+    | '/game'
     | '/login'
     | '/map'
     | '/resources'
@@ -390,6 +401,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/explorer'
+    | '/game'
     | '/login'
     | '/map'
     | '/resources'
@@ -426,6 +438,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExplorerRoute: typeof ExplorerRoute
+  GameRoute: typeof GameRoute
   LoginRoute: typeof LoginRoute
   MapRoute: typeof MapRoute
   ResourcesRoute: typeof ResourcesRoute
@@ -478,6 +491,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/game': {
+      id: '/game'
+      path: '/game'
+      fullPath: '/game'
+      preLoaderRoute: typeof GameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explorer': {
@@ -710,6 +730,7 @@ const ApiQuizzesSlugRouteWithChildren = ApiQuizzesSlugRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExplorerRoute: ExplorerRoute,
+  GameRoute: GameRoute,
   LoginRoute: LoginRoute,
   MapRoute: MapRoute,
   ResourcesRoute: ResourcesRoute,

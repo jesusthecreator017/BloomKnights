@@ -3,6 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
 	ArrowRight,
 	Car,
+	Check,
 	ClipboardList,
 	Droplet,
 	Leaf,
@@ -264,9 +265,15 @@ function QuizCard({ quiz, badge }: { quiz: QuizSummary; badge?: string }) {
 					</GlassCardDescription>
 				</GlassCardHeader>
 				<GlassCardContent>
-					<span className="inline-flex items-center gap-1 text-sm font-medium text-forest-400">
-						Start quiz <ArrowRight className="h-4 w-4" />
-					</span>
+					{quiz.completedByMe ? (
+						<span className="inline-flex items-center gap-1 text-sm font-medium text-white/50">
+							<Check className="h-4 w-4 text-forest-400" /> Completed
+						</span>
+					) : (
+						<span className="inline-flex items-center gap-1 text-sm font-medium text-forest-400">
+							Start quiz <ArrowRight className="h-4 w-4" />
+						</span>
+					)}
 				</GlassCardContent>
 			</GlassCard>
 		</Link>

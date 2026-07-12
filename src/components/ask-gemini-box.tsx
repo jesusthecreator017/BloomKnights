@@ -1,7 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Sparkles } from "lucide-react";
-import { useState } from "react";
 import { GlassButton } from "#/components/ui/glass-button";
 import {
 	GlassDialog,
@@ -12,8 +10,38 @@ import {
 	GlassDialogTitle,
 } from "#/components/ui/glass-dialog";
 import { GlassInput } from "#/components/ui/glass-input";
-import { ApiClientError, fetchJson } from "#/lib/api-client";
-import type { AskGeminiRequest, AskGeminiResponse } from "#/lib/api-types";
+import { useAskGemini } from "#/hooks/use-ask-gemini";
+import type { AskGeminiRequest } from "#/lib/api-types";
+
+/** Sign-in gate dialog shared by every Ask Ecoverse AI surface. */
+export function AskGeminiSignInDialog({
+	open,
+	onOpenChange,
+}: {
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+}) {
+	return (
+		<GlassDialog open={open} onOpenChange={onOpenChange}>
+			<GlassDialogContent>
+				<GlassDialogHeader>
+					<GlassDialogTitle>Sign in to ask Gemini</GlassDialogTitle>
+					<GlassDialogDescription>
+						Asking questions is gated to signed-in accounts so it isn't abused.
+					</GlassDialogDescription>
+				</GlassDialogHeader>
+				<GlassDialogFooter>
+					<GlassButton variant="outline" onClick={() => onOpenChange(false)}>
+						Not now
+					</GlassButton>
+					<Link to="/login">
+						<GlassButton variant="primary">Sign in</GlassButton>
+					</Link>
+				</GlassDialogFooter>
+			</GlassDialogContent>
+		</GlassDialog>
+	);
+}
 
 /** Grounds the question in whatever the user is currently looking at — a location, event, or initiative. */
 export function AskGeminiBox({
@@ -21,53 +49,16 @@ export function AskGeminiBox({
 }: {
 	context: AskGeminiRequest["context"];
 }) {
-	const [question, setQuestion] = useState("");
-	const [answer, setAnswer] = useState<string | null>(null);
-	const [error, setError] = useState<string | null>(null);
-	const [showSignIn, setShowSignIn] = useState(false);
-
-	const ask = useMutation({
-		mutationFn: (q: string) =>
-			fetchJson<AskGeminiResponse>("/api/gemini/ask", {
-				method: "POST",
-				headers: { "content-type": "application/json" },
-				body: JSON.stringify({
-					question: q,
-					context,
-				} satisfies AskGeminiRequest),
-			}),
-		onSuccess: (res) => {
-			setAnswer(res.answer);
-			setError(null);
-		},
-		onError: (err) => {
-			setAnswer(null);
-			if (err instanceof ApiClientError) {
-				if (err.status === 401) {
-					setShowSignIn(true);
-					return;
-				}
-				if (err.status === 429) {
-					setError("You're asking too fast — slow down and try again shortly.");
-					return;
-				}
-				if (err.status === 500) {
-					setError("Ask Gemini isn't set up yet (missing GEMINI_API_KEY).");
-					return;
-				}
-				setError("Gemini couldn't answer that right now — try again.");
-				return;
-			}
-			setError("Something went wrong asking that.");
-		},
-	});
-
-	function submit() {
-		const q = question.trim();
-		if (!q) return;
-		setError(null);
-		ask.mutate(q);
-	}
+	const {
+		question,
+		setQuestion,
+		answer,
+		error,
+		isPending,
+		showSignIn,
+		setShowSignIn,
+		submit,
+	} = useAskGemini(context);
 
 	return (
 		<div className="border-white/10 border-t pt-3">
@@ -85,10 +76,10 @@ export function AskGeminiBox({
 				<GlassButton
 					variant="primary"
 					size="sm"
-					disabled={!question.trim() || ask.isPending}
+					disabled={!question.trim() || isPending}
 					onClick={submit}
 				>
-					{ask.isPending ? "…" : "Ask"}
+					{isPending ? "…" : "Ask"}
 				</GlassButton>
 			</div>
 			{error && <p className="mt-2 text-red-400 text-xs">{error}</p>}
@@ -96,25 +87,7 @@ export function AskGeminiBox({
 				<p className="mt-2 text-sm text-white/80 leading-relaxed">{answer}</p>
 			)}
 
-			<GlassDialog open={showSignIn} onOpenChange={setShowSignIn}>
-				<GlassDialogContent>
-					<GlassDialogHeader>
-						<GlassDialogTitle>Sign in to ask Gemini</GlassDialogTitle>
-						<GlassDialogDescription>
-							Asking questions is gated to signed-in accounts so it isn't
-							abused.
-						</GlassDialogDescription>
-					</GlassDialogHeader>
-					<GlassDialogFooter>
-						<GlassButton variant="outline" onClick={() => setShowSignIn(false)}>
-							Not now
-						</GlassButton>
-						<Link to="/login">
-							<GlassButton variant="primary">Sign in</GlassButton>
-						</Link>
-					</GlassDialogFooter>
-				</GlassDialogContent>
-			</GlassDialog>
+			<AskGeminiSignInDialog open={showSignIn} onOpenChange={setShowSignIn} />
 		</div>
 	);
 }

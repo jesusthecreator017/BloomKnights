@@ -9,6 +9,7 @@ import {
 import {
 	ClipboardList,
 	Compass,
+	Gamepad2,
 	Home,
 	Leaf,
 	ListChecks,
@@ -56,6 +57,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 	shellComponent: RootDocument,
 });
 
+// flip to false to pull the game off the nav without deleting the route/feature
+const SHOW_GAME_IN_NAV = true;
+
 const navLinks = [
 	{ to: "/", label: "Home", icon: Home },
 	{ to: "/map", label: "Map", icon: MapPinned },
@@ -63,6 +67,9 @@ const navLinks = [
 	{ to: "/resources", label: "Resources", icon: ListChecks },
 	{ to: "/quiz", label: "Quiz", icon: ClipboardList },
 	{ to: "/leaderboard", label: "Leaderboard", icon: Trophy },
+	...(SHOW_GAME_IN_NAV
+		? [{ to: "/game", label: "Game", icon: Gamepad2 } as const]
+		: []),
 ] as const;
 
 function AuthNav() {

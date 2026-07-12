@@ -106,24 +106,31 @@ export function LayerPanel({
 				</GlassTabsList>
 			</GlassTabs>
 
-			<div className="flex w-[min(46rem,calc(100vw-2rem))] flex-col gap-4 rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl">
-				<div className="flex flex-col gap-4 md:flex-row">
-					<div className="flex-1 md:w-72 md:shrink-0">
-						{title && (
-							<div className="mb-3 flex items-start justify-between gap-2 border-white/10 border-b pb-3">
-								<p className="font-medium text-sm text-white leading-snug">
-									{title}
-								</p>
-								{onClearSelection && (
-									<button
-										type="button"
-										onClick={onClearSelection}
-										className="shrink-0 rounded-full p-1 text-white/50 transition hover:bg-white/10 hover:text-white"
-										aria-label="Clear selection"
-									>
-										<X className="h-4 w-4" />
-									</button>
-								)}
+			<div className="flex max-h-[42vh] w-[min(46rem,calc(100vw-2rem))] flex-col gap-4 overflow-y-auto rounded-2xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-xl md:max-h-none md:flex-row md:overflow-visible">
+				<div className="flex-1 md:w-72 md:shrink-0">
+					{title && (
+						<div className="mb-3 flex items-start justify-between gap-2 border-white/10 border-b pb-3">
+							<p className="font-medium text-sm text-white leading-snug">
+								{title}
+							</p>
+							{onClearSelection && (
+								<button
+									type="button"
+									onClick={onClearSelection}
+									className="shrink-0 rounded-full p-1 text-white/50 transition hover:bg-white/10 hover:text-white"
+									aria-label="Clear selection"
+								>
+									<X className="h-4 w-4" />
+								</button>
+							)}
+						</div>
+					)}
+
+					{layer === "air-quality" && (
+						<>
+							<div className="flex items-center gap-2 text-sm text-white/70">
+								<Wind className="h-4 w-4 text-navy-300" />
+								Air quality {title ? "here" : "at map center"}
 							</div>
 						)}
 

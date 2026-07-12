@@ -73,7 +73,7 @@ function LoginPage() {
 	}
 
 	return (
-		<div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md flex-col items-center justify-center px-4 py-16">
+		<div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-md flex-col items-center justify-center px-4 py-10 sm:py-16">
 			<div className="mb-6 flex flex-col items-center text-center">
 				<Leaf className="h-8 w-8 text-forest-400" />
 				<h1 className="mt-3 text-2xl font-bold">Join Ecoverse</h1>

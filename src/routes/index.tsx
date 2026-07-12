@@ -101,7 +101,7 @@ const features = [
 
 function Home() {
 	return (
-		<div className="mx-auto max-w-6xl px-4 py-16">
+		<div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
 			<section className="grid items-center gap-10 lg:grid-cols-[1.1fr_0.9fr]">
 				<div className="text-left">
 					<h1 className="text-5xl font-bold leading-tight tracking-tight">
@@ -116,7 +116,7 @@ function Home() {
 						quizzes, a leaderboard driven by real air-quality data, and concrete
 						steps you can take today.
 					</p>
-					<div className="mt-8 flex items-center gap-4">
+					<div className="mt-8 flex flex-wrap items-center gap-3 sm:gap-4">
 						<Link to="/map">
 							<GlassButton size="lg">
 								Explore the live map <ArrowRight className="ml-2 h-4 w-4" />

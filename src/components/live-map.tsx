@@ -107,7 +107,12 @@ export default function LiveMap() {
 	const [visibleLayers, setVisibleLayers] = useState<Set<MapLayer>>(
 		new Set(["events", "initiatives", "alerts"]),
 	);
-	const [sidebarOpen, setSidebarOpen] = useState(true);
+	// rendered inside ClientOnly, so window is safe; phones start collapsed
+	const [sidebarOpen, setSidebarOpen] = useState(
+		() =>
+			typeof window === "undefined" ||
+			window.matchMedia("(min-width: 768px)").matches,
+	);
 	const mapRef = useRef<MapRef | null>(null);
 	const [bounds, setBounds] = useState<LngLatBounds | null>(null);
 	const [dataCenter, setDataCenter] = useState(DEFAULT_CENTER);

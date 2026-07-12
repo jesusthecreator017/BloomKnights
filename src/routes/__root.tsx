@@ -15,8 +15,11 @@ import {
 	ListChecks,
 	LogOut,
 	MapPinned,
+	Menu,
 	Trophy,
+	X,
 } from "lucide-react";
+import { useState } from "react";
 import { ThemeToggle } from "#/components/theme-toggle";
 import { GlassButton } from "#/components/ui/glass-button";
 import { useLeaderboard } from "#/hooks/use-leaderboard";
@@ -112,6 +115,8 @@ function AuthNav() {
 }
 
 function RootLayout() {
+	const [menuOpen, setMenuOpen] = useState(false);
+
 	return (
 		<div className="relative flex min-h-screen flex-col bg-background text-foreground">
 			{/* ambient gradient backdrop so glass surfaces have something to blur */}
@@ -122,15 +127,30 @@ function RootLayout() {
 			</div>
 
 			<header className="sticky top-0 z-40 border-b border-border bg-white/5 backdrop-blur-xl">
-				<div className="mx-auto grid h-16 max-w-6xl grid-cols-3 items-center gap-4 px-4">
+				{/* phones: hamburger dropdown; md+: one 3-col row with inline nav */}
+				<div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4 md:grid md:h-16 md:grid-cols-3 md:gap-4">
+					<button
+						type="button"
+						onClick={() => setMenuOpen((v) => !v)}
+						aria-label={menuOpen ? "Close menu" : "Open menu"}
+						aria-expanded={menuOpen}
+						className="-ml-1 rounded-lg p-2 text-foreground/80 transition hover:bg-foreground/10 md:hidden"
+					>
+						{menuOpen ? (
+							<X className="h-5 w-5" />
+						) : (
+							<Menu className="h-5 w-5" />
+						)}
+					</button>
 					<Link
 						to="/"
-						className="flex shrink-0 items-center gap-2 justify-self-start font-bold"
+						onClick={() => setMenuOpen(false)}
+						className="flex shrink-0 items-center gap-2 font-bold md:justify-self-start"
 					>
 						<Leaf className="h-5 w-5 text-forest-400" />
 						<span className="text-lg tracking-tight">Ecoverse</span>
 					</Link>
-					<nav className="[-ms-overflow-style:none] [scrollbar-width:none] col-start-2 flex items-center justify-center gap-1 overflow-x-auto justify-self-center [&::-webkit-scrollbar]:hidden">
+					<nav className="hidden items-center justify-center gap-1 md:col-start-2 md:flex md:justify-self-center">
 						{navLinks.map((link) => (
 							<Link
 								key={link.to}
@@ -147,11 +167,32 @@ function RootLayout() {
 							</Link>
 						))}
 					</nav>
-					<div className="flex shrink-0 items-center gap-2 justify-self-end">
+					<div className="ml-auto flex shrink-0 items-center gap-2 md:ml-0 md:justify-self-end">
 						<ThemeToggle />
 						<AuthNav />
 					</div>
 				</div>
+
+				{menuOpen && (
+					<nav className="border-border border-t px-4 py-2 md:hidden">
+						{navLinks.map((link) => (
+							<Link
+								key={link.to}
+								to={link.to}
+								onClick={() => setMenuOpen(false)}
+								className="flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-foreground/70 text-sm transition hover:bg-foreground/10 hover:text-foreground"
+								activeProps={{
+									className:
+										"flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm bg-foreground/10 text-foreground",
+								}}
+								activeOptions={{ exact: link.to === "/" }}
+							>
+								<link.icon className="h-4 w-4" />
+								{link.label}
+							</Link>
+						))}
+					</nav>
+				)}
 			</header>
 
 			<main className="relative z-10 flex-1">

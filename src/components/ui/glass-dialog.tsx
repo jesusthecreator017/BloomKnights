@@ -40,7 +40,7 @@ const GlassDialogContent = React.forwardRef<
 			ref={ref}
 			className={cn(
 				"fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2",
-				"rounded-2xl border border-white/20 p-6",
+				"max-h-[85dvh] overflow-y-auto rounded-2xl border border-white/20 p-6",
 				// intrinsically dark so the dialog reads on both app-shell themes
 				"bg-slate-900/90 backdrop-blur-2xl",
 				"shadow-[0_8px_32px_rgba(0,0,0,0.4)]",

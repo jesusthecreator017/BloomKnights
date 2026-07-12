@@ -55,7 +55,7 @@ export const MEDAL_CLASS: Record<number, string> = {
 
 function LeaderboardPage() {
 	return (
-		<div className="mx-auto max-w-2xl px-4 py-16">
+		<div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
 			<div className="flex items-center gap-2">
 				<Trophy className="h-6 w-6 text-forest-400" />
 				<h1 className="text-3xl font-bold">Leaderboard</h1>
@@ -211,8 +211,8 @@ function ScoreRow({ score, rank }: { score: CityScore; rank: number }) {
 					{medalColor && <Medal className="h-4 w-4" />}
 					{rank}
 				</span>
-				<div className="flex-1">
-					<p className="font-medium">{score.name}</p>
+				<div className="min-w-0 flex-1">
+					<p className="truncate font-medium">{score.name}</p>
 					<p className="flex items-center gap-1 text-white/50 text-xs">
 						{countryFlag(score.country) && (
 							<span>{countryFlag(score.country)}</span>
@@ -314,8 +314,8 @@ function CityRow({
 					{medalColor && <Medal className="h-4 w-4" />}
 					{city.rank}
 				</span>
-				<div className="flex-1">
-					<p className="font-medium">
+				<div className="min-w-0 flex-1">
+					<p className="truncate font-medium">
 						{city.name}
 						{isMine && (
 							<span className="ml-2 text-xs text-forest-400">(your city)</span>
@@ -533,8 +533,8 @@ export function Row({
 				{medalColor && <Medal className="h-4 w-4" />}
 				{entry.rank}
 			</span>
-			<div className="flex-1">
-				<p className="font-medium">
+			<div className="min-w-0 flex-1">
+				<p className="truncate font-medium">
 					{entry.name}
 					{isMe && <span className="ml-2 text-xs text-forest-400">(you)</span>}
 				</p>

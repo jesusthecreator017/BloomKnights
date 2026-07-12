@@ -20,7 +20,7 @@ function CityLeaderboardPage() {
 	});
 
 	return (
-		<div className="mx-auto max-w-2xl px-4 py-16">
+		<div className="mx-auto max-w-2xl px-4 py-10 sm:py-16">
 			<Link
 				to="/leaderboard"
 				className="inline-flex items-center gap-1 text-sm text-forest-400 hover:underline"

@@ -1,0 +1,421 @@
+[
+	{
+		"id": "swap-car-trip",
+		"category": "carbon",
+		"type": "action",
+		"title": "Swap one car trip a day",
+		"impact": "~1 ton CO2/yr",
+		"description": "Bike, walk, or take transit for your shortest daily trip. Short cold-engine drives are the least efficient ones.",
+		"url": "https://www.epa.gov/greenvehicles/fast-facts-transportation-greenhouse-gas-emissions"
+	},
+	{
+		"id": "global-carbon-project",
+		"category": "carbon",
+		"type": "org",
+		"title": "Global Carbon Project",
+		"description": "Tracks the annual global carbon budget and publishes the definitive yearly emissions numbers scientists cite.",
+		"url": "https://www.globalcarbonproject.org/"
+	},
+	{
+		"id": "owid-co2-emissions",
+		"category": "carbon",
+		"type": "data",
+		"title": "CO2 and Greenhouse Gas Emissions — Our World in Data",
+		"description": "Interactive charts on emissions by country, sector, and per capita, updated as new data lands.",
+		"url": "https://ourworldindata.org/co2-and-greenhouse-gas-emissions"
+	},
+	{
+		"id": "climate-trace",
+		"category": "carbon",
+		"type": "data",
+		"title": "Climate TRACE",
+		"description": "Satellite-verified emissions tracking down to individual facilities — the same source powering Ecoverse's country comparisons.",
+		"url": "https://climatetrace.org"
+	},
+	{
+		"id": "ipcc-ar6-synthesis",
+		"category": "carbon",
+		"type": "article",
+		"title": "IPCC Sixth Assessment Synthesis Report",
+		"description": "The UN's authoritative summary of the physical science, impacts, and pathways to limit warming.",
+		"url": "https://www.ipcc.ch/report/ar6/syr/"
+	},
+	{
+		"id": "epa-ghg-inventory",
+		"category": "carbon",
+		"type": "data",
+		"title": "EPA Greenhouse Gas Inventory",
+		"description": "The official annual US greenhouse gas emissions and sinks report, broken down by sector.",
+		"url": "https://www.epa.gov/ghgemissions"
+	},
+	{
+		"id": "project-drawdown",
+		"category": "carbon",
+		"type": "org",
+		"title": "Project Drawdown",
+		"description": "Ranks real-world climate solutions by how many gigatons of emissions each could actually avoid.",
+		"url": "https://drawdown.org"
+	},
+	{
+		"id": "carbon-brief",
+		"category": "carbon",
+		"type": "article",
+		"title": "Carbon Brief",
+		"description": "Plain-language explainers that translate new climate science and policy into what it actually means.",
+		"url": "https://www.carbonbrief.org"
+	},
+	{
+		"id": "community-solar",
+		"category": "energy",
+		"type": "action",
+		"title": "Join community solar",
+		"impact": "Up to 1.5 tons CO2/yr",
+		"description": "No rooftop needed — subscribe to a shared solar farm and clean up your electricity in about 20 minutes.",
+		"url": "https://www.energy.gov/communitysolar"
+	},
+	{
+		"id": "heat-pump",
+		"category": "energy",
+		"type": "action",
+		"title": "Switch to a heat pump",
+		"impact": "2–4 tons CO2/yr",
+		"description": "Heating is most homes' biggest energy use. Federal rebates can cover thousands of dollars of the cost.",
+		"url": "https://www.energy.gov/energysaver/heat-pump-systems"
+	},
+	{
+		"id": "iea",
+		"category": "energy",
+		"type": "org",
+		"title": "International Energy Agency (IEA)",
+		"description": "The world's most-cited source for energy data, forecasts, and clean-energy technology tracking.",
+		"url": "https://www.iea.org"
+	},
+	{
+		"id": "eia",
+		"category": "energy",
+		"type": "data",
+		"title": "U.S. Energy Information Administration",
+		"description": "Official US data on electricity generation, fuel mix, and prices by state, updated monthly.",
+		"url": "https://www.eia.gov"
+	},
+	{
+		"id": "nrel",
+		"category": "energy",
+		"type": "org",
+		"title": "National Renewable Energy Laboratory",
+		"description": "The US government's renewable energy research lab — solar, wind, and grid technology explainers.",
+		"url": "https://www.nrel.gov"
+	},
+	{
+		"id": "dsire",
+		"category": "energy",
+		"type": "data",
+		"title": "DSIRE — Database of State Incentives for Renewables & Efficiency",
+		"description": "Look up every solar, efficiency, and clean-energy rebate available in your state.",
+		"url": "https://www.dsireusa.org"
+	},
+	{
+		"id": "rmi",
+		"category": "energy",
+		"type": "org",
+		"title": "RMI",
+		"description": "Independent nonprofit driving the transition to clean energy through research and market analysis.",
+		"url": "https://rmi.org"
+	},
+	{
+		"id": "energy-star",
+		"category": "energy",
+		"type": "org",
+		"title": "ENERGY STAR",
+		"description": "The EPA's efficiency label — find the most efficient appliances and get rebate guidance for your home.",
+		"url": "https://www.energystar.gov"
+	},
+	{
+		"id": "coastal-cleanup-map",
+		"category": "ocean",
+		"type": "action",
+		"title": "Join a coastal cleanup near you",
+		"impact": "Removes plastic before it reaches the food chain",
+		"description": "Beach and waterway cleanups near you are on the Ecoverse map, along with volunteer sign-up links.",
+		"url": "/map"
+	},
+	{
+		"id": "noaa-coral-reef-watch",
+		"category": "ocean",
+		"type": "data",
+		"title": "NOAA Coral Reef Watch",
+		"description": "Satellite-based heat-stress monitoring for reefs worldwide — the same feed behind Ecoverse's reef alerts.",
+		"url": "https://coralreefwatch.noaa.gov"
+	},
+	{
+		"id": "ocean-conservancy",
+		"category": "ocean",
+		"type": "org",
+		"title": "Ocean Conservancy",
+		"description": "Runs the International Coastal Cleanup and advocates for ocean policy backed by real data.",
+		"url": "https://oceanconservancy.org"
+	},
+	{
+		"id": "obis",
+		"category": "ocean",
+		"type": "data",
+		"title": "Ocean Biodiversity Information System (OBIS)",
+		"description": "The global open database of marine species sightings — powers Ecoverse's marine-life layer.",
+		"url": "https://obis.org"
+	},
+	{
+		"id": "surfrider",
+		"category": "ocean",
+		"type": "org",
+		"title": "Surfrider Foundation",
+		"description": "Grassroots coastal and ocean protection with local chapters running cleanups worldwide.",
+		"url": "https://www.surfrider.org"
+	},
+	{
+		"id": "noaa-marine-debris",
+		"category": "ocean",
+		"type": "article",
+		"title": "NOAA Marine Debris Program",
+		"description": "Research and reporting on where ocean plastic comes from and what's being done about it.",
+		"url": "https://marinedebris.noaa.gov"
+	},
+	{
+		"id": "ocean-cleanup",
+		"category": "ocean",
+		"type": "org",
+		"title": "The Ocean Cleanup",
+		"description": "Engineering nonprofit building systems to remove plastic from rivers and the open ocean.",
+		"url": "https://theoceancleanup.com"
+	},
+	{
+		"id": "repair-dont-replace",
+		"category": "waste",
+		"type": "action",
+		"title": "Repair instead of replace",
+		"impact": "Less landfill + embodied carbon",
+		"description": "Most of a gadget's footprint happens before you ever turn it on. Repair cafés make fixing free and social.",
+		"url": "https://www.repaircafe.org"
+	},
+	{
+		"id": "epa-waste-facts",
+		"category": "waste",
+		"type": "data",
+		"title": "EPA Facts and Figures about Materials, Waste and Recycling",
+		"description": "The definitive US data on what we throw away, and how much actually gets recycled or composted.",
+		"url": "https://www.epa.gov/facts-and-figures-about-materials-waste-and-recycling"
+	},
+	{
+		"id": "ellen-macarthur",
+		"category": "waste",
+		"type": "org",
+		"title": "Ellen MacArthur Foundation",
+		"description": "Leading research and design guidance on the circular economy — designing waste out from the start.",
+		"url": "https://www.ellenmacarthurfoundation.org"
+	},
+	{
+		"id": "earth911",
+		"category": "waste",
+		"type": "org",
+		"title": "Earth911 Recycling Search",
+		"description": "Look up exactly where to recycle anything — batteries, electronics, plastics your curbside bin won't take.",
+		"url": "https://earth911.com"
+	},
+	{
+		"id": "zwia",
+		"category": "waste",
+		"type": "org",
+		"title": "Zero Waste International Alliance",
+		"description": "Sets the global standard definition and certification for zero-waste communities and businesses.",
+		"url": "https://zwia.org"
+	},
+	{
+		"id": "compost-food-scraps",
+		"category": "waste",
+		"type": "action",
+		"title": "Compost your food scraps",
+		"impact": "~0.3 ton CO2e/yr diverted from landfill methane",
+		"description": "Food waste in landfills breaks down anaerobically into methane. Composting — even a countertop bin — avoids that.",
+		"url": "https://www.epa.gov/recycle/composting-home"
+	},
+	{
+		"id": "terracycle",
+		"category": "waste",
+		"type": "org",
+		"title": "TerraCycle",
+		"description": "Free and paid recycling programs for the hard-to-recycle stuff — snack wrappers, razors, cosmetics packaging.",
+		"url": "https://www.terracycle.com"
+	},
+	{
+		"id": "show-up-locally",
+		"category": "biodiversity",
+		"type": "action",
+		"title": "Show up locally",
+		"impact": "Multiplies everything",
+		"description": "Cleanups, tree plantings, and co-op info nights near you are on the map. Bring a friend — action is contagious.",
+		"url": "/map"
+	},
+	{
+		"id": "iucn-red-list",
+		"category": "biodiversity",
+		"type": "data",
+		"title": "IUCN Red List",
+		"description": "The global authority on species extinction risk — see exactly how threatened a species is and why.",
+		"url": "https://www.iucnredlist.org"
+	},
+	{
+		"id": "wwf",
+		"category": "biodiversity",
+		"type": "org",
+		"title": "World Wildlife Fund",
+		"description": "The largest independent conservation organization, working on habitat protection worldwide.",
+		"url": "https://www.worldwildlife.org"
+	},
+	{
+		"id": "rainforest-alliance",
+		"category": "biodiversity",
+		"type": "org",
+		"title": "Rainforest Alliance",
+		"description": "Certifies farms and forests to sustainable standards — look for their seal on coffee, chocolate, and more.",
+		"url": "https://www.rainforest-alliance.org"
+	},
+	{
+		"id": "global-forest-watch",
+		"category": "biodiversity",
+		"type": "data",
+		"title": "Global Forest Watch",
+		"description": "Near-real-time satellite monitoring of forest loss anywhere on Earth, down to individual fires.",
+		"url": "https://www.globalforestwatch.org"
+	},
+	{
+		"id": "inaturalist",
+		"category": "biodiversity",
+		"type": "action",
+		"title": "Log a sighting on iNaturalist",
+		"impact": "Feeds real biodiversity research",
+		"description": "Photograph any plant or animal and the community — plus AI — helps identify it. Your sightings become real research data.",
+		"url": "https://www.inaturalist.org"
+	},
+	{
+		"id": "nature-conservancy",
+		"category": "biodiversity",
+		"type": "org",
+		"title": "The Nature Conservancy",
+		"description": "Protects land and water through direct conservation purchases and restoration projects worldwide.",
+		"url": "https://www.nature.org"
+	},
+	{
+		"id": "plant-forward",
+		"category": "food",
+		"type": "action",
+		"title": "Eat plant-forward twice a week",
+		"impact": "~0.5 ton CO2/yr",
+		"description": "Beef has roughly 10x the footprint of chicken and 30x that of beans. Two swapped dinners a week adds up fast.",
+		"url": "https://ourworldindata.org/environmental-impacts-of-food"
+	},
+	{
+		"id": "drawdown-food",
+		"category": "food",
+		"type": "article",
+		"title": "Project Drawdown — Food, Agriculture & Land Use",
+		"description": "Ranks the highest-impact food-system climate solutions, from diets to farming practices.",
+		"url": "https://drawdown.org/sectors/food-agriculture-and-land-use"
+	},
+	{
+		"id": "usda-food-loss",
+		"category": "food",
+		"type": "data",
+		"title": "USDA Food Loss and Waste",
+		"description": "US government data and initiatives on the roughly one-third of food that's lost or wasted.",
+		"url": "https://www.usda.gov/foodlossandwaste"
+	},
+	{
+		"id": "feeding-america",
+		"category": "food",
+		"type": "org",
+		"title": "Feeding America",
+		"description": "The largest US food-rescue network, turning surplus food into meals instead of landfill waste.",
+		"url": "https://www.feedingamerica.org"
+	},
+	{
+		"id": "seafood-watch",
+		"category": "food",
+		"type": "org",
+		"title": "Monterey Bay Aquarium Seafood Watch",
+		"description": "Real-time sustainable seafood ratings and a printable pocket guide for grocery runs and restaurants.",
+		"url": "https://www.seafoodwatch.org"
+	},
+	{
+		"id": "home-compost-garden",
+		"category": "food",
+		"type": "action",
+		"title": "Start a small herb or vegetable garden",
+		"impact": "Cuts packaging + transport emissions",
+		"description": "Even a windowsill herb pot or a couple of raised beds offsets store-bought produce that traveled hundreds of miles.",
+		"url": "https://www.almanac.com/vegetable-gardening-for-beginners"
+	},
+	{
+		"id": "fao-food-ag-stats",
+		"category": "food",
+		"type": "data",
+		"title": "FAO Food and Agriculture Data",
+		"description": "The UN's global statistics on agriculture, land use, and food systems — the source behind most food-emissions research.",
+		"url": "https://www.fao.org/food-agriculture-statistics/en/"
+	},
+	{
+		"id": "airnow",
+		"category": "air-quality",
+		"type": "data",
+		"title": "AirNow.gov",
+		"description": "EPA's real-time US air quality map and alerts — check today's AQI before outdoor plans.",
+		"url": "https://www.airnow.gov"
+	},
+	{
+		"id": "epa-aqi-basics",
+		"category": "air-quality",
+		"type": "article",
+		"title": "EPA — Air Quality Index Basics",
+		"description": "Explains what AQI numbers mean, which pollutants are tracked, and who's most at risk on bad-air days.",
+		"url": "https://www.epa.gov/aqi"
+	},
+	{
+		"id": "who-air-quality",
+		"category": "air-quality",
+		"type": "article",
+		"title": "WHO Air Quality Guidelines",
+		"description": "The World Health Organization's global health-based limits for the major air pollutants.",
+		"url": "https://www.who.int/teams/environment-climate-change-and-health/air-quality-and-health/health-impacts/types-of-pollutants"
+	},
+	{
+		"id": "open-meteo-air-quality-api",
+		"category": "air-quality",
+		"type": "data",
+		"title": "Open-Meteo Air Quality API",
+		"description": "The free, keyless weather-and-air-quality data source Ecoverse itself runs on — open for anyone to build with.",
+		"url": "https://open-meteo.com/en/docs/air-quality-api"
+	},
+	{
+		"id": "check-aqi-before-outside",
+		"category": "air-quality",
+		"type": "action",
+		"title": "Check today's AQI before outdoor plans",
+		"impact": "Reduces personal exposure on high-pollution days",
+		"description": "A quick check of the Ecoverse map tells you if it's a good day for a run or a day to keep windows closed.",
+		"url": "/map"
+	},
+	{
+		"id": "clean-air-task-force",
+		"category": "air-quality",
+		"type": "org",
+		"title": "Clean Air Task Force",
+		"description": "Policy-focused nonprofit working on the biggest levers to cut air pollution and methane at the source.",
+		"url": "https://www.catf.us"
+	},
+	{
+		"id": "lung-association-sota",
+		"category": "air-quality",
+		"type": "article",
+		"title": "American Lung Association — State of the Air",
+		"description": "Annual report grading air quality county-by-county across the US, with historical trends.",
+		"url": "https://www.lung.org/research/sota"
+	}
+]

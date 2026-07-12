@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
 	ArrowRight,
 	BarChart3,
+	ChevronLeft,
+	ChevronRight,
 	ExternalLink,
 	Flame,
 	Recycle,
@@ -68,9 +70,19 @@ const TYPE_LABEL: Record<ResourceType, string> = {
 	data: "Data",
 };
 
+const PAGE_SIZE = 9;
+
 function ResourcesPage() {
 	const [category, setCategory] = useState<ResourceCategory | "all">("all");
-	const visible = resourcesByCategory(category);
+	const [page, setPage] = useState(1);
+	const filtered = resourcesByCategory(category);
+	const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+	const visible = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+	function selectCategory(next: ResourceCategory | "all") {
+		setCategory(next);
+		setPage(1);
+	}
 
 	return (
 		<div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
@@ -84,7 +96,7 @@ function ResourcesPage() {
 			<div className="mt-6 flex flex-wrap gap-2">
 				<CategoryPill
 					active={category === "all"}
-					onClick={() => setCategory("all")}
+					onClick={() => selectCategory("all")}
 				>
 					All
 				</CategoryPill>
@@ -94,7 +106,7 @@ function ResourcesPage() {
 						<CategoryPill
 							key={c.id}
 							active={category === c.id}
-							onClick={() => setCategory(c.id)}
+							onClick={() => selectCategory(c.id)}
 						>
 							<Icon className="h-3.5 w-3.5" /> {c.label}
 						</CategoryPill>
@@ -107,6 +119,30 @@ function ResourcesPage() {
 					<ResourceCard key={resource.id} resource={resource} />
 				))}
 			</div>
+
+			{filtered.length > PAGE_SIZE && (
+				<div className="mt-8 flex items-center justify-center gap-4">
+					<button
+						type="button"
+						onClick={() => setPage((p) => Math.max(1, p - 1))}
+						disabled={page === 1}
+						className="flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-sm text-white/70 transition hover:bg-white/10 hover:text-white/90 disabled:pointer-events-none disabled:opacity-30"
+					>
+						<ChevronLeft className="h-4 w-4" /> Prev
+					</button>
+					<span className="text-sm text-white/50">
+						Page {page} of {totalPages}
+					</span>
+					<button
+						type="button"
+						onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+						disabled={page === totalPages}
+						className="flex items-center gap-1 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-sm text-white/70 transition hover:bg-white/10 hover:text-white/90 disabled:pointer-events-none disabled:opacity-30"
+					>
+						Next <ChevronRight className="h-4 w-4" />
+					</button>
+				</div>
+			)}
 
 			<div className="mt-10">
 				<Link

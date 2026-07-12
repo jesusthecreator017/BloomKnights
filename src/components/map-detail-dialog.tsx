@@ -54,7 +54,9 @@ function EventDetail({ event }: { event: EcoEvent }) {
 				</div>
 				<GlassDialogTitle className="mt-1">{event.name}</GlassDialogTitle>
 			</GlassDialogHeader>
-			<p className="mt-2 text-sm text-white/70">{event.description}</p>
+			<p className="mt-2 max-h-40 overflow-y-auto text-sm text-white/70 leading-relaxed">
+				{event.description}
+			</p>
 			<p className="mt-2 text-white/50 text-xs">{event.city}</p>
 			<div className="mt-4 flex flex-wrap gap-2">
 				{event.volunteerUrl && (
@@ -92,7 +94,9 @@ function InitiativeDetail({ initiative }: { initiative: EcoInitiative }) {
 				<GlassBadge className="w-fit">{initiative.category}</GlassBadge>
 				<GlassDialogTitle className="mt-1">{initiative.name}</GlassDialogTitle>
 			</GlassDialogHeader>
-			<p className="mt-2 text-sm text-white/70">{initiative.description}</p>
+			<p className="mt-2 max-h-40 overflow-y-auto text-sm text-white/70 leading-relaxed">
+				{initiative.description}
+			</p>
 			<p className="mt-2 text-white/50 text-xs">{initiative.city}</p>
 			<div className="mt-4 flex flex-wrap gap-2">
 				{initiative.volunteerUrl && (

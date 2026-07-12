@@ -14,9 +14,10 @@ type DB = typeof appDb;
 
 const LEADERBOARD_TTL_MS = 15_000;
 
-export async function listQuizzes(db: DB) {
-	return db
+export async function listQuizzes(db: DB, userId?: string) {
+	const rows = await db
 		.select({
+			id: quizzes.id,
 			slug: quizzes.slug,
 			title: quizzes.title,
 			category: quizzes.category,
@@ -28,6 +29,21 @@ export async function listQuizzes(db: DB) {
 		.leftJoin(questions, eq(questions.quizId, quizzes.id))
 		.groupBy(quizzes.id)
 		.orderBy(asc(quizzes.id));
+
+	if (!userId) {
+		return rows.map(({ id, ...rest }) => ({ ...rest, completedByMe: false }));
+	}
+
+	const completed = await db
+		.select({ quizId: quizAttempts.quizId })
+		.from(quizAttempts)
+		.where(eq(quizAttempts.userId, userId));
+	const completedIds = new Set(completed.map((c) => c.quizId));
+
+	return rows.map(({ id, ...rest }) => ({
+		...rest,
+		completedByMe: completedIds.has(id),
+	}));
 }
 
 /** Questions without correctIndex/explanation — safe to send to the client. */

@@ -16,7 +16,16 @@ import type {
 	PlaceKind,
 	PlaceSuggestion,
 } from "#/lib/api-types";
+import { aqiColor } from "#/lib/environment-format";
 import { cn } from "#/lib/utils";
+
+/** Simple green -> yellow -> red ramp for a 0-11 UV index. */
+function uvColor(uv: number): string {
+	if (uv >= 8) return "#ef4444";
+	if (uv >= 6) return "#f59e0b";
+	if (uv >= 3) return "#facc15";
+	return "#3ebd49";
+}
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
 const DEFAULT_CENTER = { lat: 39.5, lng: -98.35 };
@@ -192,6 +201,26 @@ export default function ExplorerMap() {
 		setAddress(undefined);
 	}
 
+	/** Summary of whichever layer is currently active, for the Ask AI grounding — not hardcoded to air quality. */
+	function currentLiveData(): string | undefined {
+		if (layer === "air-quality" && layerData.air?.current?.us_aqi != null) {
+			return `AQI ${layerData.air.current.us_aqi}`;
+		}
+		if (layer === "uv-solar" && layerData.uvSolar?.current) {
+			return `UV index ${layerData.uvSolar.current.uv_index}`;
+		}
+		if (
+			layer === "ocean-coral" &&
+			layerData.ocean?.current?.sea_surface_temperature != null
+		) {
+			return `Sea surface temp ${layerData.ocean.current.sea_surface_temperature}°C`;
+		}
+		if (layer === "places" && layerData.places) {
+			return `${layerData.places.count} ${placeKind} facilities within 15km`;
+		}
+		return undefined;
+	}
+
 	if (!GOOGLE_MAPS_API_KEY) {
 		return (
 			<MessageOverlay message="Add VITE_GOOGLE_MAPS_API_KEY to a .env.local file to enable the live map (see .env.example)." />
@@ -226,6 +255,49 @@ export default function ExplorerMap() {
 				}}
 			>
 				{marker && <Marker position={marker} />}
+
+				{layer === "air-quality" && layerData.air?.current?.us_aqi != null && (
+					<Marker
+						position={activePoint}
+						icon={{
+							path: google.maps.SymbolPath.CIRCLE,
+							scale: 10,
+							fillColor: aqiColor(layerData.air.current.us_aqi),
+							fillOpacity: 0.9,
+							strokeColor: "#050b16",
+							strokeWeight: 2,
+						}}
+					/>
+				)}
+
+				{layer === "uv-solar" && layerData.uvSolar?.current && (
+					<Marker
+						position={activePoint}
+						icon={{
+							path: google.maps.SymbolPath.CIRCLE,
+							scale: 10,
+							fillColor: uvColor(layerData.uvSolar.current.uv_index),
+							fillOpacity: 0.9,
+							strokeColor: "#050b16",
+							strokeWeight: 2,
+						}}
+					/>
+				)}
+
+				{layer === "ocean-coral" &&
+					layerData.ocean?.current?.sea_surface_temperature != null && (
+						<Marker
+							position={activePoint}
+							icon={{
+								path: google.maps.SymbolPath.CIRCLE,
+								scale: 10,
+								fillColor: "#38bdf8",
+								fillOpacity: 0.9,
+								strokeColor: "#050b16",
+								strokeWeight: 2,
+							}}
+						/>
+					)}
 
 				{layer === "places" &&
 					layerData.places?.places.map((place) => (
@@ -262,10 +334,7 @@ export default function ExplorerMap() {
 					name: address,
 					lat: activePoint.lat,
 					lng: activePoint.lng,
-					liveData:
-						layerData.air?.current?.us_aqi != null
-							? `AQI ${layerData.air.current.us_aqi}`
-							: undefined,
+					liveData: currentLiveData(),
 				}}
 			/>
 

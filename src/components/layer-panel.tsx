@@ -11,8 +11,8 @@ import { AskGeminiBox } from "#/components/ask-gemini-box";
 import { GlassBadge } from "#/components/ui/glass-badge";
 import {
 	ENVIRONMENT_LAYERS,
-	HEATMAP_LAYERS,
 	type EnvironmentLayer,
+	HEATMAP_LAYERS,
 } from "#/hooks/use-environment-layers";
 import type {
 	AirQualityResponse,

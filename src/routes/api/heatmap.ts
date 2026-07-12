@@ -43,10 +43,7 @@ export const Route = createFileRoute("/api/heatmap")({
 
 				const grid = buildGrid(coords.lat, coords.lng);
 				const upstream = new URL(metric.base);
-				upstream.searchParams.set(
-					"latitude",
-					grid.map((p) => p.lat).join(","),
-				);
+				upstream.searchParams.set("latitude", grid.map((p) => p.lat).join(","));
 				upstream.searchParams.set(
 					"longitude",
 					grid.map((p) => p.lng).join(","),

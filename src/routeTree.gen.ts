@@ -25,6 +25,7 @@ import { Route as ApiOceanRouteImport } from './routes/api/ocean'
 import { Route as ApiMarineLifeRouteImport } from './routes/api/marine-life'
 import { Route as ApiLeaderboardRouteImport } from './routes/api/leaderboard'
 import { Route as ApiInitiativesRouteImport } from './routes/api/initiatives'
+import { Route as ApiHeatmapRouteImport } from './routes/api/heatmap'
 import { Route as ApiEventsRouteImport } from './routes/api/events'
 import { Route as ApiEmissionsRouteImport } from './routes/api/emissions'
 import { Route as ApiCoralRouteImport } from './routes/api/coral'
@@ -123,6 +124,11 @@ const ApiInitiativesRoute = ApiInitiativesRouteImport.update({
   path: '/api/initiatives',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiHeatmapRoute = ApiHeatmapRouteImport.update({
+  id: '/api/heatmap',
+  path: '/api/heatmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiEventsRoute = ApiEventsRouteImport.update({
   id: '/api/events',
   path: '/api/events',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/heatmap': typeof ApiHeatmapRoute
   '/api/initiatives': typeof ApiInitiativesRoute
   '/api/leaderboard': typeof ApiLeaderboardRoute
   '/api/marine-life': typeof ApiMarineLifeRoute
@@ -254,6 +261,7 @@ export interface FileRoutesByTo {
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/heatmap': typeof ApiHeatmapRoute
   '/api/initiatives': typeof ApiInitiativesRoute
   '/api/leaderboard': typeof ApiLeaderboardRoute
   '/api/marine-life': typeof ApiMarineLifeRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/api/coral': typeof ApiCoralRoute
   '/api/emissions': typeof ApiEmissionsRoute
   '/api/events': typeof ApiEventsRoute
+  '/api/heatmap': typeof ApiHeatmapRoute
   '/api/initiatives': typeof ApiInitiativesRoute
   '/api/leaderboard': typeof ApiLeaderboardRoute
   '/api/marine-life': typeof ApiMarineLifeRoute
@@ -327,6 +336,7 @@ export interface FileRouteTypes {
     | '/api/coral'
     | '/api/emissions'
     | '/api/events'
+    | '/api/heatmap'
     | '/api/initiatives'
     | '/api/leaderboard'
     | '/api/marine-life'
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/api/coral'
     | '/api/emissions'
     | '/api/events'
+    | '/api/heatmap'
     | '/api/initiatives'
     | '/api/leaderboard'
     | '/api/marine-life'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/api/coral'
     | '/api/emissions'
     | '/api/events'
+    | '/api/heatmap'
     | '/api/initiatives'
     | '/api/leaderboard'
     | '/api/marine-life'
@@ -433,6 +445,7 @@ export interface RootRouteChildren {
   ApiCoralRoute: typeof ApiCoralRoute
   ApiEmissionsRoute: typeof ApiEmissionsRoute
   ApiEventsRoute: typeof ApiEventsRoute
+  ApiHeatmapRoute: typeof ApiHeatmapRoute
   ApiInitiativesRoute: typeof ApiInitiativesRoute
   ApiLeaderboardRoute: typeof ApiLeaderboardRoute
   ApiMarineLifeRoute: typeof ApiMarineLifeRoute
@@ -569,6 +582,13 @@ declare module '@tanstack/react-router' {
       path: '/api/initiatives'
       fullPath: '/api/initiatives'
       preLoaderRoute: typeof ApiInitiativesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/heatmap': {
+      id: '/api/heatmap'
+      path: '/api/heatmap'
+      fullPath: '/api/heatmap'
+      preLoaderRoute: typeof ApiHeatmapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/events': {
@@ -717,6 +737,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCoralRoute: ApiCoralRoute,
   ApiEmissionsRoute: ApiEmissionsRoute,
   ApiEventsRoute: ApiEventsRoute,
+  ApiHeatmapRoute: ApiHeatmapRoute,
   ApiInitiativesRoute: ApiInitiativesRoute,
   ApiLeaderboardRoute: ApiLeaderboardRoute,
   ApiMarineLifeRoute: ApiMarineLifeRoute,
